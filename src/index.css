@@ -1,0 +1,240 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-navy text-champagne font-inter;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-navy-dark;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-orange-accent rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-orange-light;
+  }
+
+  /* Selection */
+  ::selection {
+    background: rgba(204, 85, 0, 0.35);
+    color: #F7E7CE;
+  }
+}
+
+@layer components {
+  /* Glass card */
+  .glass-card {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    @apply shadow-glass;
+  }
+
+  .glass-card-light {
+    background: rgba(247, 231, 206, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(247, 231, 206, 0.12);
+  }
+
+  /* Premium button */
+  .btn-primary {
+    @apply bg-orange-accent text-white font-inter font-semibold tracking-wide
+           px-8 py-3.5 rounded-sm transition-all duration-300
+           hover:bg-orange-hover hover:shadow-orange-glow hover:-translate-y-0.5
+           active:translate-y-0 active:shadow-none;
+  }
+
+  .btn-secondary {
+    @apply border border-champagne/40 text-champagne font-inter font-medium tracking-wide
+           px-8 py-3.5 rounded-sm transition-all duration-300
+           hover:border-champagne/80 hover:bg-champagne/5 hover:-translate-y-0.5;
+  }
+
+  .btn-ghost {
+    @apply text-champagne/70 font-inter font-medium tracking-wide
+           px-6 py-2.5 rounded-sm transition-all duration-200
+           hover:text-champagne hover:bg-white/5;
+  }
+
+  /* Section headings */
+  .section-label {
+    @apply text-orange-accent font-inter text-xs font-semibold tracking-[0.25em] uppercase mb-3;
+  }
+
+  .section-title {
+    @apply font-playfair text-4xl md:text-5xl lg:text-6xl font-bold leading-tight;
+  }
+
+  .section-subtitle {
+    @apply font-inter text-champagne/60 text-lg leading-relaxed max-w-2xl;
+  }
+
+  /* Input fields */
+  .luxury-input {
+    @apply w-full bg-navy-light/50 border border-white/10 rounded-sm px-4 py-3.5
+           text-champagne font-inter placeholder-champagne/30
+           focus:outline-none focus:border-orange-accent/60 focus:ring-1 focus:ring-orange-accent/20
+           transition-all duration-200;
+  }
+
+  .luxury-label {
+    @apply block text-champagne/70 font-inter text-sm font-medium mb-2 tracking-wide;
+  }
+
+  /* Divider */
+  .luxury-divider {
+    @apply w-12 h-0.5 bg-orange-accent mx-auto my-6;
+  }
+
+  /* Shimmer loading effect */
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0) 0%,
+      rgba(255,255,255,0.08) 50%,
+      rgba(255,255,255,0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #F7E7CE 0%, #CC5500 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .text-gradient-light {
+    background: linear-gradient(135deg, #ffffff 0%, #F7E7CE 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+}
+
+/* ─── Light Mode ─────────────────────────────────────────────────────────────
+   The site is dark-first. When .dark is removed from <html>, these overrides
+   swap every dark navy surface to a warm ivory palette and invert text.
+   Orange accents are unchanged — they read well on both themes.
+────────────────────────────────────────────────────────────────────────────── */
+html.light body,
+html:not(.dark) body {
+  background-color: #f2ede4;
+  color: #1A2238;
+}
+
+/* Section backgrounds */
+html:not(.dark) section,
+html:not(.dark) header,
+html:not(.dark) footer {
+  background-color: #f2ede4 !important;
+}
+
+/* Alternate section depth */
+html:not(.dark) .bg-navy-deeper,
+html:not(.dark) section.bg-navy-deeper {
+  background-color: #e6e0d5 !important;
+}
+
+/* Fixed navbar — light version */
+html:not(.dark) header.backdrop-blur-xl {
+  background-color: rgba(242, 237, 228, 0.92) !important;
+  border-bottom-color: rgba(26, 34, 56, 0.1) !important;
+}
+
+/* Glass cards */
+html:not(.dark) .glass-card {
+  background: rgba(255, 255, 255, 0.65) !important;
+  border-color: rgba(26, 34, 56, 0.08) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+}
+
+html:not(.dark) .glass-card-light {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border-color: rgba(26, 34, 56, 0.08) !important;
+}
+
+/* Text */
+html:not(.dark) .text-white,
+html:not(.dark) h1, html:not(.dark) h2,
+html:not(.dark) h3, html:not(.dark) h4 {
+  color: #1A2238 !important;
+}
+
+html:not(.dark) .text-champagne {
+  color: #1A2238 !important;
+}
+
+/* Form inputs */
+html:not(.dark) .luxury-input {
+  background: rgba(26, 34, 56, 0.05) !important;
+  border-color: rgba(26, 34, 56, 0.15) !important;
+  color: #1A2238 !important;
+}
+
+html:not(.dark) .luxury-input::placeholder {
+  color: rgba(26, 34, 56, 0.35) !important;
+}
+
+html:not(.dark) .luxury-input option {
+  background: #f2ede4;
+  color: #1A2238;
+}
+
+/* Buttons */
+html:not(.dark) .btn-secondary {
+  border-color: rgba(26, 34, 56, 0.3) !important;
+  color: #1A2238 !important;
+}
+
+html:not(.dark) .btn-secondary:hover {
+  border-color: rgba(26, 34, 56, 0.6) !important;
+  background: rgba(26, 34, 56, 0.05) !important;
+}
+
+/* Dividers and borders */
+html:not(.dark) .border-white\/5,
+html:not(.dark) .border-white\/6,
+html:not(.dark) .border-white\/8,
+html:not(.dark) .border-white\/10 {
+  border-color: rgba(26, 34, 56, 0.08) !important;
+}
+
+/* Scrollbar */
+html:not(.dark) ::-webkit-scrollbar-track {
+  background: #e6e0d5;
+}
+
+/* Text gradient stays visible in light mode */
+html:not(.dark) .text-gradient {
+  background: linear-gradient(135deg, #CC5500 0%, #1A2238 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
