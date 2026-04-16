@@ -1,22 +1,27 @@
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ThemeProvider } from './context/ThemeContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
-import ChatBot from './components/ChatBot'
 import Home from './pages/Home'
-import GalleryPage from './pages/Gallery'
-import AdminPage from './pages/Admin'
+import useIntroAudio from './hooks/useIntroAudio'
+
+// ── Lazy-loaded: not needed on initial paint ──────────────────────────────────
+// Each gets its own JS chunk — only downloaded when the user navigates there.
+const GalleryPage = lazy(() => import('./pages/Gallery'))
+const ArcadePage  = lazy(() => import('./pages/Arcade'))
+// ChatBot starts hidden (FAB button) — safe to defer until after first paint
+const ChatBot     = lazy(() => import('./components/ChatBot'))
 
 const pageVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.4 } },
-  exit: { opacity: 0, transition: { duration: 0.25 } },
+  exit:    { opacity: 0, transition: { duration: 0.25 } },
 }
 
 function AnimatedRoutes() {
   const location = useLocation()
-  const isAdmin = location.pathname.startsWith('/admin')
 
   return (
     <AnimatePresence mode="wait">
@@ -27,26 +32,32 @@ function AnimatedRoutes() {
         animate="animate"
         exit="exit"
       >
-        <Routes location={location}>
-          <Route path="/" element={<Home />} />
-          <Route path="/gallery" element={<GalleryPage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
+        {/* Suspense here covers page-level lazy chunks */}
+        <Suspense fallback={null}>
+          <Routes location={location}>
+            <Route path="/"        element={<Home />} />
+            <Route path="/gallery" element={<GalleryPage />} />
+            <Route path="/arcade"  element={<ArcadePage />} />
+            <Route path="/admin"   element={<Navigate to="/dashboard" replace />} />
+          </Routes>
+        </Suspense>
       </motion.div>
     </AnimatePresence>
   )
 }
 
 function Layout() {
-  const location = useLocation()
-  const isAdmin = location.pathname.startsWith('/admin')
+  useIntroAudio()
 
   return (
     <div className="min-h-screen bg-navy text-champagne">
-      {!isAdmin && <Navbar />}
+      <Navbar />
       <AnimatedRoutes />
-      {!isAdmin && <Footer />}
-      {!isAdmin && <ChatBot />}
+      <Footer />
+      {/* ChatBot deferred — loads after initial paint, starts hidden */}
+      <Suspense fallback={null}>
+        <ChatBot />
+      </Suspense>
     </div>
   )
 }

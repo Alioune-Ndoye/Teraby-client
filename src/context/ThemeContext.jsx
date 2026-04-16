@@ -15,20 +15,25 @@ export function ThemeProvider({ children }) {
     }
   })
 
-  // Apply class AND persist every time isDark changes
+  // Apply classes AND persist every time isDark changes
   useEffect(() => {
     const root = document.documentElement
+    const body = document.body
     if (isDark) {
       root.classList.add('dark')
       root.classList.remove('light')
+      body.classList.add('theme-dark')
+      body.classList.remove('theme-light')
     } else {
       root.classList.remove('dark')
       root.classList.add('light')
+      body.classList.add('theme-light')
+      body.classList.remove('theme-dark')
     }
     try {
       localStorage.setItem(STORAGE_KEY, isDark ? 'dark' : 'light')
     } catch {
-      // localStorage unavailable (private browsing etc.) — ignore silently
+      // localStorage unavailable — ignore silently
     }
   }, [isDark])
 

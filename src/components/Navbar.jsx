@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Moon, Sun } from 'lucide-react'
+import Menu from 'lucide-react/dist/esm/icons/menu'
+import X from 'lucide-react/dist/esm/icons/x'
+import Moon from 'lucide-react/dist/esm/icons/moon'
+import Sun from 'lucide-react/dist/esm/icons/sun'
 import { useTheme } from '../context/ThemeContext'
 import { navLinks } from '../data/sampleData'
 
@@ -65,8 +68,11 @@ export default function Navbar() {
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               <img
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Teraby"
+                width="190"
+                height="80"
+                loading="eager"
                 className="h-10 w-auto transition-all duration-300 group-hover:opacity-90"
                 onError={(e) => {
                   e.currentTarget.style.display = 'none'
@@ -152,6 +158,7 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
+            id="mobile-nav"
             className="fixed top-[60px] left-0 right-0 z-40 bg-navy-dark/95 backdrop-blur-xl border-b border-white/5 lg:hidden"
           >
             <nav className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-2">

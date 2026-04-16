@@ -138,103 +138,311 @@
   }
 }
 
-/* ─── Light Mode ─────────────────────────────────────────────────────────────
-   The site is dark-first. When .dark is removed from <html>, these overrides
-   swap every dark navy surface to a warm ivory palette and invert text.
-   Orange accents are unchanged — they read well on both themes.
-────────────────────────────────────────────────────────────────────────────── */
-html.light body,
-html:not(.dark) body {
-  background-color: #f2ede4;
+/* ═══════════════════════════════════════════════════════════════════════════
+   LIGHT MODE + SCROLL-BASED THEME
+   ─────────────────────────────────────────────────────────────────────────
+   Architecture:
+   • `.hero-dark`           → always dark, immune to any theme override
+   • `body.theme-dark`      → dark theme active (set by ThemeContext)
+   • `body.theme-light`     → light theme active (set by ThemeContext)
+   • `body.scrolled`        → user has scrolled past the hero (set by useScrollObserver)
+   • `body.force-dark`      → page-level dark override (Arcade page)
+
+   Light styles only apply when:
+     html:not(.dark) body.theme-light.scrolled   (scrolled past hero in light mode)
+   OR always for non-hero content after scroll.
+
+   Orange (#CC5500) is NEVER overridden.
+   Navbar + hero always dark regardless of theme.
+═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Smooth transitions on every theme-sensitive surface ── */
+body,
+body section,
+body footer,
+body .glass-card,
+body .glass-card-light,
+body .luxury-input,
+body .btn-secondary {
+  transition:
+    background-color 0.35s ease,
+    border-color     0.35s ease,
+    color            0.25s ease,
+    box-shadow       0.35s ease;
+}
+
+/* ── Scrollbar ── */
+html:not(.dark) ::-webkit-scrollbar-track { background: #e4e7ed; }
+
+/* ══════════════════════════════════════════════════════
+   HERO-DARK: locked cinematic layer — ALWAYS dark.
+   Applied via class="hero-dark" on the Hero <section>.
+
+   CRITICAL: use EXPLICIT dark values here, NOT `inherit`.
+   `color: inherit` would inherit from `body { color: #1A2238 }`
+   which defeats the purpose. We restore the exact dark palette.
+══════════════════════════════════════════════════════ */
+
+/* Base: force dark color-scheme and champagne base color */
+html:not(.dark) .hero-dark {
+  background-color: transparent !important;
+  color: #F7E7CE !important;
+  color-scheme: dark;
+}
+
+/* ── Text — explicit champagne values (NOT inherit) ── */
+html:not(.dark) .hero-dark .text-white      { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; }
+html:not(.dark) .hero-dark .text-white\/90  { color: rgba(255,255,255,0.90) !important; }
+html:not(.dark) .hero-dark .text-champagne  { color: #F7E7CE !important; }
+html:not(.dark) .hero-dark .text-champagne\/80 { color: rgba(247,231,206,0.80) !important; }
+html:not(.dark) .hero-dark .text-champagne\/70 { color: rgba(247,231,206,0.70) !important; }
+html:not(.dark) .hero-dark .text-champagne\/65 { color: rgba(247,231,206,0.65) !important; }
+html:not(.dark) .hero-dark .text-champagne\/60 { color: rgba(247,231,206,0.60) !important; }
+html:not(.dark) .hero-dark .text-champagne\/55 { color: rgba(247,231,206,0.55) !important; }
+html:not(.dark) .hero-dark .text-champagne\/50 { color: rgba(247,231,206,0.50) !important; }
+html:not(.dark) .hero-dark .text-champagne\/40 { color: rgba(247,231,206,0.40) !important; }
+html:not(.dark) .hero-dark .text-champagne\/30 { color: rgba(247,231,206,0.30) !important; }
+html:not(.dark) .hero-dark .text-champagne\/20 { color: rgba(247,231,206,0.20) !important; }
+
+/* ── Headings and body text inside hero ── */
+html:not(.dark) .hero-dark h1,
+html:not(.dark) .hero-dark h2,
+html:not(.dark) .hero-dark h3,
+html:not(.dark) .hero-dark h4 { color: #F7E7CE !important; }
+
+/* ── Text gradients inside hero — restore original dark gradients ── */
+html:not(.dark) .hero-dark .text-gradient {
+  background: linear-gradient(135deg, #F7E7CE 0%, #CC5500 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text;
+}
+html:not(.dark) .hero-dark .text-gradient-light {
+  background: linear-gradient(135deg, #ffffff 0%, #F7E7CE 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text;
+}
+
+/* ── Glass cards inside hero — restore dark glass ── */
+html:not(.dark) .hero-dark .glass-card {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1) !important;
+}
+
+/* ── Borders inside hero — restore white opacity values ── */
+html:not(.dark) .hero-dark .border-white\/5  { border-color: rgba(255,255,255,0.05) !important; }
+html:not(.dark) .hero-dark .border-white\/8  { border-color: rgba(255,255,255,0.08) !important; }
+html:not(.dark) .hero-dark .border-white\/10 { border-color: rgba(255,255,255,0.10) !important; }
+html:not(.dark) .hero-dark .border-white\/15 { border-color: rgba(255,255,255,0.15) !important; }
+html:not(.dark) .hero-dark .border-white\/30 { border-color: rgba(255,255,255,0.30) !important; }
+
+/* ── Buttons inside hero — restore dark variants ── */
+html:not(.dark) .hero-dark .btn-secondary {
+  border-color: rgba(247,231,206,0.40) !important;
+  color: #F7E7CE !important;
+}
+html:not(.dark) .hero-dark .btn-secondary:hover {
+  border-color: rgba(247,231,206,0.80) !important;
+  background: rgba(247,231,206,0.05) !important;
+}
+html:not(.dark) .hero-dark .btn-ghost {
+  color: rgba(247,231,206,0.70) !important;
+}
+html:not(.dark) .hero-dark .btn-ghost:hover {
+  color: #F7E7CE !important;
+  background: rgba(255,255,255,0.05) !important;
+}
+
+/* ══════════════════════════════════════════════════════
+   LIGHT MODE — only when body has scrolled past hero
+   Selector: html:not(.dark) body.theme-light.scrolled
+   (falls back to html:not(.dark) for non-home pages
+    that have no hero to scroll past)
+══════════════════════════════════════════════════════ */
+
+/* For pages WITHOUT a hero (Gallery, Admin, etc.) apply immediately.
+   For Home page, wait for body.scrolled. */
+html:not(.dark) body.theme-light.scrolled,
+html:not(.dark) body.theme-light:not([data-has-hero]) {
+  background-color: #f8f9fb;
   color: #1A2238;
 }
 
-/* Section backgrounds */
-html:not(.dark) section,
-html:not(.dark) header,
+/* Non-home pages: apply light immediately */
+html:not(.dark) body.theme-light:not(.has-hero) {
+  background-color: #f8f9fb;
+  color: #1A2238;
+}
+
+/* Root body — catches pages without hero */
+html:not(.dark) body {
+  background-color: #f8f9fb;
+  color: #1A2238;
+}
+
+/* ── Navbar: always dark — explicit champagne values (NOT inherit) ──
+   The scrolled bar is bg-navy-dark/90 (dark). `color: inherit` would
+   pull #1A2238 from body → dark text on dark bg = invisible.
+   We must restore the exact original champagne values. */
+html:not(.dark) header .text-white      { color: #ffffff !important; }
+html:not(.dark) header .text-champagne  { color: #F7E7CE !important; }
+html:not(.dark) header .text-champagne\/80 { color: rgba(247,231,206,0.80) !important; }
+html:not(.dark) header .text-champagne\/70 { color: rgba(247,231,206,0.70) !important; }
+html:not(.dark) header .text-champagne\/65 { color: rgba(247,231,206,0.65) !important; }
+html:not(.dark) header .text-champagne\/60 { color: rgba(247,231,206,0.60) !important; }
+html:not(.dark) header .text-champagne\/50 { color: rgba(247,231,206,0.50) !important; }
+html:not(.dark) header .text-champagne\/40 { color: rgba(247,231,206,0.40) !important; }
+html:not(.dark) header h1,
+html:not(.dark) header h2,
+html:not(.dark) header h3 { color: #F7E7CE !important; }
+
+/* ── Mobile nav drawer — same dark background, same fix ── */
+html:not(.dark) #mobile-nav .text-white      { color: #ffffff !important; }
+html:not(.dark) #mobile-nav .text-champagne  { color: #F7E7CE !important; }
+html:not(.dark) #mobile-nav .text-champagne\/80 { color: rgba(247,231,206,0.80) !important; }
+html:not(.dark) #mobile-nav .text-champagne\/70 { color: rgba(247,231,206,0.70) !important; }
+html:not(.dark) #mobile-nav .text-champagne\/60 { color: rgba(247,231,206,0.60) !important; }
+html:not(.dark) #mobile-nav .text-champagne\/50 { color: rgba(247,231,206,0.50) !important; }
+html:not(.dark) #mobile-nav .text-champagne\/40 { color: rgba(247,231,206,0.40) !important; }
+
+/* ── Section / structural backgrounds (hero-dark excluded) ── */
+html:not(.dark) section:not(.hero-dark),
 html:not(.dark) footer {
-  background-color: #f2ede4 !important;
+  background-color: #f8f9fb !important;
 }
 
-/* Alternate section depth */
-html:not(.dark) .bg-navy-deeper,
-html:not(.dark) section.bg-navy-deeper {
-  background-color: #e6e0d5 !important;
-}
+html:not(.dark) .bg-navy        { background-color: #f8f9fb !important; }
+html:not(.dark) .bg-navy-light  { background-color: #eef0f5 !important; }
+html:not(.dark) .bg-navy-dark   { background-color: #eef0f5 !important; }
+html:not(.dark) .bg-navy-deeper { background-color: #e6e9f0 !important; }
 
-/* Fixed navbar — light version */
-html:not(.dark) header.backdrop-blur-xl {
-  background-color: rgba(242, 237, 228, 0.92) !important;
-  border-bottom-color: rgba(26, 34, 56, 0.1) !important;
-}
-
-/* Glass cards */
+/* ── Glass cards ── */
 html:not(.dark) .glass-card {
-  background: rgba(255, 255, 255, 0.65) !important;
-  border-color: rgba(26, 34, 56, 0.08) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  border-color: rgba(26, 34, 56, 0.09) !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.07), inset 0 1px 0 rgba(255,255,255,0.95) !important;
 }
-
 html:not(.dark) .glass-card-light {
-  background: rgba(255, 255, 255, 0.5) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
   border-color: rgba(26, 34, 56, 0.08) !important;
 }
 
-/* Text */
-html:not(.dark) .text-white,
-html:not(.dark) h1, html:not(.dark) h2,
-html:not(.dark) h3, html:not(.dark) h4 {
-  color: #1A2238 !important;
-}
+/* ── Subtle overlay backgrounds ── */
+html:not(.dark) .bg-white\/2       { background-color: rgba(26, 34, 56, 0.02) !important; }
+html:not(.dark) .bg-white\/5       { background-color: rgba(26, 34, 56, 0.04) !important; }
+html:not(.dark) .bg-champagne\/40  { background-color: rgba(26, 34, 56, 0.06) !important; }
 
-html:not(.dark) .text-champagne {
-  color: #1A2238 !important;
-}
+/* ── Headings & solid white text (hero-dark excluded via specificity) ── */
+html:not(.dark) .text-white        { color: #1A2238 !important; }
+html:not(.dark) .text-white\/90    { color: rgba(26, 34, 56, 0.90) !important; }
+html:not(.dark) h1:not(.hero-dark *),
+html:not(.dark) h2:not(.hero-dark *),
+html:not(.dark) h3:not(.hero-dark *),
+html:not(.dark) h4:not(.hero-dark *) { color: #1A2238 !important; }
 
-/* Form inputs */
+/* ── Champagne text — all opacity variants → navy ── */
+html:not(.dark) .text-champagne     { color: #1A2238 !important; }
+html:not(.dark) .text-champagne\/80 { color: rgba(26, 34, 56, 0.80) !important; }
+html:not(.dark) .text-champagne\/70 { color: rgba(26, 34, 56, 0.72) !important; }
+html:not(.dark) .text-champagne\/65 { color: rgba(26, 34, 56, 0.65) !important; }
+html:not(.dark) .text-champagne\/60 { color: rgba(26, 34, 56, 0.62) !important; }
+html:not(.dark) .text-champagne\/55 { color: rgba(26, 34, 56, 0.56) !important; }
+html:not(.dark) .text-champagne\/50 { color: rgba(26, 34, 56, 0.52) !important; }
+html:not(.dark) .text-champagne\/40 { color: rgba(26, 34, 56, 0.44) !important; }
+html:not(.dark) .text-champagne\/30 { color: rgba(26, 34, 56, 0.36) !important; }
+html:not(.dark) .text-champagne\/20 { color: rgba(26, 34, 56, 0.26) !important; }
+html:not(.dark) .text-champagne\/15 { color: rgba(26, 34, 56, 0.20) !important; }
+
+/* ── Borders — white opacity → navy opacity ── */
+html:not(.dark) .border-white\/3  { border-color: rgba(26, 34, 56, 0.06) !important; }
+html:not(.dark) .border-white\/5  { border-color: rgba(26, 34, 56, 0.08) !important; }
+html:not(.dark) .border-white\/6  { border-color: rgba(26, 34, 56, 0.09) !important; }
+html:not(.dark) .border-white\/8  { border-color: rgba(26, 34, 56, 0.10) !important; }
+html:not(.dark) .border-white\/10 { border-color: rgba(26, 34, 56, 0.12) !important; }
+html:not(.dark) .border-white\/15 { border-color: rgba(26, 34, 56, 0.15) !important; }
+html:not(.dark) .border-white\/30 { border-color: rgba(26, 34, 56, 0.22) !important; }
+
+/* ── Utility classes ── */
+html:not(.dark) .section-subtitle { color: rgba(26, 34, 56, 0.62) !important; }
+
+/* ── Form inputs ── */
 html:not(.dark) .luxury-input {
   background: rgba(26, 34, 56, 0.05) !important;
-  border-color: rgba(26, 34, 56, 0.15) !important;
+  border-color: rgba(26, 34, 56, 0.16) !important;
   color: #1A2238 !important;
 }
+html:not(.dark) .luxury-input::placeholder { color: rgba(26, 34, 56, 0.36) !important; }
+html:not(.dark) .luxury-input option       { background: #f8f9fb; color: #1A2238; }
 
-html:not(.dark) .luxury-input::placeholder {
-  color: rgba(26, 34, 56, 0.35) !important;
-}
-
-html:not(.dark) .luxury-input option {
-  background: #f2ede4;
-  color: #1A2238;
-}
-
-/* Buttons */
+/* ── Buttons (btn-primary/orange never touched) ── */
 html:not(.dark) .btn-secondary {
-  border-color: rgba(26, 34, 56, 0.3) !important;
+  border-color: rgba(26, 34, 56, 0.30) !important;
   color: #1A2238 !important;
 }
-
 html:not(.dark) .btn-secondary:hover {
-  border-color: rgba(26, 34, 56, 0.6) !important;
+  border-color: rgba(26, 34, 56, 0.60) !important;
   background: rgba(26, 34, 56, 0.05) !important;
 }
+html:not(.dark) .btn-ghost            { color: rgba(26, 34, 56, 0.65) !important; }
+html:not(.dark) .btn-ghost:hover      { color: #1A2238 !important; background: rgba(26, 34, 56, 0.05) !important; }
 
-/* Dividers and borders */
-html:not(.dark) .border-white\/5,
-html:not(.dark) .border-white\/6,
-html:not(.dark) .border-white\/8,
-html:not(.dark) .border-white\/10 {
-  border-color: rgba(26, 34, 56, 0.08) !important;
-}
-
-/* Scrollbar */
-html:not(.dark) ::-webkit-scrollbar-track {
-  background: #e6e0d5;
-}
-
-/* Text gradient stays visible in light mode */
+/* ── Text gradients ── */
 html:not(.dark) .text-gradient {
   background: linear-gradient(135deg, #CC5500 0%, #1A2238 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+html:not(.dark) .text-gradient-light {
+  background: linear-gradient(135deg, #CC5500 0%, rgba(26,34,56,0.7) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ══════════════════════════════════════════════════════
+   CHATBOT PANEL — always dark (floats above content)
+══════════════════════════════════════════════════════ */
+html:not(.dark) #chatbot-panel {
+  background-color: #1A2238 !important;
+  color: #F7E7CE !important;
+}
+html:not(.dark) #chatbot-panel .text-white,
+html:not(.dark) #chatbot-panel .text-champagne,
+html:not(.dark) #chatbot-panel .text-champagne\/80,
+html:not(.dark) #chatbot-panel .text-champagne\/70,
+html:not(.dark) #chatbot-panel .text-champagne\/65,
+html:not(.dark) #chatbot-panel .text-champagne\/60,
+html:not(.dark) #chatbot-panel .text-champagne\/55,
+html:not(.dark) #chatbot-panel .text-champagne\/50,
+html:not(.dark) #chatbot-panel .text-champagne\/40,
+html:not(.dark) #chatbot-panel .text-champagne\/30,
+html:not(.dark) #chatbot-panel h1,
+html:not(.dark) #chatbot-panel h2,
+html:not(.dark) #chatbot-panel h3,
+html:not(.dark) #chatbot-panel p,
+html:not(.dark) #chatbot-panel span,
+html:not(.dark) #chatbot-panel button:not(.btn-primary) { color: inherit !important; }
+html:not(.dark) #chatbot-panel .bg-navy-light  { background-color: #243251 !important; }
+html:not(.dark) #chatbot-panel .bg-navy-deeper { background-color: #0D1525 !important; }
+html:not(.dark) #chatbot-panel .bg-navy        { background-color: #1A2238 !important; }
+html:not(.dark) #chatbot-panel .border-white\/8  { border-color: rgba(247,231,206,0.08) !important; }
+html:not(.dark) #chatbot-panel .border-white\/10 { border-color: rgba(247,231,206,0.10) !important; }
+html:not(.dark) #chatbot-panel .border-white\/5  { border-color: rgba(247,231,206,0.05) !important; }
+html:not(.dark) #chatbot-panel input {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #F7E7CE !important;
+  border-color: rgba(247, 231, 206, 0.12) !important;
+}
+html:not(.dark) #chatbot-panel input::placeholder { color: rgba(247, 231, 206, 0.35) !important; }
+
+/* ══════════════════════════════════════════════════════
+   ARCADE / FORCE-DARK pages
+   body.force-dark always renders dark regardless of html class
+══════════════════════════════════════════════════════ */
+body.force-dark section,
+body.force-dark footer {
+  background-color: transparent !important;
 }

@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { X, ZoomIn, ChevronLeft, ChevronRight } from 'lucide-react'
+import X from 'lucide-react/dist/esm/icons/x'
+import ZoomIn from 'lucide-react/dist/esm/icons/zoom-in'
+import ChevronLeft from 'lucide-react/dist/esm/icons/chevron-left'
+import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right'
 import { galleryItems } from '../data/sampleData'
 
 const categories = [

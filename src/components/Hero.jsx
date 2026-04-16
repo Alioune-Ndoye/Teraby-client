@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
-import { ArrowDown, Play, Star } from 'lucide-react'
+import ArrowDown from 'lucide-react/dist/esm/icons/arrow-down'
+import Play from 'lucide-react/dist/esm/icons/play'
+import Star from 'lucide-react/dist/esm/icons/star'
 import { stats } from '../data/sampleData'
 
 const fadeUp = {
@@ -19,16 +21,20 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="hero-dark relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage:
-              'url(https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1920&h=1080&fit=crop)',
-          }}
+        <img
+          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&fit=crop&q=60&auto=format"
+          alt=""
+          width="1920"
+          height="1080"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          aria-hidden="true"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-navy-deeper/85 via-navy/75 to-navy-deeper/95" />
         <div className="absolute inset-0 bg-gradient-to-r from-navy-deeper/60 via-transparent to-navy-deeper/40" />

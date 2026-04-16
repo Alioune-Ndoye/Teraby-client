@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, ChevronLeft, ChevronRight, Quote } from 'lucide-react'
+import Star from 'lucide-react/dist/esm/icons/star'
+import ChevronLeft from 'lucide-react/dist/esm/icons/chevron-left'
+import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right'
+import Quote from 'lucide-react/dist/esm/icons/quote'
 import { testimonials } from '../data/sampleData'
 
 function StarRating({ rating }) {
@@ -93,6 +96,10 @@ export default function Testimonials() {
                   <img
                     src={testimonials[current].avatar}
                     alt={testimonials[current].name}
+                    width="56"
+                    height="56"
+                    loading="lazy"
+                    decoding="async"
                     className="w-14 h-14 rounded-full object-cover border-2 border-orange-accent/30"
                   />
                   <div>
@@ -157,7 +164,7 @@ export default function Testimonials() {
                   : 'border-white/8 bg-white/2 text-champagne/40 hover:border-white/20 hover:text-champagne/70'
                 }`}
             >
-              <img src={t.avatar} alt={t.name} className="w-6 h-6 rounded-full object-cover" />
+              <img src={t.avatar} alt={t.name} width="24" height="24" loading="lazy" decoding="async" className="w-6 h-6 rounded-full object-cover" />
               <span className="font-inter text-xs font-medium">{t.name.split(' ')[0]}</span>
             </motion.button>
           ))}

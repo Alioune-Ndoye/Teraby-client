@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
 import { teamMembers } from '../data/sampleData'
-import { Linkedin, Mail, Award } from 'lucide-react'
+import Linkedin from 'lucide-react/dist/esm/icons/linkedin'
+import Mail from 'lucide-react/dist/esm/icons/mail'
+import Award from 'lucide-react/dist/esm/icons/award'
 
 const containerVariants = {
   hidden: {},
@@ -22,6 +24,10 @@ function TeamCard({ member }) {
         <img
           src={member.image}
           alt={member.name}
+          width="400"
+          height="500"
+          loading="lazy"
+          decoding="async"
           className="w-full h-full object-cover transition-transform duration-700"
           onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.08)')}
           onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}

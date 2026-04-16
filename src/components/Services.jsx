@@ -1,7 +1,12 @@
-import { motion } from 'framer-motion'
-import { useInView } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
-import { Home, Sparkles, Truck, Building2, Clock, DollarSign, ChevronRight } from 'lucide-react'
+import Home from 'lucide-react/dist/esm/icons/home'
+import Sparkles from 'lucide-react/dist/esm/icons/sparkles'
+import Truck from 'lucide-react/dist/esm/icons/truck'
+import Building2 from 'lucide-react/dist/esm/icons/building-2'
+import Clock from 'lucide-react/dist/esm/icons/clock'
+import DollarSign from 'lucide-react/dist/esm/icons/dollar-sign'
+import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right'
 import { services } from '../data/sampleData'
 
 const iconMap = { Home, Sparkles, Truck, Building2 }

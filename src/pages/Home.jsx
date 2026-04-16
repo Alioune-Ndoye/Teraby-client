@@ -7,13 +7,13 @@ import Booking from '../components/Booking'
 import Testimonials from '../components/Testimonials'
 import Team from '../components/Team'
 import FAQ from '../components/FAQ'
-import useIntroAudio from '../hooks/useIntroAudio'
+import useScrollObserver from '../hooks/useScrollObserver'
 
 export default function Home() {
   const location = useLocation()
 
-  // Play luxury intro audio once per session
-  useIntroAudio()
+  // body.scrolled added when hero exits viewport — activates light mode on content below
+  useScrollObserver('home')
 
   // Scroll to section when navigated here from another page (e.g. Gallery → #services)
   useEffect(() => {

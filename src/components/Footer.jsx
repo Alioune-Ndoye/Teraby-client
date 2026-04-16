@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom'
-import {
-  Camera, Share2, AtSign, Linkedin,
-  Phone, Mail, MapPin, ArrowUpRight
-} from 'lucide-react'
+import Camera from 'lucide-react/dist/esm/icons/camera'
+import Share2 from 'lucide-react/dist/esm/icons/share-2'
+import AtSign from 'lucide-react/dist/esm/icons/at-sign'
+import Linkedin from 'lucide-react/dist/esm/icons/linkedin'
+import Phone from 'lucide-react/dist/esm/icons/phone'
+import Mail from 'lucide-react/dist/esm/icons/mail'
+import MapPin from 'lucide-react/dist/esm/icons/map-pin'
+import ArrowUpRight from 'lucide-react/dist/esm/icons/arrow-up-right'
 
 const footerLinks = {
   Services: [
@@ -27,9 +31,9 @@ const footerLinks = {
 
 const socials = [
   { icon: Camera, href: '#', label: 'Instagram' },
-  { icon: Share2, href: '#', label: 'Facebook' },
+  { icon: Share2, href: 'https://www.facebook.com/profile.php?id=61576591912817&sk=photos', label: 'Facebook' },
   { icon: AtSign, href: '#', label: 'Twitter' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
+  { icon: Linkedin, href: 'https://www.linkedin.com/in/babacar-siby/', label: 'LinkedIn' },
 ]
 
 export default function Footer() {
@@ -55,8 +59,11 @@ export default function Footer() {
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
               <img
-                src="/logo.png"
+                src="/logo.webp"
                 alt="Teraby"
+                width="190"
+                height="80"
+                loading="eager"
                 className="h-10 w-auto transition-opacity duration-300 group-hover:opacity-80"
                 style={{ filter: 'grayscale(1) sepia(1) saturate(4) hue-rotate(-10deg) brightness(0.82)' }}
               />
@@ -68,14 +75,14 @@ export default function Footer() {
             </p>
 
             <div className="space-y-3">
-              <a href="tel:+33155550188" className="flex items-center gap-3 text-champagne/50 hover:text-champagne transition-colors group">
+              <a href="tel:+33775784094" className="flex items-center gap-3 text-champagne/50 hover:text-champagne transition-colors group">
                 <Phone size={15} className="text-orange-accent" />
-                <span className="font-inter text-sm">01 55 55 01 88</span>
+                <span className="font-inter text-sm">+33 7 75 78 4094</span>
                 <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
-              <a href="mailto:bonjour@teraby.fr" className="flex items-center gap-3 text-champagne/50 hover:text-champagne transition-colors group">
+              <a href="mailto:contact@teraby.fr" className="flex items-center gap-3 text-champagne/50 hover:text-champagne transition-colors group">
                 <Mail size={15} className="text-orange-accent" />
-                <span className="font-inter text-sm">bonjour@teraby.fr</span>
+                <span className="font-inter text-sm">contact@teraby.fr</span>
                 <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <div className="flex items-center gap-3 text-champagne/50">

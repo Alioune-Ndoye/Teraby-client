@@ -1,10 +1,17 @@
-import { useState } from 'react'
+import { useState, forwardRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useForm } from 'react-hook-form'
-import {
-  User, Mail, Phone, MapPin, Calendar, Clock,
-  FileText, CheckCircle, Loader2, ChevronDown, DollarSign
-} from 'lucide-react'
+import User from 'lucide-react/dist/esm/icons/user'
+import Mail from 'lucide-react/dist/esm/icons/mail'
+import Phone from 'lucide-react/dist/esm/icons/phone'
+import MapPin from 'lucide-react/dist/esm/icons/map-pin'
+import Calendar from 'lucide-react/dist/esm/icons/calendar'
+import Clock from 'lucide-react/dist/esm/icons/clock'
+import FileText from 'lucide-react/dist/esm/icons/file-text'
+import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
+import Loader2 from 'lucide-react/dist/esm/icons/loader-2'
+import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down'
+import DollarSign from 'lucide-react/dist/esm/icons/dollar-sign'
 
 const serviceOptions = [
   { value: 'residential', label: 'Nettoyage Résidentiel', price: 149 },
@@ -21,11 +28,11 @@ const frequencyOptions = [
 ]
 
 const timeSlots = [
-  '8h00', '9h00', '10h00', '11h00',
-  '12h00', '13h00', '14h00', '15h00', '16h00',
+  '08:00', '09:00', '10:00', '11:00',
+  '12:00', '13:00', '14:00', '15:00', '16:00',
 ]
 
-function InputField({ label, icon: Icon, error, ...props }) {
+const InputField = forwardRef(function InputField({ label, icon: Icon, error, ...props }, ref) {
   return (
     <div>
       <label className="luxury-label">{label}</label>
@@ -37,6 +44,7 @@ function InputField({ label, icon: Icon, error, ...props }) {
           />
         )}
         <input
+          ref={ref}
           {...props}
           className={`luxury-input ${Icon ? 'pl-10' : ''} ${error ? 'border-red-500/50' : ''}`}
         />
@@ -44,10 +52,11 @@ function InputField({ label, icon: Icon, error, ...props }) {
       {error && <p className="mt-1.5 text-xs text-red-400 font-inter">{error.message}</p>}
     </div>
   )
-}
+})
 
 export default function Booking() {
   const [status, setStatus] = useState('idle')
+  const [errorMsg, setErrorMsg] = useState('')
   const [selectedService, setSelectedService] = useState(serviceOptions[0])
   const [selectedFrequency, setSelectedFrequency] = useState(frequencyOptions[0])
 
@@ -56,7 +65,18 @@ export default function Booking() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm({
+    mode: 'onBlur',          // show errors as soon as a field is left
+    defaultValues: {
+      name:    '',
+      email:   '',
+      phone:   '',
+      address: '',
+      date:    '',
+      time:    '08:00',      // pre-select first slot so the field is never empty
+      notes:   '',
+    },
+  })
 
   const estimatedPrice =
     selectedService.price > 0
@@ -65,25 +85,36 @@ export default function Booking() {
 
   const onSubmit = async (data) => {
     setStatus('loading')
+    setErrorMsg('')
+    const payload = {
+      name:        data.name.trim(),
+      email:       data.email.trim(),
+      phone:       data.phone.trim(),
+      address:     data.address.trim(),
+      notes:       data.notes?.trim() || undefined,
+      date:        data.date,
+      time:        data.time,
+      serviceType: selectedService.value,
+      frequency:   selectedFrequency.value,
+    }
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          serviceType: selectedService.value,
-          frequency: selectedFrequency.value,
-        }),
+        body: JSON.stringify(payload),
       })
+      const json = await res.json().catch(() => ({}))
       if (!res.ok) {
-        const err = await res.json().catch(() => ({}))
-        throw new Error(err.message || 'Erreur serveur')
+        // Show first validation error if available, otherwise generic message
+        const msg = json.errors?.[0]?.message || json.message || 'Erreur serveur'
+        throw new Error(msg)
       }
       setStatus('success')
     } catch (e) {
       console.error('Booking error:', e.message)
+      setErrorMsg(e.message)
       setStatus('error')
-      setTimeout(() => setStatus('idle'), 4000)
+      setTimeout(() => setStatus('idle'), 5000)
     }
   }
 
@@ -199,7 +230,14 @@ export default function Booking() {
                     key="form"
                     initial={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onSubmit, (validationErrors) => {
+                      // Surface the first failing field so it's visible in the UI
+                      const firstError = Object.values(validationErrors)[0]
+                      const msg = firstError?.message || 'Veuillez remplir tous les champs requis.'
+                      setErrorMsg(msg)
+                      setStatus('error')
+                      setTimeout(() => setStatus('idle'), 5000)
+                    })}
                     className="space-y-5"
                   >
                     <h3 className="font-playfair text-2xl font-bold text-white mb-6">
@@ -211,15 +249,23 @@ export default function Booking() {
                         label="Nom Complet"
                         icon={User}
                         placeholder="Marie Dupont"
+                        autoComplete="name"
                         error={errors.name}
-                        {...register('name', { required: 'Le nom est requis' })}
+                        {...register('name', {
+                          required: 'Le nom est requis',
+                          validate: v => v.trim().length >= 2 || 'Merci d\'entrer votre nom complet',
+                        })}
                       />
                       <InputField
                         label="Téléphone"
                         icon={Phone}
                         placeholder="06 12 34 56 78"
+                        autoComplete="tel"
                         error={errors.phone}
-                        {...register('phone', { required: 'Le téléphone est requis' })}
+                        {...register('phone', {
+                          required: 'Le téléphone est requis',
+                          validate: v => v.replace(/[\s\-().+]/g, '').length >= 8 || 'Numéro invalide',
+                        })}
                       />
                     </div>
 
@@ -227,6 +273,7 @@ export default function Booking() {
                       label="Adresse E-mail"
                       icon={Mail}
                       type="email"
+                      autoComplete="email"
                       placeholder="marie@email.com"
                       error={errors.email}
                       {...register('email', {
@@ -239,8 +286,12 @@ export default function Booking() {
                       label="Adresse du Bien"
                       icon={MapPin}
                       placeholder="12 Rue de la Paix, 75001 Paris"
+                      autoComplete="street-address"
                       error={errors.address}
-                      {...register('address', { required: 'L\'adresse est requise' })}
+                      {...register('address', {
+                        required: 'L\'adresse est requise',
+                        validate: v => v.trim().length >= 5 || 'Merci d\'indiquer une adresse complète',
+                      })}
                     />
 
                     <div>
@@ -290,19 +341,20 @@ export default function Booking() {
                           <Calendar size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-champagne/30 pointer-events-none" />
                           <input
                             type="date"
-                            className="luxury-input pl-10"
+                            className={`luxury-input pl-10 ${errors.date ? 'border-red-500/50' : ''}`}
                             min={new Date().toISOString().split('T')[0]}
-                            {...register('date', { required: true })}
+                            {...register('date', { required: 'La date est requise' })}
                           />
                         </div>
+                        {errors.date && <p className="mt-1.5 text-xs text-red-400 font-inter">{errors.date.message}</p>}
                       </div>
                       <div>
                         <label className="luxury-label">Heure Souhaitée</label>
                         <div className="relative">
                           <Clock size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-champagne/30 pointer-events-none z-10" />
                           <select
-                            className="luxury-input pl-10 appearance-none cursor-pointer"
-                            {...register('time', { required: true })}
+                            className={`luxury-input pl-10 appearance-none cursor-pointer ${errors.time ? 'border-red-500/50' : ''}`}
+                            {...register('time', { required: 'L\'heure est requise' })}
                           >
                             {timeSlots.map((t) => (
                               <option key={t} value={t} className="bg-navy text-champagne">
@@ -312,6 +364,7 @@ export default function Booking() {
                           </select>
                           <ChevronDown size={14} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-champagne/30 pointer-events-none" />
                         </div>
+                        {errors.time && <p className="mt-1.5 text-xs text-red-400 font-inter">{errors.time.message}</p>}
                       </div>
                     </div>
 
@@ -330,7 +383,7 @@ export default function Booking() {
 
                     {status === 'error' && (
                       <p className="text-sm text-red-400 font-inter text-center py-2 border border-red-400/20 rounded-sm bg-red-400/5">
-                        Une erreur est survenue. Veuillez réessayer.
+                        {errorMsg || 'Une erreur est survenue. Veuillez réessayer.'}
                       </p>
                     )}
 
