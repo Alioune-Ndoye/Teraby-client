@@ -34,6 +34,9 @@ export default function useScrollObserver(sectionId) {
 
     observer.observe(el)
 
-    return () => observer.disconnect()
+    return () => {
+      observer.disconnect()
+      document.body.classList.remove('scrolled')
+    }
   }, [sectionId])
 }

@@ -1,4 +1,4 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ThemeProvider } from './context/ThemeContext'
@@ -63,6 +63,14 @@ function Layout() {
 }
 
 export default function App() {
+  useEffect(() => {
+    const el = document.getElementById('preloader')
+    if (!el) return
+    el.classList.add('fade-out')
+    const t = setTimeout(() => el.remove(), 400)
+    return () => clearTimeout(t)
+  }, [])
+
   return (
     <ThemeProvider>
       <BrowserRouter>

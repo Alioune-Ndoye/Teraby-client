@@ -14,6 +14,7 @@ export default function Navbar() {
   const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
+  const isHome = location.pathname === '/'
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 60)
@@ -54,7 +55,7 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
+          scrolled || !isHome
             ? 'bg-navy-dark/90 backdrop-blur-xl border-b border-white/5 py-3'
             : 'bg-transparent py-5'
         }`}
