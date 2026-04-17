@@ -132,8 +132,8 @@ export function ModeToggle() {
 
 // ─── Standard: service level cards ───────────────────────────────────────────
 
-const SVC_ICONS = { express: Zap, standard: CheckCircle, premium: Crown }
-const SVC_MULT  = { express: '×0.9', standard: '×1.0', premium: '×1.25' }
+const SVC_ICONS   = { express: Zap, standard: CheckCircle, premium: Crown }
+const SVC_BADGE   = { standard: 'Le plus populaire', premium: 'Expérience luxe' }
 
 function ServiceLevelCard({ serviceKey }) {
   const { std, setStd } = usePricing()
@@ -150,20 +150,17 @@ function ServiceLevelCard({ serviceKey }) {
           : 'border-white/8 hover:border-white/20 hover:bg-white/[0.02]'
         }`}
     >
-      {serviceKey === 'standard' && (
-        <span className="absolute top-2.5 right-2.5 bg-orange-accent text-white text-[10px] font-inter font-bold px-2 py-0.5 rounded-full">
-          ★
+      {SVC_BADGE[serviceKey] && (
+        <span className="absolute top-2.5 right-2.5 bg-orange-accent/15 text-orange-accent text-[9px] font-inter font-semibold px-2 py-0.5 rounded-full border border-orange-accent/25">
+          {SVC_BADGE[serviceKey]}
         </span>
       )}
       <Icon
         size={18}
         className={`mb-3 transition-colors duration-200 ${selected ? 'text-orange-accent' : 'text-champagne/30'}`}
       />
-      <div className="font-playfair text-base font-bold text-white mb-0.5">
+      <div className="font-playfair text-base font-bold text-white mb-2">
         {SVC_LABELS[serviceKey]}
-      </div>
-      <div className="font-inter text-xs text-orange-accent/60 mb-2">
-        {SVC_MULT[serviceKey]}
       </div>
       <div className="font-inter text-xs text-champagne/40 leading-relaxed">
         {SVC_DESCS[serviceKey]}

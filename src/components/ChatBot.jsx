@@ -42,15 +42,16 @@ const STEPS = {
     next:     'service',
   },
   service: {
-    ask:      "Quel type de **prestation** souhaitez-vous ?",
+    ask:      "Quelle **formule** souhaitez-vous ?\n\n*Standard : tarifs flexibles · Premium : offres exclusives*",
     field:    'serviceType',
     buttons:  [
-      { label: '🏠 Résidentiel — dès 80 €',     value: 'residential' },
-      { label: '✨ Nettoyage profond — dès 150 €', value: 'deep' },
-      { label: '📦 Déménagement — dès 200 €',    value: 'move' },
-      { label: '🏢 Commercial — sur devis',       value: 'commercial' },
+      { label: '⚡ Standard Express — dès 50 €',      value: 'standard_express'   },
+      { label: '⬥ Standard Classique — dès 55 €',    value: 'standard_standard'  },
+      { label: '✦ Standard Premium — dès 69 €',      value: 'standard_premium'   },
+      { label: '★ Entretien Signature — dès 70 €',   value: 'premium_signature'  },
+      { label: '🏆 Nettoyage Excellence — dès 120 €', value: 'premium_excellence' },
     ],
-    validate: (v) => ['residential','deep','move','commercial'].includes(v),
+    validate: (v) => ['standard_express','standard_standard','standard_premium','premium_signature','premium_excellence'].includes(v),
     next:     'date',
   },
   date: {
@@ -90,10 +91,11 @@ const STEPS = {
 }
 
 const SERVICE_LABELS = {
-  residential: 'Résidentiel',
-  deep:        'Nettoyage profond',
-  move:        'Déménagement',
-  commercial:  'Commercial',
+  standard_express:   '⚡ Standard Express',
+  standard_standard:  '⬥ Standard Classique',
+  standard_premium:   '✦ Standard Premium',
+  premium_signature:  '★ Entretien Signature',
+  premium_excellence: '🏆 Nettoyage Excellence',
 }
 
 // ─── Local FAQ fallback (used when AI API is unavailable) ─────────────────────
@@ -102,7 +104,7 @@ function localReply(text) {
   if (t.includes('réserv') || t.includes('book') || t.includes('rendez') || t.includes('planif'))
     return '__start_booking__'
   if (t.includes('tarif') || t.includes('prix') || t.includes('coût') || t.includes('service'))
-    return "Nos prestations :\n\n• **Résidentiel** – dès 80 €\n• **Nettoyage profond** – dès 150 €\n• **Déménagement** – dès 200 €\n• **Commercial** – sur devis\n\nSouhaitez-vous **réserver** ?"
+    return "Nos formules :\n\n**Standard** (tarifs flexibles)\n• ⚡ Express – dès 50 €\n• ⬥ Classique – dès 55 €\n• ✦ Premium – dès 69 €\n\n**Premium** (offres exclusives)\n• ★ Entretien Signature – dès 70 €\n• 🏆 Nettoyage Excellence – dès 120 €\n\nSouhaitez-vous **réserver** ?"
   if (t.includes('assur') || t.includes('sécur') || t.includes('vérifié') || t.includes('confian'))
     return "Absolument. Chaque spécialiste Teraby est **contrôlé, cautionné et assuré**. Nous couvrons toute responsabilité civile pour votre tranquillité."
   if (t.includes('produit') || t.includes('écolog') || t.includes('chimique') || t.includes('enfant') || t.includes('animal'))
@@ -282,6 +284,8 @@ export default function ChatBot() {
       ? d.date.split('/').reverse().join('-')
       : d.date
 
+    const pricingMode = d.serviceType?.startsWith('premium_') ? 'premium' : 'standard'
+
     try {
       const res = await fetch(`${API}/api/bookings`, {
         method:  'POST',
@@ -291,6 +295,7 @@ export default function ChatBot() {
           email:       d.email,
           phone:       d.phone,
           serviceType: d.serviceType,
+          pricingMode,
           date:        isoDate,
           time:        d.time,
           address:     d.address,
