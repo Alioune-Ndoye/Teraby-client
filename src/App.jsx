@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ThemeProvider } from './context/ThemeContext'
+import { PricingProvider } from './context/PricingContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Home from './pages/Home'
@@ -73,9 +74,11 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <BrowserRouter>
-        <Layout />
-      </BrowserRouter>
+      <PricingProvider>
+        <BrowserRouter>
+          <Layout />
+        </BrowserRouter>
+      </PricingProvider>
     </ThemeProvider>
   )
 }
