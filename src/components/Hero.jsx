@@ -59,7 +59,7 @@ export default function Hero() {
               ))}
             </div>
             <span className="text-champagne/80 text-xs font-inter font-medium tracking-wide">
-              Service de Nettoyage Luxe N°1 en France
+              Service de Nettoyage Premium N°1 en France
             </span>
           </motion.div>
 
@@ -71,7 +71,7 @@ export default function Hero() {
             custom={0.4}
             className="font-playfair text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.05] mb-6"
           >
-            <span className="text-white">Nettoyage Luxe,</span>
+            <span className="text-white">Nettoyage Premium,</span>
             <br />
             <span className="text-gradient">Réinventé.</span>
           </motion.h1>
