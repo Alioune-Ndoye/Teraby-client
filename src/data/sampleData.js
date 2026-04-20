@@ -91,7 +91,7 @@ export const testimonials = [
   {
     id: 5,
     name: 'Amara Okafor',
-    role: 'Hôte Airbnb Luxe',
+    role: 'Hôte Airbnb Premium',
     avatar: 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=120&h=120&fit=crop&crop=face',
     rating: 5,
     text: 'Mes voyageurs attribuent systématiquement 5 étoiles à la propreté depuis que je travaille avec Teraby. Ils ont transformé mon bien en une expérience cinq étoiles.',
@@ -107,7 +107,7 @@ export const teamMembers = [
     role: 'Fondatrice & PDG',
     bio: 'Forte de 15 ans dans l\'hôtellerie de luxe, Elena a fondé Teraby pour apporter les standards cinq étoiles aux espaces résidentiels et commerciaux.',
     image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop&crop=face',
-    specialties: ['Vision & Stratégie', 'Standards Luxe', 'Relations Clients'],
+    specialties: ['Vision & Stratégie', 'Standards Premium', 'Relations Clients'],
   },
   {
     id: 2,
@@ -167,7 +167,7 @@ export const galleryItems = [
   {
     id: 4,
     category: 'move',
-    title: 'Déménagement Appartement Luxe',
+    title: 'Déménagement Appartement Premium',
     location: 'Lyon, Presqu\'île',
     before: 'https://images.unsplash.com/photo-1489171078254-c3365d6e359f?w=800&h=600&fit=crop',
     after: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop',

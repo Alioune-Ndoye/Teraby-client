@@ -135,7 +135,7 @@ export default function Booking() {
             <p className="section-label">Réservez Votre Expérience</p>
             <h2 className="section-title text-white mb-6">
               Planifiez Votre{' '}
-              <span className="text-gradient">Nettoyage Luxe</span>
+              <span className="text-gradient">Nettoyage Premium</span>
             </h2>
             <div className="w-12 h-0.5 bg-orange-accent mb-8" />
             <p className="section-subtitle text-champagne/55 mb-10">
