@@ -36,8 +36,8 @@ export default function Hero() {
           className="absolute inset-0 w-full h-full object-cover object-center"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-navy-deeper/85 via-navy/75 to-navy-deeper/95" />
-        <div className="absolute inset-0 bg-gradient-to-r from-navy-deeper/60 via-transparent to-navy-deeper/40" />
+        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/55 to-transparent" />
         <div className="absolute inset-0 bg-noise opacity-30" />
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-orange-accent/8 blur-[120px] rounded-full" />
       </div>

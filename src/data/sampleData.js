@@ -229,10 +229,54 @@ export const stats = [
   { value: '40+', label: 'Spécialistes Certifiés' },
 ]
 
+// ─── Service Cards (Home page Services section) ───────────────────────────────
+export const serviceCards = [
+  {
+    slug: 'regular-cleaning',
+    tag: 'Résidentiel',
+    title: 'Nettoyage Régulier',
+    subtitle: 'Votre intérieur, toujours impeccable',
+    description: 'Un nettoyage soigné de fond en comble, adapté à votre domicile. Du studio à la grande maison, chaque espace est traité avec le soin qu\'il mérite.',
+    features: ['Cuisine & Salles de bain', 'Chambres & Séjour', 'Sols & Fenêtres', 'Demandes personnalisées'],
+    href: '/services/regular-cleaning',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&fit=crop&q=60',
+    popular: false,
+  },
+  {
+    slug: 'airbnb-cleaning',
+    tag: 'Short-Term Rental',
+    title: 'Airbnb & Location Courte Durée',
+    subtitle: '5 étoiles à chaque check-out',
+    description: 'Conçu pour les hôtes et gestionnaires de biens. Intervention rapide entre deux séjours avec options linge, consommables et check-in tardif.',
+    features: ['Rotation rapide', 'Linge & Consommables', 'Check-in tardif', 'Rapport photo inclus'],
+    href: '/services/airbnb-cleaning',
+    image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&fit=crop&q=60',
+    popular: true,
+  },
+  {
+    slug: 'commercial-cleaning',
+    tag: 'Commercial',
+    title: 'Nettoyage Commercial',
+    subtitle: 'Des standards cinq étoiles pour vos locaux',
+    description: 'Bureaux, commerces, showrooms. Nous maintenons vos espaces professionnels au niveau d\'excellence qu\'ils méritent, avant, pendant ou après les heures d\'ouverture.',
+    features: ['Bureaux & Coworking', 'Commerces & Showrooms', 'Hors des heures d\'ouverture', 'Contrats récurrents'],
+    href: '/services/commercial-cleaning',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&fit=crop&q=60',
+    popular: false,
+  },
+]
+
 // ─── Nav Links ───────────────────────────────────────────────────────────────
 export const navLinks = [
   { label: 'Accueil', href: '#home' },
-  { label: 'Services', href: '#services' },
+  {
+    label: 'Services',
+    children: [
+      { label: 'Nettoyage Régulier', href: '/services/regular-cleaning', desc: 'Domicile & Résidentiel' },
+      { label: 'Airbnb & Court-Séjour', href: '/services/airbnb-cleaning', desc: 'Short-Term Rental' },
+      { label: 'Commercial', href: '/services/commercial-cleaning', desc: 'Bureaux & Locaux' },
+    ],
+  },
   { label: 'Réservation', href: '#booking' },
   { label: 'Galerie', href: '/gallery' },
   { label: 'Équipe', href: '#team' },

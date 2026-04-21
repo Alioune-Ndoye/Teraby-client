@@ -8,17 +8,24 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import useIntroAudio from './hooks/useIntroAudio'
 
-// ── Lazy-loaded: not needed on initial paint ──────────────────────────────────
-// Each gets its own JS chunk — only downloaded when the user navigates there.
-const GalleryPage = lazy(() => import('./pages/Gallery'))
-const ArcadePage  = lazy(() => import('./pages/Arcade'))
-// ChatBot starts hidden (FAB button) — safe to defer until after first paint
-const ChatBot     = lazy(() => import('./components/ChatBot'))
+// ── Lazy-loaded page chunks ───────────────────────────────────────────────────
+const GalleryPage          = lazy(() => import('./pages/Gallery'))
+const ArcadePage           = lazy(() => import('./pages/Arcade'))
+const RegularCleaning      = lazy(() => import('./pages/services/RegularCleaning'))
+const AirbnbCleaning       = lazy(() => import('./pages/services/AirbnbCleaning'))
+const CommercialCleaning   = lazy(() => import('./pages/services/CommercialCleaning'))
+const ChatBot              = lazy(() => import('./components/ChatBot'))
 
 const pageVariants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.4 } },
   exit:    { opacity: 0, transition: { duration: 0.25 } },
+}
+
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  return null
 }
 
 function AnimatedRoutes() {
@@ -33,13 +40,15 @@ function AnimatedRoutes() {
         animate="animate"
         exit="exit"
       >
-        {/* Suspense here covers page-level lazy chunks */}
         <Suspense fallback={null}>
           <Routes location={location}>
-            <Route path="/"        element={<Home />} />
-            <Route path="/gallery" element={<GalleryPage />} />
-            <Route path="/arcade"  element={<ArcadePage />} />
-            <Route path="/admin"   element={<Navigate to="/dashboard" replace />} />
+            <Route path="/"                            element={<Home />} />
+            <Route path="/gallery"                     element={<GalleryPage />} />
+            <Route path="/arcade"                      element={<ArcadePage />} />
+            <Route path="/services/regular-cleaning"   element={<RegularCleaning />} />
+            <Route path="/services/airbnb-cleaning"    element={<AirbnbCleaning />} />
+            <Route path="/services/commercial-cleaning" element={<CommercialCleaning />} />
+            <Route path="/admin"                       element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </Suspense>
       </motion.div>
@@ -53,9 +62,9 @@ function Layout() {
   return (
     <div className="min-h-screen bg-navy text-champagne">
       <Navbar />
+      <ScrollToTop />
       <AnimatedRoutes />
       <Footer />
-      {/* ChatBot deferred — loads after initial paint, starts hidden */}
       <Suspense fallback={null}>
         <ChatBot />
       </Suspense>
