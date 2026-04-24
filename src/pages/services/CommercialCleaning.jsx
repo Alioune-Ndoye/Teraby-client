@@ -337,14 +337,14 @@ export default function CommercialCleaning() {
           >
             Des standards cinq étoiles pour vos locaux professionnels.
           </motion.p>
-          <motion.button
+          <motion.a
             variants={fadeUp} initial="hidden" animate="visible" custom={0.5}
             whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-            onClick={goToBooking}
+            href="tel:+33685958798"
             className="btn-primary text-base px-10 py-4 inline-flex items-center gap-2"
           >
             Demander un Devis <ArrowRight size={16} />
-          </motion.button>
+          </motion.a>
         </div>
       </section>
 
@@ -424,13 +424,13 @@ export default function CommercialCleaning() {
               Obtenez un devis personnalisé adapté à vos locaux, vos horaires et vos exigences.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <motion.button
+              <motion.a
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-                onClick={goToBooking}
+                href="tel:+33685958798"
                 className="btn-primary text-base px-10 py-4 inline-flex items-center justify-center gap-2"
               >
                 Demander un Devis <ArrowRight size={16} />
-              </motion.button>
+              </motion.a>
               <motion.a
                 whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
                 href="mailto:contact@teraby.fr"

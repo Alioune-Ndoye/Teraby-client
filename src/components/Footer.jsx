@@ -75,9 +75,9 @@ export default function Footer() {
             </p>
 
             <div className="space-y-3">
-              <a href="tel:+33775784094" className="flex items-center gap-3 text-champagne/50 hover:text-champagne transition-colors group">
+              <a href="tel:+33685958798" className="flex items-center gap-3 text-champagne/50 hover:text-champagne transition-colors group">
                 <Phone size={15} className="text-orange-accent" />
-                <span className="font-inter text-sm">+33 7 75 78 4094</span>
+                <span className="font-inter text-sm">+33 6 85 95 87 98</span>
                 <ArrowUpRight size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
               </a>
               <a href="mailto:contact@teraby.fr" className="flex items-center gap-3 text-champagne/50 hover:text-champagne transition-colors group">
