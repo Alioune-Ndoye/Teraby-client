@@ -16,6 +16,7 @@ import {
   ModeToggle,
   StandardPricingInputs,
   PremiumPricingInputs,
+  CommercialPricingInputs,
   PriceBreakdown,
 } from './PricingWidgets'
 
@@ -61,7 +62,7 @@ export default function Booking() {
   const [selectedFrequency, setSelectedFrequency] = useState(frequencyOptions[0])
 
   // All pricing state lives in context — shared with Services section
-  const { pricingMode, std, prem, pricing, switchMode } = usePricing()
+  const { pricingMode, std, prem, comm, pricing, switchMode } = usePricing()
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     mode: 'onBlur',
@@ -75,23 +76,45 @@ export default function Booking() {
     setStatus('loading')
     setErrorMsg('')
 
-    const serviceType = pricingMode === 'standard'
-      ? `standard_${std.service}`
-      : `premium_${prem.offer}`
+    const serviceType =
+      pricingMode === 'commercial' ? 'commercial'              :
+      pricingMode === 'standard'   ? `standard_${std.service}` :
+                                     `premium_${prem.offer}`
+
+    const pricingDetails =
+      pricingMode === 'commercial' ? comm :
+      pricingMode === 'standard'   ? std  : prem
+
+    const furnitureOptions =
+      pricingMode === 'commercial'
+        ? Object.entries(comm.selectedExtras || {}).filter(([, v]) => v).map(([k]) => k)
+        : pricingMode === 'premium'
+        ? Object.entries(prem.extras || {}).filter(([, v]) => v).map(([k]) => k)
+        : []
+
+    const selectedOptions =
+      pricingMode === 'standard'
+        ? Object.entries(std.options || {}).filter(([, v]) => v).map(([k]) => k)
+        : []
 
     const payload = {
-      name:           data.name.trim(),
-      email:          data.email.trim(),
-      phone:          data.phone.trim(),
-      address:        data.address.trim(),
-      notes:          data.notes?.trim() || undefined,
-      date:           data.date,
-      time:           data.time,
+      name:             data.name.trim(),
+      email:            data.email.trim(),
+      phone:            data.phone.trim(),
+      address:          data.address.trim(),
+      notes:            data.notes?.trim() || undefined,
+      date:             data.date,
+      time:             data.time,
       serviceType,
-      frequency:      selectedFrequency.value,
+      frequency:        selectedFrequency.value,
       pricingMode,
-      estimatedPrice: pricing.total,
-      pricingDetails: pricingMode === 'standard' ? std : prem,
+      estimatedPrice:   pricing.total,
+      hasFurnitures:    pricingMode === 'commercial' ? !!comm.fournitures : pricingMode === 'premium' ? !!prem.fournitures : false,
+      furnitureOptions,
+      selectedOptions,
+      localType:        pricingMode === 'commercial' ? comm.localKey : undefined,
+      surface:          pricingMode === 'commercial' ? comm.surface : pricingMode === 'premium' ? prem.surface : undefined,
+      pricingDetails,
     }
 
     try {
@@ -225,11 +248,11 @@ export default function Booking() {
                         initial="enter"
                         animate="show"
                         exit="exit"
+                        className="bg-white dark:bg-transparent rounded-xl shadow-md dark:shadow-none p-4 dark:p-0"
                       >
-                        {pricingMode === 'standard'
-                          ? <StandardPricingInputs />
-                          : <PremiumPricingInputs />
-                        }
+                        {pricingMode === 'standard'   ? <StandardPricingInputs />   :
+                         pricingMode === 'premium'    ? <PremiumPricingInputs />    :
+                                                        <CommercialPricingInputs />}
                       </motion.div>
                     </AnimatePresence>
 

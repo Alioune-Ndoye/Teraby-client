@@ -49,10 +49,10 @@
   }
 
   .glass-card-light {
-    background: rgba(247, 231, 206, 0.06);
+    background: rgba(255, 255, 255, 0.06);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(247, 231, 206, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.10);
   }
 
   /* Premium button */
@@ -183,42 +183,42 @@ html:not(.dark) ::-webkit-scrollbar-track { background: #e4e7ed; }
    which defeats the purpose. We restore the exact dark palette.
 ══════════════════════════════════════════════════════ */
 
-/* Base: force dark color-scheme and champagne base color */
+/* Base: force dark color-scheme and white base color */
 html:not(.dark) .hero-dark {
   background-color: transparent !important;
-  color: #F7E7CE !important;
+  color: #ffffff !important;
   color-scheme: dark;
 }
 
-/* ── Text — explicit champagne values (NOT inherit) ── */
+/* ── Text — explicit white values (NOT inherit) ── */
 html:not(.dark) .hero-dark .text-white      { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; }
 html:not(.dark) .hero-dark .text-white\/90  { color: rgba(255,255,255,0.90) !important; }
-html:not(.dark) .hero-dark .text-champagne  { color: #F7E7CE !important; }
-html:not(.dark) .hero-dark .text-champagne\/80 { color: rgba(247,231,206,0.80) !important; }
-html:not(.dark) .hero-dark .text-champagne\/70 { color: rgba(247,231,206,0.70) !important; }
-html:not(.dark) .hero-dark .text-champagne\/65 { color: rgba(247,231,206,0.65) !important; }
-html:not(.dark) .hero-dark .text-champagne\/60 { color: rgba(247,231,206,0.60) !important; }
-html:not(.dark) .hero-dark .text-champagne\/55 { color: rgba(247,231,206,0.55) !important; }
-html:not(.dark) .hero-dark .text-champagne\/50 { color: rgba(247,231,206,0.50) !important; }
-html:not(.dark) .hero-dark .text-champagne\/40 { color: rgba(247,231,206,0.40) !important; }
-html:not(.dark) .hero-dark .text-champagne\/30 { color: rgba(247,231,206,0.30) !important; }
-html:not(.dark) .hero-dark .text-champagne\/20 { color: rgba(247,231,206,0.20) !important; }
+html:not(.dark) .hero-dark .text-champagne  { color: #ffffff !important; }
+html:not(.dark) .hero-dark .text-champagne\/80 { color: rgba(255,255,255,0.80) !important; }
+html:not(.dark) .hero-dark .text-champagne\/70 { color: rgba(255,255,255,0.70) !important; }
+html:not(.dark) .hero-dark .text-champagne\/65 { color: rgba(255,255,255,0.65) !important; }
+html:not(.dark) .hero-dark .text-champagne\/60 { color: rgba(255,255,255,0.60) !important; }
+html:not(.dark) .hero-dark .text-champagne\/55 { color: rgba(255,255,255,0.55) !important; }
+html:not(.dark) .hero-dark .text-champagne\/50 { color: rgba(255,255,255,0.50) !important; }
+html:not(.dark) .hero-dark .text-champagne\/40 { color: rgba(255,255,255,0.40) !important; }
+html:not(.dark) .hero-dark .text-champagne\/30 { color: rgba(255,255,255,0.30) !important; }
+html:not(.dark) .hero-dark .text-champagne\/20 { color: rgba(255,255,255,0.20) !important; }
 
 /* ── Headings and body text inside hero ── */
 html:not(.dark) .hero-dark h1,
 html:not(.dark) .hero-dark h2,
 html:not(.dark) .hero-dark h3,
-html:not(.dark) .hero-dark h4 { color: #F7E7CE !important; }
+html:not(.dark) .hero-dark h4 { color: #ffffff !important; }
 
 /* ── Text gradients inside hero — restore original dark gradients ── */
 html:not(.dark) .hero-dark .text-gradient {
-  background: linear-gradient(135deg, #F7E7CE 0%, #CC5500 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #CC5500 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent !important;
   background-clip: text;
 }
 html:not(.dark) .hero-dark .text-gradient-light {
-  background: linear-gradient(135deg, #ffffff 0%, #F7E7CE 100%);
+  background: linear-gradient(135deg, #ffffff 0%, rgba(255,255,255,0.70) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent !important;
   background-clip: text;
@@ -240,18 +240,18 @@ html:not(.dark) .hero-dark .border-white\/30 { border-color: rgba(255,255,255,0.
 
 /* ── Buttons inside hero — restore dark variants ── */
 html:not(.dark) .hero-dark .btn-secondary {
-  border-color: rgba(247,231,206,0.40) !important;
-  color: #F7E7CE !important;
+  border-color: rgba(255,255,255,0.40) !important;
+  color: #ffffff !important;
 }
 html:not(.dark) .hero-dark .btn-secondary:hover {
-  border-color: rgba(247,231,206,0.80) !important;
-  background: rgba(247,231,206,0.05) !important;
+  border-color: rgba(255,255,255,0.80) !important;
+  background: rgba(255,255,255,0.05) !important;
 }
 html:not(.dark) .hero-dark .btn-ghost {
-  color: rgba(247,231,206,0.70) !important;
+  color: rgba(255,255,255,0.70) !important;
 }
 html:not(.dark) .hero-dark .btn-ghost:hover {
-  color: #F7E7CE !important;
+  color: #ffffff !important;
   background: rgba(255,255,255,0.05) !important;
 }
 

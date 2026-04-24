@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { usePricing } from '../../context/PricingContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right'
 import Mail      from 'lucide-react/dist/esm/icons/mail'
@@ -65,10 +66,10 @@ const fadeUp = {
 
 // ─── Pricing calculator ───────────────────────────────────────────────────────
 
-function CommercialCalculator() {
-  const [localKey,    setLocalKey]    = useState('bureaux')
-  const [surface,     setSurface]     = useState('')
-  const [fournitures, setFournitures] = useState(false)
+function CommercialCalculator({ onBook }) {
+  const [localKey,       setLocalKey]       = useState('bureaux')
+  const [surface,        setSurface]        = useState('')
+  const [fournitures,    setFournitures]    = useState(false)
   const [selectedExtras, setSelectedExtras] = useState({})
 
   const local = LOCALS.find(l => l.key === localKey)
@@ -77,7 +78,7 @@ function CommercialCalculator() {
     ? null
     : local.tiers.find(t => surf >= t.min && surf <= t.max)
 
-  const pricePerM2   = tier ? (fournitures ? tier.avec : tier.sans) : null
+  const pricePerM2      = tier ? (fournitures ? tier.avec : tier.sans) : null
   const perIntervention = tier && pricePerM2 ? Math.round(pricePerM2 * surf) : null
   const perMonth        = perIntervention ? Math.round(perIntervention * tier.freqPerMonth) : null
 
@@ -213,7 +214,7 @@ function CommercialCalculator() {
       <AnimatePresence mode="wait">
         {perMonth !== null && (
           <motion.div
-            key={`${localKey}-${surface}-${fournitures}`}
+            key={`${localKey}-${surface}`}
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -255,7 +256,7 @@ function CommercialCalculator() {
                   {tier.freqPerMonth} interventions / mois
                 </div>
                 <div className="font-inter text-xs text-champagne/30 mt-0.5">
-                  {fournitures ? 'Avec' : 'Sans'} fournitures · Prix HT
+                  Prix HT
                 </div>
               </div>
             </div>
@@ -263,6 +264,16 @@ function CommercialCalculator() {
             <p className="font-inter text-xs text-champagne/20 mt-3">
               Prix final confirmé après visite technique
             </p>
+
+            <div className="mt-5 pt-4 border-t border-white/8">
+              <motion.button
+                whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
+                onClick={() => onBook({ localKey, surface, fournitures, selectedExtras })}
+                className="btn-primary w-full flex items-center justify-center gap-2"
+              >
+                Réserver ce Service <ArrowRight size={16} />
+              </motion.button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -281,10 +292,19 @@ const features = [
 
 export default function CommercialCleaning() {
   const navigate = useNavigate()
+  const { switchMode } = usePricing()
 
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
-  const goToBooking = () => navigate('/', { state: { scrollTo: '#booking' } })
+  const goToBooking = () => {
+    switchMode('commercial')
+    navigate('/', { state: { scrollTo: '#booking' } })
+  }
+
+  const goToBookingWithState = (commState) => {
+    switchMode('commercial', commState)
+    navigate('/', { state: { scrollTo: '#booking' } })
+  }
 
   return (
     <div className="min-h-screen">
@@ -313,7 +333,7 @@ export default function CommercialCleaning() {
           </motion.h1>
           <motion.p
             variants={fadeUp} initial="hidden" animate="visible" custom={0.35}
-            className="font-playfair text-xl text-champagne/70 italic max-w-lg mb-10"
+            className="font-playfair text-xl text-white/70 italic max-w-lg mb-10"
           >
             Des standards cinq étoiles pour vos locaux professionnels.
           </motion.p>
@@ -386,7 +406,7 @@ export default function CommercialCleaning() {
             variants={fadeUp} initial="hidden" whileInView="visible"
             custom={0.1} viewport={{ once: true }}
           >
-            <CommercialCalculator />
+            <CommercialCalculator onBook={goToBookingWithState} />
           </motion.div>
         </div>
       </section>

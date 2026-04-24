@@ -77,7 +77,7 @@ export default function AirbnbCleaning() {
           </motion.h1>
           <motion.p
             variants={fadeUp} initial="hidden" animate="visible" custom={0.35}
-            className="font-playfair text-xl text-champagne/70 italic max-w-lg mb-10"
+            className="font-playfair text-xl text-white/70 italic max-w-lg mb-10"
           >
             5 étoiles à chaque check-out.
           </motion.p>

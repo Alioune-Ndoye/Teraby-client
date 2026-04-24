@@ -58,7 +58,7 @@ export default function Hero() {
                 <Star key={i} size={12} className="text-orange-accent fill-orange-accent" />
               ))}
             </div>
-            <span className="text-champagne/80 text-xs font-inter font-medium tracking-wide">
+            <span className="text-white/80 text-xs font-inter font-medium tracking-wide">
               Service de Nettoyage Premium N°1 en France
             </span>
           </motion.div>
@@ -82,7 +82,7 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.6}
-            className="font-playfair text-xl md:text-2xl text-champagne/70 italic mb-3 leading-relaxed"
+            className="font-playfair text-xl md:text-2xl text-white/70 italic mb-3 leading-relaxed"
           >
             Là où la précision rencontre la perfection.
           </motion.p>
@@ -92,7 +92,7 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.7}
-            className="font-inter text-base md:text-lg text-champagne/50 max-w-xl leading-relaxed mb-10"
+            className="font-inter text-base md:text-lg text-white/50 max-w-xl leading-relaxed mb-10"
           >
             Nous ne nettoyons pas seulement — nous restaurons, élevons et transformons.
             Chaque surface, chaque recoin, chaque détail traité avec le soin qu'il mérite.
@@ -120,7 +120,7 @@ export default function Hero() {
               onClick={() => scrollToSection('#services')}
               className="btn-secondary text-base px-10 py-4 flex items-center justify-center gap-2.5"
             >
-              <Play size={16} className="fill-champagne/70" />
+              <Play size={16} className="fill-white/70" />
               Découvrir nos Services
             </motion.button>
           </motion.div>
@@ -144,7 +144,7 @@ export default function Hero() {
                 <div className="font-playfair text-3xl md:text-4xl font-bold text-white group-hover:text-orange-accent transition-colors duration-300">
                   {stat.value}
                 </div>
-                <div className="font-inter text-xs text-champagne/50 mt-1 tracking-wide uppercase">
+                <div className="font-inter text-xs text-white/50 mt-1 tracking-wide uppercase">
                   {stat.label}
                 </div>
                 <div className="w-8 h-0.5 bg-orange-accent/40 mt-2 group-hover:w-12 transition-all duration-300" />
@@ -162,14 +162,14 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer"
         onClick={() => scrollToSection('#services')}
       >
-        <span className="text-champagne/30 text-xs font-inter tracking-[0.2em] uppercase">
+        <span className="text-white/30 text-xs font-inter tracking-[0.2em] uppercase">
           Défiler
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <ArrowDown size={18} className="text-champagne/30" />
+          <ArrowDown size={18} className="text-white/30" />
         </motion.div>
       </motion.div>
     </section>

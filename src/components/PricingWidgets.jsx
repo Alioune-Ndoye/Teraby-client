@@ -13,11 +13,17 @@ import Crown        from 'lucide-react/dist/esm/icons/crown'
 import Star         from 'lucide-react/dist/esm/icons/star'
 import Award        from 'lucide-react/dist/esm/icons/award'
 import Receipt      from 'lucide-react/dist/esm/icons/receipt'
+import Building2    from 'lucide-react/dist/esm/icons/building-2'
+import Stethoscope  from 'lucide-react/dist/esm/icons/stethoscope'
+import ShoppingBag  from 'lucide-react/dist/esm/icons/shopping-bag'
 import {
   usePricing,
   STD_COEFF, STD_OPTION_LIST, PREMIUM_OFFERS,
   LOGEMENT_STD, LOGEMENT_PREM, SVC_LABELS, SVC_DESCS,
+  COMM_LOCALS, COMM_EXTRAS,
 } from '../context/PricingContext'
+
+const COMM_LOCAL_ICONS = { bureaux: Building2, medical: Stethoscope, magasin: ShoppingBag }
 
 // ─── Generic primitives ───────────────────────────────────────────────────────
 
@@ -108,21 +114,22 @@ export function ModeToggle() {
   return (
     <div className="flex rounded-sm overflow-hidden border border-white/10">
       {[
-        { value: 'standard', label: 'Service Standard', Icon: Zap      },
-        { value: 'premium',  label: 'Offre Premium',    Icon: Sparkles },
+        { value: 'standard',   label: 'Standard',   Icon: Zap       },
+        { value: 'premium',    label: 'Premium',     Icon: Sparkles  },
+        { value: 'commercial', label: 'Commercial',  Icon: Building2 },
       ].map(({ value, label, Icon }) => (
         <button
           key={value}
           type="button"
           onClick={() => switchMode(value)}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4
-            font-inter text-sm font-semibold transition-all duration-300
+          className={`flex-1 flex items-center justify-center gap-1.5 py-3 px-2
+            font-inter text-xs font-semibold transition-all duration-300
             ${pricingMode === value
               ? 'bg-orange-accent text-white'
               : 'text-champagne/50 hover:text-champagne hover:bg-white/5'
             }`}
         >
-          <Icon size={15} />
+          <Icon size={14} />
           {label}
         </button>
       ))}
@@ -335,18 +342,122 @@ export function PremiumPricingInputs() {
   )
 }
 
+// ─── Commercial pricing inputs ────────────────────────────────────────────────
+
+export function CommercialPricingInputs() {
+  const { comm, setComm } = usePricing()
+
+  const local = COMM_LOCALS.find(l => l.key === comm.localKey)
+  const surf  = parseFloat(comm.surface)
+  const tier  = isNaN(surf) || surf <= 0
+    ? null
+    : local.tiers.find(t => surf >= t.min && surf <= t.max)
+  const outOfRange = !isNaN(surf) && surf > 0 && !tier
+
+  const toggleExtra = (key) =>
+    setComm({ ...comm, selectedExtras: { ...comm.selectedExtras, [key]: !comm.selectedExtras[key] } })
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <SectionDiv label="Type de local" />
+        <div className="grid grid-cols-3 gap-3">
+          {COMM_LOCALS.map(({ key, label }) => {
+            const Icon = COMM_LOCAL_ICONS[key]
+            return (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setComm({ ...comm, localKey: key, surface: '' })}
+                className={`flex flex-col items-center gap-2 py-4 px-3 rounded-sm border text-center
+                  transition-all duration-200
+                  ${comm.localKey === key
+                    ? 'border-orange-accent/60 bg-orange-accent/[0.08] shadow-[0_0_24px_rgba(204,85,0,0.1)]'
+                    : 'border-white/8 hover:border-white/20 hover:bg-white/[0.02]'
+                  }`}
+              >
+                <Icon size={18} className={comm.localKey === key ? 'text-orange-accent' : 'text-champagne/30'} />
+                <span className={`font-inter text-xs font-medium leading-tight ${comm.localKey === key ? 'text-champagne' : 'text-champagne/50'}`}>
+                  {label}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div>
+        <SectionDiv label="Surface (m²)" />
+        <input
+          type="number"
+          min="1"
+          max="600"
+          placeholder="ex : 120 m²"
+          value={comm.surface}
+          onChange={e => setComm({ ...comm, surface: e.target.value })}
+          className="luxury-input"
+        />
+        {outOfRange && (
+          <p className="mt-2 font-inter text-xs text-orange-accent/70">
+            Surface hors grille. Contactez-nous pour un devis personnalisé.
+          </p>
+        )}
+        {tier && (
+          <p className="mt-2 font-inter text-xs text-champagne/30">
+            Tranche : {tier.range} · Fréquence recommandée : {tier.freq}
+          </p>
+        )}
+      </div>
+
+      <div>
+        <SectionDiv label="Fournitures" />
+        <TogglePill
+          options={[
+            { value: false, label: 'Sans fournitures' },
+            { value: true,  label: 'Avec fournitures' },
+          ]}
+          value={comm.fournitures}
+          onChange={v => setComm({ ...comm, fournitures: v })}
+        />
+      </div>
+
+      <div>
+        <SectionDiv label="Options — Canapé & Tapis" />
+        <div className="grid grid-cols-2 gap-2">
+          {COMM_EXTRAS.map(e => {
+            const checked = !!comm.selectedExtras[e.key]
+            const price   = comm.fournitures ? e.avec : e.sans
+            return (
+              <CheckRow
+                key={e.key}
+                checked={checked}
+                onChange={() => toggleExtra(e.key)}
+                label={`${e.group} · ${e.label}`}
+                sub={`+${price} €`}
+              />
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ─── Full price breakdown (Booking left panel) ────────────────────────────────
 
 export function PriceBreakdown() {
   const { pricingMode, pricing, prem } = usePricing()
   const { total, lines, urgencyAmount } = pricing
 
-  const modeTag = pricingMode === 'standard'
-    ? 'Service Standard'
-    : `Premium — ${PREMIUM_OFFERS[prem.offer].label}`
-  const subTag = pricingMode === 'premium'
-    ? `Fournitures : ${prem.fournitures ? 'Oui' : 'Non'}`
-    : null
+  const modeTag =
+    pricingMode === 'standard'   ? 'Service Standard'                         :
+    pricingMode === 'commercial' ? 'Nettoyage Commercial'                      :
+                                   `Premium — ${PREMIUM_OFFERS[prem.offer].label}`
+  const subTag =
+    pricingMode === 'premium'    ? `Fournitures : ${prem.fournitures ? 'Oui' : 'Non'}` :
+    pricingMode === 'commercial' ? 'Estimation mensuelle · HT'                  :
+                                   null
+  const totalLabel = pricingMode === 'commercial' ? 'Estimation / mois' : 'Total estimé'
 
   return (
     <motion.div layout className="glass-card-light rounded-sm p-6 border border-orange-accent/15">
@@ -384,7 +495,7 @@ export function PriceBreakdown() {
       </div>
 
       <div className="border-t border-white/8 pt-4 flex justify-between items-center">
-        <span className="font-inter text-sm text-champagne/50">Total estimé</span>
+        <span className="font-inter text-sm text-champagne/50">{totalLabel}</span>
         <div className="font-playfair text-4xl font-bold text-white leading-none">
           {total}
           <span className="text-champagne/35 text-lg ml-0.5 font-inter">€</span>

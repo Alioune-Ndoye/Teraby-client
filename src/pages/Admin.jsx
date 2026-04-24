@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
   LayoutDashboard, Calendar, ImagePlus, Users, Settings,
   DollarSign, Star, Clock, ChevronRight,
-  Upload, Trash2, Eye, CheckCircle, XCircle, AlertCircle, X
+  Upload, Trash2, Eye, CheckCircle, XCircle, AlertCircle, X,
+  ChevronDown, ChevronUp,
 } from 'lucide-react'
 
 const adminStats = [
@@ -236,6 +237,225 @@ function GalleryManager() {
   )
 }
 
+const EXTRA_LABELS = {
+  canape_2: 'Canapé 2 places',
+  canape_3: 'Canapé 3 places',
+  canape_a: 'Canapé angle',
+  tapis_s:  'Tapis < 5 m²',
+  tapis_m:  'Tapis 5–10 m²',
+  tapis_l:  'Tapis > 10 m²',
+}
+
+const STD_OPTION_LABELS = {
+  linge:         'Linge fourni',
+  gestionLinge:  'Gestion linge',
+  consommables:  'Consommables',
+  checkInTardif: 'Check-in tardif',
+}
+
+function DetailRow({ label, value }) {
+  return (
+    <div className="flex gap-2 items-start">
+      <span className="font-inter text-xs text-champagne/40 w-28 shrink-0 pt-0.5">{label}</span>
+      <span className="font-inter text-sm text-champagne/80">{value}</span>
+    </div>
+  )
+}
+
+function BookingsPanel() {
+  const [bookings, setBookings]   = useState([])
+  const [loading,  setLoading]    = useState(true)
+  const [error,    setError]      = useState('')
+  const [expanded, setExpanded]   = useState(null)
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/bookings`)
+      .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json() })
+      .then(data => setBookings(Array.isArray(data) ? data : (data.bookings || data.data || [])))
+      .catch(err => setError('API indisponible (' + err.message + '). Connectez le backend pour afficher les réservations.'))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (loading) return (
+    <div className="flex items-center justify-center py-24">
+      <div className="w-8 h-8 border-2 border-orange-accent border-t-transparent rounded-full animate-spin" />
+    </div>
+  )
+
+  if (error) return (
+    <div className="flex flex-col items-center justify-center py-20 text-center">
+      <AlertCircle size={48} className="text-champagne/15 mb-5" />
+      <h2 className="font-playfair text-2xl font-bold text-white mb-3">Réservations</h2>
+      <p className="font-inter text-champagne/40 text-sm max-w-sm">{error}</p>
+      <div className="mt-8 glass-card px-6 py-3 rounded-sm">
+        <p className="font-inter text-xs text-orange-accent">🔒 Backend requis — POST /api/bookings · GET /api/bookings</p>
+      </div>
+    </div>
+  )
+
+  if (bookings.length === 0) return (
+    <div className="text-center py-24">
+      <Calendar size={48} className="text-champagne/15 mx-auto mb-5" />
+      <p className="font-inter text-champagne/40 text-sm">Aucune réservation trouvée.</p>
+    </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h2 className="font-playfair text-2xl font-bold text-white mb-1">Réservations</h2>
+        <p className="font-inter text-sm text-champagne/40">{bookings.length} réservation(s)</p>
+      </div>
+
+      <div className="glass-card rounded-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-white/5">
+                {['Client', 'Type de service', 'Date & Heure', 'Montant', 'Statut', ''].map((h, i) => (
+                  <th key={i} className="text-left px-6 py-3 font-inter text-xs font-semibold text-champagne/30 tracking-wide uppercase">
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {bookings.map((b, i) => {
+                const isOpen = expanded === i
+                const furnitures = b.furnitureOptions?.length
+                  ? b.furnitureOptions
+                  : b.pricingDetails?.selectedExtras
+                    ? Object.entries(b.pricingDetails.selectedExtras).filter(([, v]) => v).map(([k]) => k)
+                    : []
+                const stdOptions = b.selectedOptions?.length
+                  ? b.selectedOptions
+                  : b.pricingDetails?.options
+                    ? Object.entries(b.pricingDetails.options).filter(([, v]) => v).map(([k]) => k)
+                    : []
+
+                return (
+                  <>
+                    <motion.tr
+                      key={b._id || i}
+                      initial={{ opacity: 0, x: -16 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.04 }}
+                      className={`border-b border-white/3 hover:bg-white/2 transition-colors cursor-pointer
+                        ${isOpen ? 'bg-white/[0.03]' : ''}`}
+                      onClick={() => setExpanded(isOpen ? null : i)}
+                    >
+                      <td className="px-6 py-4">
+                        <div className="font-inter text-sm text-white font-medium">{b.name}</div>
+                        <div className="font-inter text-xs text-champagne/40 mt-0.5">{b.email}</div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="font-inter text-sm text-champagne/70 capitalize">{b.serviceType || b.pricingMode || '—'}</div>
+                        {b.localType && (
+                          <div className="font-inter text-xs text-champagne/35 mt-0.5">{b.localType} · {b.surface} m²</div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 font-inter text-xs text-champagne/50">
+                        {b.date}<br />{b.time}
+                      </td>
+                      <td className="px-6 py-4 font-inter text-sm text-green-400 font-semibold">
+                        {b.estimatedPrice != null ? `${b.estimatedPrice} €` : '—'}
+                      </td>
+                      <td className="px-6 py-4">
+                        <StatusBadge status={b.status || 'pending'} />
+                      </td>
+                      <td className="px-6 py-4 text-champagne/30">
+                        {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      </td>
+                    </motion.tr>
+
+                    {isOpen && (
+                      <tr key={`${i}-detail`}>
+                        <td colSpan={6} className="px-6 py-6 bg-white/[0.025] border-b border-white/5">
+                          <div className="grid sm:grid-cols-2 gap-6">
+
+                            {/* ── Section 1: Service ── */}
+                            <div>
+                              <p className="font-inter text-xs text-orange-accent/70 uppercase tracking-widest mb-3 font-semibold">
+                                Détails du service
+                              </p>
+                              <div className="space-y-2">
+                                <DetailRow label="Type"       value={b.serviceType || b.pricingMode || '—'} />
+                                {b.localType  && <DetailRow label="Local"      value={b.localType} />}
+                                {b.surface    && <DetailRow label="Surface"    value={`${b.surface} m²`} />}
+                                {b.pricingDetails?.logement && (
+                                  <DetailRow label="Logement" value={b.pricingDetails.logement} />
+                                )}
+                                {b.pricingDetails?.service && (
+                                  <DetailRow label="Niveau"   value={b.pricingDetails.service} />
+                                )}
+                                {b.pricingDetails?.offer && (
+                                  <DetailRow label="Formule"  value={b.pricingDetails.offer} />
+                                )}
+                                <DetailRow label="Fréquence" value={b.frequency || '—'} />
+                                <DetailRow label="Adresse"   value={b.address   || '—'} />
+                                {b.notes && <DetailRow label="Notes" value={b.notes} />}
+                              </div>
+                            </div>
+
+                            {/* ── Section 2: Options & Mobilier ── */}
+                            <div>
+                              <p className="font-inter text-xs text-orange-accent/70 uppercase tracking-widest mb-3 font-semibold">
+                                Options & Mobilier
+                              </p>
+                              <div className="space-y-3">
+                                {b.hasFurnitures != null && (
+                                  <DetailRow label="Fournitures" value={b.hasFurnitures ? 'Oui' : 'Non'} />
+                                )}
+
+                                {furnitures.length > 0 && (
+                                  <div>
+                                    <p className="font-inter text-xs text-champagne/40 mb-1.5">Mobilier :</p>
+                                    <ul className="space-y-1 pl-1">
+                                      {furnitures.map(k => (
+                                        <li key={k} className="flex items-center gap-2 font-inter text-sm text-champagne/80">
+                                          <span className="text-orange-accent text-base leading-none">·</span>
+                                          {EXTRA_LABELS[k] || k}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+
+                                {stdOptions.length > 0 && (
+                                  <div>
+                                    <p className="font-inter text-xs text-champagne/40 mb-1.5">Options :</p>
+                                    <ul className="space-y-1 pl-1">
+                                      {stdOptions.map(k => (
+                                        <li key={k} className="flex items-center gap-2 font-inter text-sm text-champagne/80">
+                                          <span className="text-orange-accent text-base leading-none">·</span>
+                                          {STD_OPTION_LABELS[k] || k}
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+
+                                {furnitures.length === 0 && stdOptions.length === 0 && b.hasFurnitures == null && (
+                                  <p className="font-inter text-xs text-champagne/25 italic">Aucune option sélectionnée</p>
+                                )}
+                              </div>
+                            </div>
+
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function PlaceholderPanel({ title, description }) {
   return (
     <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -257,7 +477,7 @@ export default function AdminPage() {
 
   const panels = {
     overview: <Overview />,
-    bookings: <PlaceholderPanel title="Gestion des Réservations" description="CRUD complet des réservations, vue calendrier et système de notifications. Connectez votre API backend pour activer." />,
+    bookings: <BookingsPanel />,
     gallery: <GalleryManager />,
     team: <PlaceholderPanel title="Gestion de l'Équipe" description="Ajouter, modifier et planifier les membres de l'équipe. Connectez votre API backend pour activer." />,
     settings: <PlaceholderPanel title="Paramètres" description="Configuration du site, préférences de notification et intégrations. Connectez votre backend pour activer." />,

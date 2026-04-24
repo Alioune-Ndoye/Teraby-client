@@ -7,8 +7,8 @@ import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right'
 import Shield from 'lucide-react/dist/esm/icons/shield'
 import Clock from 'lucide-react/dist/esm/icons/clock'
 import Leaf from 'lucide-react/dist/esm/icons/leaf'
-import { usePricing } from '../../context/PricingContext'
-import { PremiumPricingInputs, PriceStrip } from '../../components/PricingWidgets'
+import { usePricing, REG_EXTRAS } from '../../context/PricingContext'
+import { PremiumPricingInputs, PriceStrip, CheckRow } from '../../components/PricingWidgets'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -36,7 +36,9 @@ const included = [
 
 export default function RegularCleaning() {
   const navigate = useNavigate()
-  const { switchMode } = usePricing()
+  const { switchMode, prem, setPrem } = usePricing()
+  const toggleExtra = (key) =>
+    setPrem({ ...prem, extras: { ...prem.extras, [key]: !prem.extras[key] } })
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -72,7 +74,7 @@ export default function RegularCleaning() {
           </motion.h1>
           <motion.p
             variants={fadeUp} initial="hidden" animate="visible" custom={0.35}
-            className="font-playfair text-xl text-champagne/70 italic max-w-lg mb-10"
+            className="font-playfair text-xl text-white/70 italic max-w-lg mb-10"
           >
             Votre intérieur, toujours impeccable.
           </motion.p>
@@ -178,6 +180,34 @@ export default function RegularCleaning() {
           >
             <PremiumPricingInputs />
           </motion.div>
+
+          <AnimatePresence>
+            {prem.fournitures && (
+              <motion.div
+                key="extras"
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden mt-6"
+              >
+                <p className="font-inter text-xs text-champagne/30 uppercase tracking-[0.18em] mb-3">
+                  Options — Canapé &amp; Tapis
+                </p>
+                <div className="grid grid-cols-2 gap-2">
+                  {REG_EXTRAS.map(e => (
+                    <CheckRow
+                      key={e.key}
+                      checked={!!prem.extras[e.key]}
+                      onChange={() => toggleExtra(e.key)}
+                      label={`${e.group} · ${e.label}`}
+                      sub={`+${e.price} €`}
+                    />
+                  ))}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           <motion.div
             variants={fadeUp} initial="hidden" whileInView="visible"
