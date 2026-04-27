@@ -133,21 +133,21 @@ export default function Navbar() {
                             animate={{ opacity: 1, y: 0, scale: 1 }}
                             exit={{ opacity: 0, y: 8, scale: 0.97 }}
                             transition={{ duration: 0.18, ease: 'easeOut' }}
-                            className="absolute top-full left-0 mt-2 w-64 bg-white/98 backdrop-blur-xl border border-black/8 rounded-sm shadow-xl overflow-hidden z-50"
+                            className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-sm shadow-xl overflow-hidden z-50"
                           >
                             {link.children.map((child, i) => (
                               <Link
                                 key={child.label}
                                 to={child.href}
                                 onClick={() => setDropdownOpen(false)}
-                                className={`flex flex-col px-4 py-3.5 hover:bg-black/4 transition-colors duration-150 ${
-                                  i < link.children.length - 1 ? 'border-b border-black/5' : ''
-                                } ${location.pathname === child.href ? 'bg-orange-accent/5' : ''}`}
+                                className={`flex flex-col px-4 py-3.5 hover:bg-gray-50 transition-colors duration-150 ${
+                                  i < link.children.length - 1 ? 'border-b border-gray-100' : ''
+                                } ${location.pathname === child.href ? 'bg-orange-accent/8' : ''}`}
                               >
                                 <span className={`font-inter text-sm font-semibold ${location.pathname === child.href ? 'text-orange-accent' : 'text-navy'}`}>
                                   {child.label}
                                 </span>
-                                <span className="font-inter text-xs text-navy/45 mt-0.5">{child.desc}</span>
+                                <span className="font-inter text-xs text-gray-500 mt-0.5">{child.desc}</span>
                               </Link>
                             ))}
                           </motion.div>

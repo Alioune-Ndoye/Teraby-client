@@ -4,14 +4,25 @@ import X from 'lucide-react/dist/esm/icons/x'
 import ZoomIn from 'lucide-react/dist/esm/icons/zoom-in'
 import ChevronLeft from 'lucide-react/dist/esm/icons/chevron-left'
 import ChevronRight from 'lucide-react/dist/esm/icons/chevron-right'
-import { galleryItems } from '../data/sampleData'
+
+const API = import.meta.env.VITE_API_URL || ''
 
 const categories = [
-  { value: 'all', label: 'Tous les Projets' },
+  { value: 'all',         label: 'Tous les Projets' },
   { value: 'residential', label: 'Résidentiel' },
-  { value: 'commercial', label: 'Commercial' },
-  { value: 'move', label: 'Emménagement / Déménagement' },
+  { value: 'commercial',  label: 'Commercial' },
+  { value: 'move',        label: 'Emménagement / Déménagement' },
 ]
+
+function normalise(item) {
+  return {
+    id:       item._id,
+    category: item.serviceType || '',
+    title:    item.title,
+    before:   item.beforeImage?.url || '',
+    after:    item.afterImage?.url  || '',
+  }
+}
 
 function BeforeAfterCard({ item, onClick }) {
   const [view, setView] = useState('after')
@@ -37,6 +48,7 @@ function BeforeAfterCard({ item, onClick }) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop' }}
           />
         </AnimatePresence>
 
@@ -47,14 +59,13 @@ function BeforeAfterCard({ item, onClick }) {
           <ZoomIn size={14} className="text-white" />
         </div>
 
-        {/* Before / After toggle */}
         <div
           className="absolute top-3 left-3 flex bg-black/50 backdrop-blur-sm rounded-sm overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           {[
             { key: 'before', label: 'Avant' },
-            { key: 'after', label: 'Après' },
+            { key: 'after',  label: 'Après' },
           ].map(({ key, label }) => (
             <button
               key={key}
@@ -69,7 +80,6 @@ function BeforeAfterCard({ item, onClick }) {
 
         <div className="absolute bottom-0 left-0 right-0 p-4">
           <p className="font-playfair text-base font-bold text-white">{item.title}</p>
-          <p className="font-inter text-xs text-champagne/60 mt-0.5">{item.location} · {item.service}</p>
         </div>
       </div>
     </motion.div>
@@ -98,15 +108,12 @@ function Lightbox({ item, onClose, onPrev, onNext }) {
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4 px-2">
-          <div>
-            <h3 className="font-playfair text-xl font-bold text-white">{item.title}</h3>
-            <p className="font-inter text-sm text-champagne/50">{item.location} · {item.service}</p>
-          </div>
+          <h3 className="font-playfair text-xl font-bold text-white">{item.title}</h3>
           <div className="flex items-center gap-3">
             <div className="flex bg-navy/80 rounded-sm overflow-hidden border border-white/10">
               {[
                 { key: 'before', label: 'Avant' },
-                { key: 'after', label: 'Après' },
+                { key: 'after',  label: 'Après' },
               ].map(({ key, label }) => (
                 <button
                   key={key}
@@ -138,6 +145,7 @@ function Lightbox({ item, onClose, onPrev, onNext }) {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.4 }}
               className="w-full h-full object-cover"
+              onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop' }}
             />
           </AnimatePresence>
 
@@ -162,23 +170,47 @@ function Lightbox({ item, onClose, onPrev, onNext }) {
 }
 
 export default function GalleryPage() {
+  const [items, setItems]               = useState([])
+  const [loading, setLoading]           = useState(true)
+  const [error, setError]               = useState(null)
   const [activeCategory, setActiveCategory] = useState('all')
   const [lightboxItem, setLightboxItem] = useState(null)
 
-  // Close lightbox on unmount so the fixed overlay never lingers
-  // when React Router navigates away mid-animation
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    fetch(`${API}/api/gallery`)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`)
+        return r.json()
+      })
+      .then((json) => {
+        if (!cancelled) {
+          setItems((json.data || []).map(normalise))
+          setLoading(false)
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) {
+          setError(e.message)
+          setLoading(false)
+        }
+      })
+    return () => { cancelled = true }
+  }, [])
+
   useEffect(() => {
     return () => setLightboxItem(null)
   }, [])
 
   const filtered =
     activeCategory === 'all'
-      ? galleryItems
-      : galleryItems.filter((i) => i.category === activeCategory)
+      ? items
+      : items.filter((i) => i.category === activeCategory)
 
   const lightboxIndex = filtered.findIndex((i) => i.id === lightboxItem?.id)
 
-  const openLightbox = (item) => setLightboxItem(item)
+  const openLightbox  = (item) => setLightboxItem(item)
   const closeLightbox = () => setLightboxItem(null)
   const prevItem = () => setLightboxItem(filtered[(lightboxIndex - 1 + filtered.length) % filtered.length])
   const nextItem = () => setLightboxItem(filtered[(lightboxIndex + 1) % filtered.length])
@@ -232,23 +264,39 @@ export default function GalleryPage() {
             ))}
           </motion.div>
 
-          {/* Grid */}
-          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <AnimatePresence mode="popLayout">
-              {filtered.map((item) => (
-                <BeforeAfterCard
-                  key={item.id}
-                  item={item}
-                  onClick={openLightbox}
-                />
-              ))}
-            </AnimatePresence>
-          </motion.div>
-
-          {filtered.length === 0 && (
-            <div className="text-center py-20 text-champagne/30 font-inter">
-              Aucun élément dans cette catégorie pour le moment.
+          {/* States */}
+          {loading && (
+            <div className="text-center py-20 text-champagne/40 font-inter">
+              Chargement de la galerie...
             </div>
+          )}
+
+          {error && !loading && (
+            <div className="text-center py-20 text-red-400/70 font-inter text-sm">
+              Impossible de charger la galerie. Veuillez réessayer.
+            </div>
+          )}
+
+          {!loading && !error && (
+            <>
+              <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <AnimatePresence mode="popLayout">
+                  {filtered.map((item) => (
+                    <BeforeAfterCard
+                      key={item.id}
+                      item={item}
+                      onClick={openLightbox}
+                    />
+                  ))}
+                </AnimatePresence>
+              </motion.div>
+
+              {filtered.length === 0 && (
+                <div className="text-center py-20 text-champagne/30 font-inter">
+                  Aucun élément dans cette catégorie pour le moment.
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>

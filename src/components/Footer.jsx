@@ -65,7 +65,7 @@ export default function Footer() {
                 height="80"
                 loading="eager"
                 className="h-10 w-auto transition-opacity duration-300 group-hover:opacity-80"
-                style={{ filter: 'grayscale(1) sepia(1) saturate(4) hue-rotate(-10deg) brightness(0.82)' }}
+                style={{ filter: 'grayscale(1) sepia(1) saturate(3) hue-rotate(195deg) brightness(1.15)' }}
               />
             </Link>
 
