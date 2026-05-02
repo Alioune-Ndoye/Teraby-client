@@ -173,42 +173,52 @@ function CommercialCalculator({ onBook }) {
         </div>
       </div>
 
-      {/* ── Extras (Canapé & Tapis) ── */}
-      <div>
-        <p className="font-inter text-xs text-champagne/30 uppercase tracking-[0.18em] mb-3">
-          Options — Canapé & Tapis
-        </p>
-        <div className="grid grid-cols-2 gap-2">
-          {EXTRAS.map(e => {
-            const checked = !!selectedExtras[e.key]
-            const price   = fournitures ? e.avec : e.sans
-            return (
-              <label
-                key={e.key}
-                className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer
-                  transition-all duration-200
-                  ${checked
-                    ? 'border-orange-accent/40 bg-orange-accent/[0.06]'
-                    : 'border-white/8 hover:border-white/15'
-                  }`}
-              >
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={() => toggleExtra(e.key)}
-                  className="accent-orange-500 w-3.5 h-3.5 shrink-0"
-                />
-                <div>
-                  <div className="font-inter text-sm text-champagne/80 leading-tight">
-                    {e.group} · {e.label}
-                  </div>
-                  <div className="font-inter text-xs text-orange-accent/70 mt-0.5">+{price} €</div>
-                </div>
-              </label>
-            )
-          })}
-        </div>
-      </div>
+      {/* ── Extras (Canapé & Tapis) — only when Avec fournitures ── */}
+      <AnimatePresence>
+        {fournitures && (
+          <motion.div
+            key="extras"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden"
+          >
+            <p className="font-inter text-xs text-champagne/30 uppercase tracking-[0.18em] mb-3">
+              Options — Canapé & Tapis
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {EXTRAS.map(e => {
+                const checked = !!selectedExtras[e.key]
+                return (
+                  <label
+                    key={e.key}
+                    className={`flex items-center gap-3 p-3 rounded-sm border cursor-pointer
+                      transition-all duration-200
+                      ${checked
+                        ? 'border-orange-accent/40 bg-orange-accent/[0.06]'
+                        : 'border-white/8 hover:border-white/15'
+                      }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={checked}
+                      onChange={() => toggleExtra(e.key)}
+                      className="accent-orange-500 w-3.5 h-3.5 shrink-0"
+                    />
+                    <div>
+                      <div className="font-inter text-sm text-champagne/80 leading-tight">
+                        {e.group} · {e.label}
+                      </div>
+                      <div className="font-inter text-xs text-orange-accent/70 mt-0.5">+{e.avec} €</div>
+                    </div>
+                  </label>
+                )
+              })}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Result strip ── */}
       <AnimatePresence mode="wait">

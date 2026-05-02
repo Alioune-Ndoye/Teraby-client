@@ -16,11 +16,12 @@ const categories = [
 
 function normalise(item) {
   return {
-    id:       item._id,
-    category: item.serviceType || '',
-    title:    item.title,
-    before:   item.beforeImage?.url || '',
-    after:    item.afterImage?.url  || '',
+    id:            item._id,
+    category:      item.serviceType || '',
+    title:         item.title,
+    before:        item.beforeImage?.url || '',
+    after:         item.afterImage?.url  || '',
+    hasFournitures: !!(item.tags || []).includes('fournitures'),
   }
 }
 
@@ -174,6 +175,7 @@ export default function GalleryPage() {
   const [loading, setLoading]           = useState(true)
   const [error, setError]               = useState(null)
   const [activeCategory, setActiveCategory] = useState('all')
+  const [avecFournitures, setAvecFournitures] = useState(false)
   const [lightboxItem, setLightboxItem] = useState(null)
 
   useEffect(() => {
@@ -203,10 +205,13 @@ export default function GalleryPage() {
     return () => setLightboxItem(null)
   }, [])
 
-  const filtered =
-    activeCategory === 'all'
-      ? items
-      : items.filter((i) => i.category === activeCategory)
+  const filtered = (() => {
+    let list = activeCategory === 'all' ? items : items.filter((i) => i.category === activeCategory)
+    if (activeCategory === 'commercial' && avecFournitures) {
+      list = list.filter((i) => i.hasFournitures)
+    }
+    return list
+  })()
 
   const lightboxIndex = filtered.findIndex((i) => i.id === lightboxItem?.id)
 
@@ -252,7 +257,10 @@ export default function GalleryPage() {
             {categories.map((cat) => (
               <button
                 key={cat.value}
-                onClick={() => setActiveCategory(cat.value)}
+                onClick={() => {
+                  setActiveCategory(cat.value)
+                  if (cat.value !== 'commercial') setAvecFournitures(false)
+                }}
                 className={`px-6 py-2.5 rounded-sm font-inter text-sm font-medium transition-all duration-300
                   ${activeCategory === cat.value
                     ? 'bg-orange-accent text-white shadow-orange-glow'
@@ -262,6 +270,27 @@ export default function GalleryPage() {
                 {cat.label}
               </button>
             ))}
+
+            {/* Fournitures sub-filter — only when Commercial is active */}
+            <AnimatePresence>
+              {activeCategory === 'commercial' && (
+                <motion.button
+                  key="fournitures"
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.92 }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => setAvecFournitures((v) => !v)}
+                  className={`px-6 py-2.5 rounded-sm font-inter text-sm font-medium transition-all duration-300
+                    ${avecFournitures
+                      ? 'bg-orange-accent text-white shadow-orange-glow'
+                      : 'border border-orange-accent/50 text-orange-accent hover:bg-orange-accent/10'
+                    }`}
+                >
+                  Avec Fournitures
+                </motion.button>
+              )}
+            </AnimatePresence>
           </motion.div>
 
           {/* States */}

@@ -31,7 +31,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  useEffect(() => { setMobileOpen(false) }, [location.pathname])
+  useEffect(() => {
+    setMobileOpen(false)
+    setMobileServicesOpen(false)
+  }, [location.pathname])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -233,7 +236,10 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
             id="mobile-nav"
-            className="fixed top-[60px] left-0 right-0 z-40 bg-navy-dark/95 backdrop-blur-xl border-b border-white/5 lg:hidden"
+            className={`fixed left-0 right-0 z-40 bg-navy-dark/95 backdrop-blur-xl border-b border-white/5 lg:hidden overflow-y-auto ${
+              scrolled || !isHome ? 'top-14' : 'top-[72px]'
+            }`}
+            style={{ maxHeight: 'calc(100vh - 4rem)' }}
           >
             <nav className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-1">
               {navLinks.map((link, i) => (
@@ -255,28 +261,25 @@ export default function Navbar() {
                           className={`transition-transform duration-200 text-champagne/40 ${mobileServicesOpen ? 'rotate-180' : ''}`}
                         />
                       </button>
-                      <AnimatePresence>
-                        {mobileServicesOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="overflow-hidden ml-4 border-l border-white/8 pl-4 mb-1"
-                          >
-                            {link.children.map((child) => (
-                              <Link
-                                key={child.label}
-                                to={child.href}
-                                onClick={() => setMobileOpen(false)}
-                                className="block py-2.5 px-2 text-sm text-champagne/65 hover:text-orange-accent transition-colors font-inter"
-                              >
+                      {mobileServicesOpen && (
+                        <div className="ml-4 border-l border-white/8 pl-4 mb-1">
+                          {link.children.map((child) => (
+                            <Link
+                              key={child.label}
+                              to={child.href}
+                              onClick={() => { setMobileOpen(false); setMobileServicesOpen(false) }}
+                              className="flex flex-col py-3 px-2 border-b border-white/5 last:border-0"
+                            >
+                              <span className="text-sm font-inter font-medium text-champagne/90 hover:text-orange-accent transition-colors">
                                 {child.label}
-                              </Link>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
+                              </span>
+                              {child.desc && (
+                                <span className="text-xs text-champagne/40 mt-0.5">{child.desc}</span>
+                              )}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ) : link.href.startsWith('/') ? (
                     <Link

@@ -26,17 +26,21 @@ export default function Hero() {
       {/* Background */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&fit=crop&q=60&auto=format"
+          src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1600&fit=crop&q=60&auto=format"
           alt=""
           width="1920"
           height="1080"
           loading="eager"
           fetchPriority="high"
           decoding="async"
+          onError={(e) => {
+            e.currentTarget.onerror = null
+            e.currentTarget.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&fit=crop&q=60&auto=format'
+          }}
           className="absolute inset-0 w-full h-full object-cover object-center"
           aria-hidden="true"
         />
-        <div className="absolute inset-0 bg-black/30" />
+        <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/55 to-transparent" />
         <div className="absolute inset-0 bg-noise opacity-30" />
         <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-orange-accent/8 blur-[120px] rounded-full" />
