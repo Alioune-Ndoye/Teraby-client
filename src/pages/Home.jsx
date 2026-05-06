@@ -8,6 +8,7 @@ import Testimonials from '../components/Testimonials'
 import Team from '../components/Team'
 import FAQ from '../components/FAQ'
 import useScrollObserver from '../hooks/useScrollObserver'
+import PromoPopup from '../components/PromoPopup'
 
 export default function Home() {
   const location = useLocation()
@@ -31,6 +32,7 @@ export default function Home() {
 
   return (
     <>
+      <PromoPopup />
       <Hero />
       <Services />
       <Process />
