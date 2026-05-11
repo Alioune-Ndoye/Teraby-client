@@ -22,61 +22,59 @@ function TeamCard({ member }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="group relative overflow-hidden rounded-sm"
+      className="group relative flex overflow-hidden rounded-sm border border-white/5 bg-navy-deeper/60 backdrop-blur-sm hover:border-orange-accent/25 transition-colors duration-500"
     >
-      <div className="relative overflow-hidden aspect-[4/5]">
+      {/* Image — fixed width column */}
+      <div className="relative w-36 flex-shrink-0 overflow-hidden">
         <img
           src={member.image || FALLBACK_IMG}
           alt={member.name}
-          width="400"
-          height="500"
+          width="144"
+          height="192"
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover transition-transform duration-700"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           onError={(e) => { e.currentTarget.src = FALLBACK_IMG }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.08)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/95 via-navy/40 to-transparent" />
-        <div className="absolute inset-0 bg-orange-accent/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-        <div className="absolute bottom-0 left-0 right-0 p-6">
-          <p className="section-label text-left mb-1">{member.role}</p>
-          <h3 className="font-playfair text-2xl font-bold text-white mb-2">{member.name}</h3>
-
-          <div className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-            {member.bio && (
-              <p className="font-inter text-sm text-champagne/65 leading-relaxed mb-4">
-                {member.bio}
-              </p>
-            )}
-            {member.specialties?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {member.specialties.map((s) => (
-                  <span
-                    key={s}
-                    className="text-xs font-inter px-2.5 py-1 rounded-full bg-orange-accent/15 text-orange-accent border border-orange-accent/20"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            )}
-            <div className="flex gap-2">
-              <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
-                                 text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
-                <Linkedin size={14} />
-              </button>
-              <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
-                                 text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
-                <Mail size={14} />
-              </button>
-            </div>
-          </div>
-        </div>
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-navy-deeper/60" />
+        <div className="absolute inset-0 bg-orange-accent/0 group-hover:bg-orange-accent/6 transition-colors duration-500" />
       </div>
 
-      <div className="absolute inset-0 rounded-sm border border-orange-accent/0 group-hover:border-orange-accent/25 transition-all duration-500 pointer-events-none" />
+      {/* Text — beside the image */}
+      <div className="flex flex-col justify-between flex-1 p-5">
+        <div>
+          <p className="section-label text-left mb-1">{member.role}</p>
+          <h3 className="font-playfair text-lg font-bold text-white mb-2 leading-snug">{member.name}</h3>
+          {member.bio && (
+            <p className="font-inter text-xs text-champagne/60 leading-relaxed mb-3">
+              {member.bio}
+            </p>
+          )}
+          {member.specialties?.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {member.specialties.map((s) => (
+                <span
+                  key={s}
+                  className="text-xs font-inter px-2.5 py-1 rounded-full bg-orange-accent/15 text-orange-accent border border-orange-accent/20"
+                >
+                  {s}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        <div className="flex gap-2 mt-4">
+          <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
+                             text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
+            <Linkedin size={14} />
+          </button>
+          <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
+                             text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
+            <Mail size={14} />
+          </button>
+        </div>
+      </div>
     </motion.div>
   )
 }
@@ -175,7 +173,7 @@ export default function Team() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-80px' }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 gap-6"
           >
             {members.map((member) => (
               <TeamCard key={member.id} member={member} />
