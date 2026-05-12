@@ -1,27 +1,25 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import Hero from '../components/Hero'
-import Services from '../components/Services'
-import Process from '../components/Process'
-import Booking from '../components/Booking'
-import Testimonials from '../components/Testimonials'
-import Team from '../components/Team'
-import FAQ from '../components/FAQ'
 import useScrollObserver from '../hooks/useScrollObserver'
 import PromoPopup from '../components/PromoPopup'
+
+// Lazy-load all below-fold sections — they're not needed until the user scrolls
+const Services     = lazy(() => import('../components/Services'))
+const Process      = lazy(() => import('../components/Process'))
+const Booking      = lazy(() => import('../components/Booking'))
+const Testimonials = lazy(() => import('../components/Testimonials'))
+const Team         = lazy(() => import('../components/Team'))
+const FAQ          = lazy(() => import('../components/FAQ'))
 
 export default function Home() {
   const location = useLocation()
 
-  // body.scrolled added when hero exits viewport — activates light mode on content below
   useScrollObserver('home')
 
-  // Scroll to section when navigated here from another page (e.g. Gallery → #services)
   useEffect(() => {
     const hash = location.state?.scrollTo
     if (!hash) return
-
-    // Double rAF ensures the DOM is fully painted before scrolling
     const id = requestAnimationFrame(() =>
       requestAnimationFrame(() => {
         document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth' })
@@ -34,12 +32,14 @@ export default function Home() {
     <>
       <PromoPopup />
       <Hero />
-      <Services />
-      <Process />
-      <Booking />
-      <Testimonials />
-      <Team />
-      <FAQ />
+      <Suspense fallback={null}>
+        <Services />
+        <Process />
+        <Booking />
+        <Testimonials />
+        <Team />
+        <FAQ />
+      </Suspense>
     </>
   )
 }

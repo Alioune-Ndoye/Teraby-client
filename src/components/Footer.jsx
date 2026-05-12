@@ -46,7 +46,7 @@ export default function Footer() {
   return (
     <footer id="contact" className="relative bg-navy-deeper overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-accent/30 to-transparent" />
-      <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-orange-accent/3 blur-[150px] rounded-full pointer-events-none" />
+      <div className="hidden sm:block absolute bottom-0 left-0 w-[300px] h-[300px] bg-orange-accent/3 blur-[70px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-14">

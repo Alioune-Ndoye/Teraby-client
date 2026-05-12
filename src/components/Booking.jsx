@@ -11,20 +11,26 @@ import FileText    from 'lucide-react/dist/esm/icons/file-text'
 import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
 import Loader2     from 'lucide-react/dist/esm/icons/loader-2'
 import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down'
+import Zap         from 'lucide-react/dist/esm/icons/zap'
+import Sparkles    from 'lucide-react/dist/esm/icons/sparkles'
+import Building2   from 'lucide-react/dist/esm/icons/building-2'
 import { usePricing } from '../context/PricingContext'
 import {
-  ModeToggle,
   StandardPricingInputs,
   PremiumPricingInputs,
   CommercialPricingInputs,
   PriceBreakdown,
 } from './PricingWidgets'
 
+const SERVICE_OPTIONS = [
+  { value: 'standard',   label: 'Nettoyage Régulier',     Icon: Zap,       desc: 'Domicile, appartement, maison' },
+  { value: 'premium',    label: 'Airbnb et Court Séjour', Icon: Sparkles,  desc: 'Remise en état entre locataires' },
+  { value: 'commercial', label: 'Commercial',              Icon: Building2, desc: 'Bureaux, commerces, locaux pro' },
+]
+
 const frequencyOptions = [
-  { value: 'once',     label: 'Une seule fois',      multiplier: 1    },
-  { value: 'monthly',  label: 'Mensuel (–10 %)',      multiplier: 0.9  },
-  { value: 'biweekly', label: 'Bimensuel (–15 %)',    multiplier: 0.85 },
-  { value: 'weekly',   label: 'Hebdomadaire (–20 %)', multiplier: 0.8  },
+  { value: 'once',   label: 'Une seule fois',      multiplier: 1   },
+  { value: 'weekly', label: 'Hebdomadaire (–20 %)', multiplier: 0.8 },
 ]
 const timeSlots = ['08:00','09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00']
 
@@ -60,6 +66,7 @@ export default function Booking() {
   const [status, setStatus] = useState('idle')
   const [errorMsg, setErrorMsg] = useState('')
   const [selectedFrequency, setSelectedFrequency] = useState(frequencyOptions[0])
+  const [serviceSelected, setServiceSelected] = useState(null)
 
   // All pricing state lives in context — shared with Services section
   const { pricingMode, std, prem, comm, pricing, switchMode } = usePricing()
@@ -133,17 +140,23 @@ export default function Booking() {
     }
   }
 
+  const handleSelectService = (value) => {
+    switchMode(value)
+    setServiceSelected(value)
+  }
+
   const handleReset = () => {
     setStatus('idle')
     reset()
     switchMode('standard')
     setSelectedFrequency(frequencyOptions[0])
+    setServiceSelected(null)
   }
 
   return (
     <section id="booking" className="relative py-28 bg-navy overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-orange-accent/30 to-transparent" />
-      <div className="absolute right-0 top-1/4 w-[600px] h-[600px] bg-orange-accent/5 blur-[180px] rounded-full pointer-events-none" />
+      <div className="hidden sm:block absolute right-0 top-1/4 w-[400px] h-[400px] bg-orange-accent/5 blur-[80px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-16 items-start">
@@ -237,45 +250,84 @@ export default function Booking() {
                       Confirmer votre Réservation
                     </h3>
 
-                    {/* Mode toggle — synced with Services section */}
-                    <ModeToggle />
-
-                    {/* Pricing inputs — same components as Services, same context state */}
-                    <AnimatePresence mode="wait">
-                      <motion.div
-                        key={pricingMode}
-                        variants={modeSlide}
-                        initial="enter"
-                        animate="show"
-                        exit="exit"
-                        className="bg-white dark:bg-transparent rounded-xl shadow-md dark:shadow-none p-4 dark:p-0"
-                      >
-                        {pricingMode === 'standard'   ? <StandardPricingInputs />   :
-                         pricingMode === 'premium'    ? <PremiumPricingInputs />    :
-                                                        <CommercialPricingInputs />}
-                      </motion.div>
-                    </AnimatePresence>
-
-                    {/* ── Frequency ── */}
+                    {/* ── Service selector (always visible) ── */}
                     <div>
-                      <label className="luxury-label">Fréquence</label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {frequencyOptions.map(opt => (
+                      <label className="luxury-label">Type de service</label>
+                      <div className="grid grid-cols-3 gap-3">
+                        {SERVICE_OPTIONS.map(({ value, label, Icon, desc }) => (
                           <button
-                            key={opt.value}
+                            key={value}
                             type="button"
-                            onClick={() => setSelectedFrequency(opt)}
-                            className={`px-3 py-2.5 rounded-sm border text-left transition-all duration-200 font-inter text-xs
-                              ${selectedFrequency.value === opt.value
-                                ? 'border-orange-accent/60 bg-orange-accent/8 text-champagne'
-                                : 'border-white/8 bg-navy-light/30 text-champagne/50 hover:border-white/20 hover:text-champagne/75'
+                            onClick={() => handleSelectService(value)}
+                            className={`flex flex-col items-center gap-2 py-4 px-2 rounded-sm border text-center
+                              transition-all duration-200
+                              ${serviceSelected === value
+                                ? 'border-orange-accent/60 bg-orange-accent/[0.08] shadow-[0_0_24px_rgba(204,85,0,0.1)]'
+                                : 'border-white/8 hover:border-white/20 hover:bg-white/[0.02]'
                               }`}
                           >
-                            {opt.label}
+                            <Icon size={18} className={serviceSelected === value ? 'text-orange-accent' : 'text-champagne/30'} />
+                            <span className={`font-inter text-xs font-semibold leading-tight ${serviceSelected === value ? 'text-champagne' : 'text-champagne/50'}`}>
+                              {label}
+                            </span>
+                            <span className="font-inter text-[10px] text-champagne/30 leading-tight hidden sm:block">
+                              {desc}
+                            </span>
                           </button>
                         ))}
                       </div>
                     </div>
+
+                    {/* ── Collapsible: pricing inputs + frequency ── */}
+                    <AnimatePresence initial={false}>
+                      {serviceSelected && (
+                        <motion.div
+                          key="service-details"
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.38, ease: [0.25, 0.46, 0.45, 0.94] }}
+                          style={{ overflow: 'hidden' }}
+                          className="space-y-5"
+                        >
+                          <AnimatePresence mode="wait">
+                            <motion.div
+                              key={pricingMode}
+                              variants={modeSlide}
+                              initial="enter"
+                              animate="show"
+                              exit="exit"
+                              className="bg-white dark:bg-transparent rounded-xl shadow-md dark:shadow-none p-4 dark:p-0"
+                            >
+                              {pricingMode === 'standard'   ? <StandardPricingInputs />   :
+                               pricingMode === 'premium'    ? <PremiumPricingInputs />    :
+                                                              <CommercialPricingInputs />}
+                            </motion.div>
+                          </AnimatePresence>
+
+                          {/* Frequency */}
+                          <div>
+                            <label className="luxury-label">Fréquence</label>
+                            <div className="grid grid-cols-2 gap-3">
+                              {frequencyOptions.map(opt => (
+                                <button
+                                  key={opt.value}
+                                  type="button"
+                                  onClick={() => setSelectedFrequency(opt)}
+                                  className={`px-3 py-2.5 rounded-sm border text-left transition-all duration-200 font-inter text-xs
+                                    ${selectedFrequency.value === opt.value
+                                      ? 'border-orange-accent/60 bg-orange-accent/8 text-champagne'
+                                      : 'border-white/8 bg-navy-light/30 text-champagne/50 hover:border-white/20 hover:text-champagne/75'
+                                    }`}
+                                >
+                                  {opt.label}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     {/* ── Contact ── */}
                     <div className="grid sm:grid-cols-2 gap-4">

@@ -17,7 +17,7 @@ export default function Services() {
     <section id="services" className="relative py-28 bg-navy-deeper overflow-hidden">
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      <div className="absolute top-1/2 left-0 w-[600px] h-[600px] -translate-y-1/2 bg-orange-accent/[0.04] blur-[150px] rounded-full pointer-events-none" />
+      <div className="hidden sm:block absolute top-1/2 left-0 w-[400px] h-[400px] -translate-y-1/2 bg-orange-accent/[0.04] blur-[75px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -54,14 +54,18 @@ export default function Services() {
               <Link
                 to={card.href}
                 className="group relative flex flex-col h-full glass-card rounded-sm overflow-hidden
-                           border border-white/8 hover:border-orange-accent/30 transition-all duration-500
-                           hover:shadow-[0_20px_60px_rgba(204,85,0,0.1)] hover:-translate-y-1"
+                           border border-white/8 hover:border-orange-accent/30 transition-colors duration-300
+                           md:hover:shadow-[0_20px_60px_rgba(204,85,0,0.1)] md:hover:-translate-y-1"
               >
                 {/* Image */}
                 <div className="relative h-52 overflow-hidden">
                   <img
                     src={card.image}
                     alt={card.title}
+                    width="600"
+                    height="208"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/80 via-navy-deeper/20 to-transparent" />

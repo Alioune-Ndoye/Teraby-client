@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Star from 'lucide-react/dist/esm/icons/star'
 import ChevronLeft from 'lucide-react/dist/esm/icons/chevron-left'
@@ -24,25 +24,43 @@ export default function Testimonials() {
   const [current, setCurrent] = useState(0)
   const [direction, setDirection] = useState(1)
   const autoRef = useRef(null)
+  const sectionRef = useRef(null)
+  const visibleRef = useRef(false)
 
-  const next = () => {
+  const next = useCallback(() => {
     setDirection(1)
     setCurrent((p) => (p + 1) % testimonials.length)
-  }
-  const prev = () => {
-    setDirection(-1)
-    setCurrent((p) => (p - 1 + testimonials.length) % testimonials.length)
-  }
-
-  useEffect(() => {
-    autoRef.current = setInterval(next, 5500)
-    return () => clearInterval(autoRef.current)
   }, [])
 
-  const resetAuto = () => {
+  const prev = useCallback(() => {
+    setDirection(-1)
+    setCurrent((p) => (p - 1 + testimonials.length) % testimonials.length)
+  }, [])
+
+  // Only run the interval when section is visible — saves CPU on mobile
+  useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        visibleRef.current = entry.isIntersecting
+        if (entry.isIntersecting) {
+          autoRef.current = setInterval(next, 5500)
+        } else {
+          clearInterval(autoRef.current)
+        }
+      },
+      { threshold: 0.2 }
+    )
+    observer.observe(section)
+    return () => { observer.disconnect(); clearInterval(autoRef.current) }
+  }, [next])
+
+  const resetAuto = useCallback(() => {
+    if (!visibleRef.current) return
     clearInterval(autoRef.current)
     autoRef.current = setInterval(next, 5500)
-  }
+  }, [next])
 
   const variants = {
     enter: (dir) => ({ opacity: 0, x: dir > 0 ? 80 : -80 }),
@@ -51,9 +69,9 @@ export default function Testimonials() {
   }
 
   return (
-    <section id="testimonials" className="relative py-28 bg-navy-deeper overflow-hidden">
+    <section ref={sectionRef} id="testimonials" className="relative py-28 bg-navy-deeper overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-orange-accent/4 blur-[150px] rounded-full pointer-events-none" />
+      <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-orange-accent/4 blur-[70px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 

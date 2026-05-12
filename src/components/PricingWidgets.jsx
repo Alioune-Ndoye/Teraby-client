@@ -114,9 +114,9 @@ export function ModeToggle() {
   return (
     <div className="flex rounded-sm overflow-hidden border border-white/10">
       {[
-        { value: 'standard',   label: 'Standard',   Icon: Zap       },
-        { value: 'premium',    label: 'Premium',     Icon: Sparkles  },
-        { value: 'commercial', label: 'Commercial',  Icon: Building2 },
+        { value: 'standard',   label: 'Nettoyage Régulier',     Icon: Zap       },
+        { value: 'premium',    label: 'Airbnb et Court Séjour', Icon: Sparkles  },
+        { value: 'commercial', label: 'Commercial',              Icon: Building2 },
       ].map(({ value, label, Icon }) => (
         <button
           key={value}

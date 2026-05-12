@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Menu from 'lucide-react/dist/esm/icons/menu'
@@ -26,9 +26,22 @@ export default function Navbar() {
     : {}
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 60)
+    let rafId = null
+    const handleScroll = () => {
+      if (rafId) return
+      rafId = requestAnimationFrame(() => {
+        setScrolled(prev => {
+          const next = window.scrollY > 60
+          return prev === next ? prev : next
+        })
+        rafId = null
+      })
+    }
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (rafId) cancelAnimationFrame(rafId)
+    }
   }, [])
 
   useEffect(() => {
@@ -74,11 +87,12 @@ export default function Navbar() {
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-50 ${
           scrolled || !isHome
-            ? 'bg-white/95 backdrop-blur-xl border-b border-black/8 py-3 shadow-sm'
+            ? 'bg-white/95 backdrop-blur-md border-b border-black/8 py-3 shadow-sm'
             : 'bg-transparent py-5'
         }`}
+        style={{ transition: 'background-color 0.4s ease, padding 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between">
@@ -236,7 +250,7 @@ export default function Navbar() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
             id="mobile-nav"
-            className={`fixed left-0 right-0 z-40 bg-navy-dark/95 backdrop-blur-xl border-b border-white/5 lg:hidden overflow-y-auto ${
+            className={`fixed left-0 right-0 z-40 bg-navy-dark border-b border-white/5 lg:hidden overflow-y-auto ${
               scrolled || !isHome ? 'top-14' : 'top-[72px]'
             }`}
             style={{ maxHeight: 'calc(100vh - 4rem)' }}

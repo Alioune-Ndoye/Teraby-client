@@ -4,12 +4,18 @@ import Play from 'lucide-react/dist/esm/icons/play'
 import Star from 'lucide-react/dist/esm/icons/star'
 import { stats } from '../data/sampleData'
 
+const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+
 const fadeUp = {
-  hidden: { opacity: 0, y: 60 },
+  hidden: { opacity: 0, y: isMobile ? 20 : 60 },
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.9, delay, ease: [0.25, 0.46, 0.45, 0.94] },
+    transition: {
+      duration: isMobile ? 0.5 : 0.9,
+      delay: isMobile ? delay * 0.5 : delay,
+      ease: [0.25, 0.46, 0.45, 0.94],
+    },
   }),
 }
 
@@ -21,29 +27,26 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="hero-dark relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
     >
       {/* Background */}
       <div className="absolute inset-0 z-0">
-        <img
-          src="https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=1600&fit=crop&q=60&auto=format"
-          alt=""
-          width="1920"
-          height="1080"
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          onError={(e) => {
-            e.currentTarget.onerror = null
-            e.currentTarget.src = 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&fit=crop&q=60&auto=format'
-          }}
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          aria-hidden="true"
-        />
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/55 to-transparent" />
-        <div className="absolute inset-0 bg-noise opacity-30" />
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-orange-accent/8 blur-[120px] rounded-full" />
+        <picture>
+          <source srcSet="/hero.webp" type="image/webp" />
+          <img
+            src="/hero.jpg"
+            alt=""
+            width="1536"
+            height="1024"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            aria-hidden="true"
+          />
+        </picture>
+        <div className="absolute inset-0 bg-white/55" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/40 to-transparent" />
       </div>
 
       {/* Content */}
@@ -55,14 +58,14 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.2}
-            className="inline-flex items-center gap-2 glass-card px-4 py-2 rounded-full mb-8"
+            className="inline-flex items-center gap-2 bg-white/80 border border-black/10 px-4 py-2 rounded-full mb-8"
           >
             <div className="flex gap-0.5">
               {[...Array(5)].map((_, i) => (
                 <Star key={i} size={12} className="text-orange-accent fill-orange-accent" />
               ))}
             </div>
-            <span className="text-white/80 text-xs font-inter font-medium tracking-wide">
+            <span className="text-gray-800 text-xs font-inter font-medium tracking-wide">
               Service de Nettoyage Premium N°1 en France
             </span>
           </motion.div>
@@ -75,7 +78,7 @@ export default function Hero() {
             custom={0.4}
             className="font-playfair text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.05] mb-6"
           >
-            <span className="text-white">Nettoyage Premium,</span>
+            <span className="text-gray-900">Nettoyage Premium,</span>
             <br />
             <span className="text-gradient">Réinventé.</span>
           </motion.h1>
@@ -86,7 +89,7 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.6}
-            className="font-playfair text-xl md:text-2xl text-white/70 italic mb-3 leading-relaxed"
+            className="font-playfair text-xl md:text-2xl text-gray-700 italic mb-3 leading-relaxed"
           >
             Là où la précision rencontre la perfection.
           </motion.p>
@@ -96,7 +99,7 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.7}
-            className="font-inter text-base md:text-lg text-white/50 max-w-xl leading-relaxed mb-10"
+            className="font-inter text-base md:text-lg text-gray-600 max-w-xl leading-relaxed mb-10"
           >
             Nous ne nettoyons pas seulement — nous restaurons, élevons et transformons.
             Chaque surface, chaque recoin, chaque détail traité avec le soin qu'il mérite.
@@ -122,7 +125,10 @@ export default function Hero() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => scrollToSection('#services')}
-              className="btn-secondary text-base px-10 py-4 flex items-center justify-center gap-2.5"
+              className="font-inter font-semibold tracking-wide text-base px-10 py-4 rounded-sm transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2.5"
+              style={{ backgroundColor: '#1A2238', color: '#ffffff' }}
+              onMouseEnter={e => e.currentTarget.style.backgroundColor = '#243251'}
+              onMouseLeave={e => e.currentTarget.style.backgroundColor = '#1A2238'}
             >
               <Play size={16} className="fill-white/70" />
               Découvrir nos Services
@@ -145,10 +151,10 @@ export default function Hero() {
                 transition={{ delay: 1.1 + i * 0.1, duration: 0.6 }}
                 className="group"
               >
-                <div className="font-playfair text-3xl md:text-4xl font-bold text-white group-hover:text-orange-accent transition-colors duration-300">
+                <div className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 group-hover:text-orange-accent transition-colors duration-300">
                   {stat.value}
                 </div>
-                <div className="font-inter text-xs text-white/50 mt-1 tracking-wide uppercase">
+                <div className="font-inter text-xs text-gray-500 mt-1 tracking-wide uppercase">
                   {stat.label}
                 </div>
                 <div className="w-8 h-0.5 bg-orange-accent/40 mt-2 group-hover:w-12 transition-all duration-300" />
@@ -166,14 +172,14 @@ export default function Hero() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 cursor-pointer"
         onClick={() => scrollToSection('#services')}
       >
-        <span className="text-white/30 text-xs font-inter tracking-[0.2em] uppercase">
+        <span className="text-gray-400 text-xs font-inter tracking-[0.2em] uppercase">
           Défiler
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <ArrowDown size={18} className="text-white/30" />
+          <ArrowDown size={18} className="text-gray-400" />
         </motion.div>
       </motion.div>
     </section>

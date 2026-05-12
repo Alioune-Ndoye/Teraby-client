@@ -22,7 +22,7 @@ function TeamCard({ member }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="group relative flex overflow-hidden rounded-sm border border-white/5 bg-navy-deeper/60 backdrop-blur-sm hover:border-orange-accent/25 transition-colors duration-500"
+      className="group relative flex overflow-hidden rounded-sm border border-white/5 bg-navy-deeper/90 hover:border-orange-accent/25 transition-colors duration-300"
     >
       {/* Image — fixed width column */}
       <div className="relative w-36 flex-shrink-0 overflow-hidden">
@@ -119,7 +119,7 @@ export default function Team() {
   return (
     <section id="team" className="relative py-28 bg-navy overflow-hidden">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/8 to-transparent" />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-accent/4 blur-[180px] rounded-full pointer-events-none" />
+      <div className="hidden sm:block absolute top-0 right-0 w-[350px] h-[350px] bg-orange-accent/4 blur-[80px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div

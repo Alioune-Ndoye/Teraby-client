@@ -42,16 +42,16 @@
   /* Glass card */
   .glass-card {
     background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     @apply shadow-glass;
   }
 
   .glass-card-light {
     background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.10);
   }
 
@@ -156,9 +156,8 @@
    Navbar + hero always dark regardless of theme.
 ═══════════════════════════════════════════════════════════════════════════ */
 
-/* ── Smooth transitions on every theme-sensitive surface ── */
+/* ── Smooth transitions on theme-sensitive surfaces (not sections — too broad) ── */
 body,
-body section,
 body footer,
 body .glass-card,
 body .glass-card-light,
@@ -169,6 +168,23 @@ body .btn-secondary {
     border-color     0.35s ease,
     color            0.25s ease,
     box-shadow       0.35s ease;
+}
+
+/* ── GPU promotion & paint isolation ── */
+section {
+  contain: layout paint;
+}
+
+/* Promote glass cards to their own compositor layer — avoids full-page repaint on scroll */
+.glass-card,
+.glass-card-light {
+  transform: translateZ(0);
+}
+
+/* Skip rendering off-screen sections — major win on long pages */
+section:not(#home) {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px;
 }
 
 /* ── Scrollbar ── */
@@ -431,4 +447,100 @@ html:not(.dark) #chatbot-panel input::placeholder { color: rgba(247, 231, 206, 0
 body.force-dark section,
 body.force-dark footer {
   background-color: transparent !important;
+}
+
+/* ══════════════════════════════════════════════════════
+   MOBILE PERFORMANCE OVERRIDES
+   Applied only on devices < 768px to ensure buttery
+   smooth scrolling on phones and tablets.
+══════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+
+  /* ── Momentum / native scroll on iOS ── */
+  html, body {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: none;
+  }
+
+  /* ── Touch-action: let the browser handle panning natively ── */
+  * {
+    touch-action: pan-y pinch-zoom;
+  }
+  button, a, [role="button"] {
+    touch-action: manipulation;
+  }
+
+  /* ── Remove backdrop-filter entirely — GPU is too limited on phones ── */
+  .glass-card,
+  .glass-card-light {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: rgba(26, 34, 56, 0.94) !important;
+  }
+  html:not(.dark) .glass-card {
+    background: rgba(255, 255, 255, 0.94) !important;
+  }
+  html:not(.dark) .glass-card-light {
+    background: rgba(255, 255, 255, 0.88) !important;
+  }
+
+  /* ── Navbar glass on mobile ── */
+  header[class*="backdrop"] {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  /* ── Disable section paint containment on mobile — hurts composite layers ── */
+  section {
+    contain: none !important;
+    content-visibility: visible !important;
+  }
+
+  /* ── Hero: use dynamic viewport height to prevent address-bar reflow ── */
+  #home {
+    min-height: 100svh;
+    min-height: -webkit-fill-available;
+  }
+
+  /* ── Simplify expensive box-shadows on mobile ── */
+  .shadow-luxury {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3) !important;
+  }
+  .shadow-glass {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2) !important;
+  }
+
+  /* ── Disable hover-triggered transforms — no hover on touch ── */
+  .hover\:-translate-y-1:hover,
+  .hover\:-translate-y-0\.5:hover,
+  .hover\:scale-105:hover,
+  .group:hover .group-hover\:scale-105 {
+    transform: none !important;
+  }
+
+  /* ── Simplify service card hover shadows on mobile ── */
+  .hover\:shadow-\[0_20px_60px_rgba\(204\2C 85\2C 0\2C 0\.1\)\]:hover {
+    box-shadow: none !important;
+  }
+
+  /* ── Reduce transition durations across the board on mobile ── */
+  * {
+    transition-duration: 0.15s !important;
+  }
+  /* Restore intentional slow animations */
+  .animate-float,
+  [class*="duration-700"],
+  [class*="duration-500"] {
+    transition-duration: 0.3s !important;
+  }
+}
+
+/* ── Support browsers that don't support svh ── */
+@supports not (min-height: 100svh) {
+  @media (max-width: 767px) {
+    #home {
+      min-height: calc(var(--vh, 1vh) * 100);
+    }
+  }
 }
