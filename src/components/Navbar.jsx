@@ -245,50 +245,70 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.28 }}
             id="mobile-nav"
-            className={`fixed left-0 right-0 z-40 bg-navy-dark border-b border-white/5 lg:hidden overflow-y-auto ${
+            className={`fixed left-0 right-0 z-40 lg:hidden overflow-y-auto ${
               scrolled || !isHome ? 'top-14' : 'top-[72px]'
             }`}
-            style={{ maxHeight: 'calc(100vh - 4rem)' }}
+            style={{
+              maxHeight: 'calc(100vh - 4rem)',
+              backgroundColor: '#0D1525',
+              borderBottom: '1px solid rgba(255,255,255,0.08)',
+            }}
           >
-            <nav className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-1">
+            <nav className="max-w-7xl mx-auto px-4 py-5 flex flex-col gap-0.5">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.label}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -16 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
+                  transition={{ delay: i * 0.04 }}
                 >
                   {link.children ? (
                     <div>
                       <button
                         onClick={() => setMobileServicesOpen((o) => !o)}
-                        className="w-full text-left py-3 px-4 text-champagne/80 hover:text-champagne hover:bg-white/5 rounded-sm font-inter font-medium transition-all flex items-center justify-between"
+                        className="w-full text-left py-3.5 px-4 rounded-sm font-inter font-semibold text-base transition-all flex items-center justify-between"
+                        style={{ color: '#ffffff' }}
                       >
                         {link.label}
                         <ChevronDown
-                          size={14}
-                          className={`transition-transform duration-200 text-champagne/40 ${mobileServicesOpen ? 'rotate-180' : ''}`}
+                          size={15}
+                          className={`transition-transform duration-200 ${mobileServicesOpen ? 'rotate-180' : ''}`}
+                          style={{ color: 'rgba(255,255,255,0.5)' }}
                         />
                       </button>
                       {mobileServicesOpen && (
-                        <div className="ml-4 border-l border-white/8 pl-4 mb-1">
-                          {link.children.map((child) => (
+                        <div
+                          className="mx-2 mb-2 rounded-sm overflow-hidden"
+                          style={{ backgroundColor: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                        >
+                          {link.children.map((child, ci) => (
                             <Link
                               key={child.label}
                               to={child.href}
                               onClick={() => { setMobileOpen(false); setMobileServicesOpen(false) }}
-                              className="flex flex-col py-3 px-2 border-b border-white/5 last:border-0"
+                              className="flex flex-col px-4 py-3.5 transition-all"
+                              style={{
+                                borderBottom: ci < link.children.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',
+                              }}
                             >
-                              <span className="text-sm font-inter font-medium text-champagne/90 hover:text-orange-accent transition-colors">
+                              <span
+                                className="text-sm font-inter font-semibold"
+                                style={{ color: '#ffffff' }}
+                              >
                                 {child.label}
                               </span>
                               {child.desc && (
-                                <span className="text-xs text-champagne/40 mt-0.5">{child.desc}</span>
+                                <span
+                                  className="text-xs font-inter mt-0.5"
+                                  style={{ color: 'rgba(247,231,206,0.55)' }}
+                                >
+                                  {child.desc}
+                                </span>
                               )}
                             </Link>
                           ))}
@@ -298,14 +318,16 @@ export default function Navbar() {
                   ) : link.href.startsWith('/') ? (
                     <Link
                       to={link.href}
-                      className="block py-3 px-4 text-champagne/80 hover:text-champagne hover:bg-white/5 rounded-sm font-inter font-medium transition-all"
+                      className="block py-3.5 px-4 rounded-sm font-inter font-semibold text-base transition-all"
+                      style={{ color: '#ffffff' }}
                     >
                       {link.label}
                     </Link>
                   ) : (
                     <button
                       onClick={() => handleNavClick(link.href)}
-                      className="w-full text-left py-3 px-4 text-champagne/80 hover:text-champagne hover:bg-white/5 rounded-sm font-inter font-medium transition-all"
+                      className="w-full text-left py-3.5 px-4 rounded-sm font-inter font-semibold text-base transition-all"
+                      style={{ color: '#ffffff' }}
                     >
                       {link.label}
                     </button>
@@ -316,8 +338,9 @@ export default function Navbar() {
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="pt-4 border-t border-white/5 mt-2"
+                transition={{ delay: 0.28 }}
+                className="pt-4 mt-2"
+                style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}
               >
                 <button
                   onClick={() => handleNavClick('#booking')}
