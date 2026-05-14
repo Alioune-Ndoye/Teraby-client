@@ -22,10 +22,10 @@ function TeamCard({ member }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="group flex flex-col"
+      className="group flex flex-col sm:flex-row gap-6"
     >
       {/* ── Photo ─────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-sm aspect-[4/5]">
+      <div className="relative overflow-hidden rounded-sm flex-shrink-0 w-full sm:w-64 aspect-[4/5]">
         <img
           src={member.image || FALLBACK_IMG}
           alt={member.name}
@@ -39,18 +39,19 @@ function TeamCard({ member }) {
         <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/90 via-navy/30 to-transparent" />
         <div className="absolute inset-0 bg-orange-accent/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="absolute inset-0 rounded-sm border border-orange-accent/0 group-hover:border-orange-accent/25 transition-all duration-500 pointer-events-none" />
-
-        {/* Name + role stay inside the photo */}
         <div className="absolute bottom-0 left-0 right-0 p-5">
           <p className="section-label text-left mb-1">{member.role}</p>
           <h3 className="font-playfair text-2xl font-bold text-white">{member.name}</h3>
         </div>
       </div>
 
-      {/* ── Bio + extras — always visible, outside the photo ─ */}
-      <div className="pt-5 flex flex-col gap-4">
+      {/* ── Bio — beside the photo, scrollable ──────────────── */}
+      <div className="flex flex-col gap-4 flex-1 min-w-0">
         {member.bio && (
-          <div className="space-y-3">
+          <div
+            className="sm:overflow-y-auto sm:max-h-80 pr-2 space-y-3"
+            style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(200,150,80,0.35) transparent' }}
+          >
             {member.bio.split('\n').filter(Boolean).map((paragraph, i) => (
               <p key={i} className="font-inter text-sm text-champagne/70 leading-relaxed">
                 {paragraph}
@@ -181,7 +182,7 @@ export default function Team() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-80px' }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+            className="grid grid-cols-1 gap-8"
           >
             {members.map((member) => (
               <TeamCard key={member.id} member={member} />
