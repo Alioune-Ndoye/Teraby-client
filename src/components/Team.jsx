@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion } from 'framer-motion'
 import Linkedin from 'lucide-react/dist/esm/icons/linkedin'
 import Mail from 'lucide-react/dist/esm/icons/mail'
@@ -18,13 +18,96 @@ const cardVariants = {
   visible:  { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] } },
 }
 
+// ── Cinematic auto-scrolling bio card — mobile only ───────────────────────────
+function AutoScrollBio({ paragraphs }) {
+  const innerRef  = useRef(null)
+  const rafRef    = useRef(null)
+  const pausedRef = useRef(false)
+  const posRef    = useRef(0)
+
+  useEffect(() => {
+    const inner = innerRef.current
+    if (!inner || paragraphs.length === 0) return
+
+    const SPEED = 0.38 // px per frame — slow, cinematic
+
+    function tick() {
+      if (!pausedRef.current) {
+        posRef.current += SPEED
+        // seamless loop: the content is duplicated, so reset at the halfway mark
+        const half = inner.scrollHeight / 2
+        if (posRef.current >= half) posRef.current = 0
+        inner.style.transform = `translateY(-${posRef.current}px)`
+      }
+      rafRef.current = requestAnimationFrame(tick)
+    }
+
+    // Brief pause before scroll begins so reader sees the opening line
+    const delay = setTimeout(() => {
+      rafRef.current = requestAnimationFrame(tick)
+    }, 1800)
+
+    return () => {
+      clearTimeout(delay)
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [paragraphs])
+
+  return (
+    <div
+      className="relative h-52 overflow-hidden rounded-sm"
+      style={{
+        background: 'linear-gradient(160deg, rgba(8,13,32,0.97) 0%, rgba(14,19,42,0.95) 100%)',
+        border: '1px solid rgba(200,150,80,0.22)',
+        boxShadow: 'inset 0 1px 0 rgba(200,150,80,0.1), 0 6px 28px rgba(0,0,0,0.45)',
+      }}
+      onMouseEnter={() => { pausedRef.current = true  }}
+      onMouseLeave={() => { pausedRef.current = false }}
+      onTouchStart={() => { pausedRef.current = true  }}
+      onTouchEnd={()   => { pausedRef.current = false }}
+    >
+      {/* Gold accent line at top */}
+      <div
+        className="absolute top-0 inset-x-0 h-px z-20 pointer-events-none"
+        style={{ background: 'linear-gradient(to right, transparent, rgba(200,150,80,0.55), transparent)' }}
+      />
+      {/* Top fade — masks entry */}
+      <div
+        className="absolute top-0 inset-x-0 h-10 z-10 pointer-events-none"
+        style={{ background: 'linear-gradient(to bottom, rgba(8,13,32,0.97), transparent)' }}
+      />
+      {/* Bottom fade — masks exit */}
+      <div
+        className="absolute bottom-0 inset-x-0 h-10 z-10 pointer-events-none"
+        style={{ background: 'linear-gradient(to top, rgba(8,13,32,0.97), transparent)' }}
+      />
+
+      {/* Scrolling content — duplicated for seamless loop */}
+      <div ref={innerRef} className="px-5 pt-5 will-change-transform">
+        {[...paragraphs, ...paragraphs].map((p, i) => (
+          <p
+            key={i}
+            className="font-inter text-[13px] leading-[1.8] mb-3 last:mb-0"
+            style={{ color: 'rgba(247,231,206,0.62)' }}
+          >
+            {p}
+          </p>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── TeamCard ──────────────────────────────────────────────────────────────────
 function TeamCard({ member }) {
+  const paragraphs = member.bio ? member.bio.split('\n').filter(Boolean) : []
+
   return (
     <motion.div
       variants={cardVariants}
       className="group flex flex-col sm:flex-row gap-6"
     >
-      {/* ── Photo ─────────────────────────────────────────── */}
+      {/* ── Photo ───────────────────────────────────────────────── */}
       <div className="relative overflow-hidden rounded-sm flex-shrink-0 w-full sm:w-64 aspect-[4/5]">
         <img
           src={member.image || FALLBACK_IMG}
@@ -36,27 +119,44 @@ function TeamCard({ member }) {
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           onError={(e) => { e.currentTarget.src = FALLBACK_IMG }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/90 via-navy/30 to-transparent" />
+
+        {/* Stronger gradient ensures name is readable on any image */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
         <div className="absolute inset-0 bg-orange-accent/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="absolute inset-0 rounded-sm border border-orange-accent/0 group-hover:border-orange-accent/25 transition-all duration-500 pointer-events-none" />
+
         <div className="absolute bottom-0 left-0 right-0 p-5">
           <p className="section-label text-left mb-1">{member.role}</p>
-          <h3 className="font-playfair text-2xl font-bold text-white">{member.name}</h3>
+          <h3
+            className="font-playfair text-2xl font-bold text-white"
+            style={{ textShadow: '0 2px 14px rgba(0,0,0,0.95), 0 1px 4px rgba(0,0,0,0.85)' }}
+          >
+            {member.name}
+          </h3>
         </div>
       </div>
 
-      {/* ── Bio — beside the photo, scrollable ──────────────── */}
+      {/* ── Bio panel ────────────────────────────────────────────── */}
       <div className="flex flex-col gap-4 flex-1 min-w-0">
-        {member.bio && (
+
+        {/* DESKTOP — static scrollable bio */}
+        {paragraphs.length > 0 && (
           <div
-            className="sm:overflow-y-auto sm:max-h-80 pr-2 space-y-3"
+            className="hidden sm:block overflow-y-auto max-h-80 pr-2 space-y-3"
             style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(200,150,80,0.35) transparent' }}
           >
-            {member.bio.split('\n').filter(Boolean).map((paragraph, i) => (
+            {paragraphs.map((p, i) => (
               <p key={i} className="font-inter text-sm text-champagne/70 leading-relaxed">
-                {paragraph}
+                {p}
               </p>
             ))}
+          </div>
+        )}
+
+        {/* MOBILE — cinematic auto-scrolling bio card */}
+        {paragraphs.length > 0 && (
+          <div className="sm:hidden">
+            <AutoScrollBio paragraphs={paragraphs} />
           </div>
         )}
 
@@ -88,6 +188,7 @@ function TeamCard({ member }) {
   )
 }
 
+// ── Section ───────────────────────────────────────────────────────────────────
 export default function Team() {
   const [members, setMembers] = useState([])
   const [loading, setLoading] = useState(true)
