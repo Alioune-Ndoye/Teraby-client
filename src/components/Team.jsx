@@ -22,9 +22,10 @@ function TeamCard({ member }) {
   return (
     <motion.div
       variants={cardVariants}
-      className="group relative overflow-hidden rounded-sm"
+      className="group flex flex-col"
     >
-      <div className="relative overflow-hidden aspect-[4/5]">
+      {/* ── Photo ─────────────────────────────────────────── */}
+      <div className="relative overflow-hidden rounded-sm aspect-[4/5]">
         <img
           src={member.image || FALLBACK_IMG}
           alt={member.name}
@@ -32,51 +33,56 @@ function TeamCard({ member }) {
           height="500"
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover transition-transform duration-700"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
           onError={(e) => { e.currentTarget.src = FALLBACK_IMG }}
-          onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.08)')}
-          onMouseLeave={(e) => (e.currentTarget.style.transform = 'scale(1)')}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/95 via-navy/40 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/90 via-navy/30 to-transparent" />
         <div className="absolute inset-0 bg-orange-accent/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        <div className="absolute inset-0 rounded-sm border border-orange-accent/0 group-hover:border-orange-accent/25 transition-all duration-500 pointer-events-none" />
 
-        <div className="absolute bottom-0 left-0 right-0 p-6">
+        {/* Name + role stay inside the photo */}
+        <div className="absolute bottom-0 left-0 right-0 p-5">
           <p className="section-label text-left mb-1">{member.role}</p>
-          <h3 className="font-playfair text-2xl font-bold text-white mb-2">{member.name}</h3>
-
-          <div className="opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-500">
-            {member.bio && (
-              <p className="font-inter text-sm text-champagne/65 leading-relaxed mb-4">
-                {member.bio}
-              </p>
-            )}
-            {member.specialties?.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mb-4">
-                {member.specialties.map((s) => (
-                  <span
-                    key={s}
-                    className="text-xs font-inter px-2.5 py-1 rounded-full bg-orange-accent/15 text-orange-accent border border-orange-accent/20"
-                  >
-                    {s}
-                  </span>
-                ))}
-              </div>
-            )}
-            <div className="flex gap-2">
-              <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
-                                 text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
-                <Linkedin size={14} />
-              </button>
-              <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
-                                 text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
-                <Mail size={14} />
-              </button>
-            </div>
-          </div>
+          <h3 className="font-playfair text-2xl font-bold text-white">{member.name}</h3>
         </div>
       </div>
 
-      <div className="absolute inset-0 rounded-sm border border-orange-accent/0 group-hover:border-orange-accent/25 transition-all duration-500 pointer-events-none" />
+      {/* ── Bio + extras — always visible, outside the photo ─ */}
+      <div className="pt-5 flex flex-col gap-4">
+        {member.bio && (
+          <div className="space-y-3">
+            {member.bio.split('\n').filter(Boolean).map((paragraph, i) => (
+              <p key={i} className="font-inter text-sm text-champagne/70 leading-relaxed">
+                {paragraph}
+              </p>
+            ))}
+          </div>
+        )}
+
+        {member.specialties?.length > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {member.specialties.map((s) => (
+              <span
+                key={s}
+                className="text-xs font-inter px-2.5 py-1 rounded-full bg-orange-accent/15 text-orange-accent border border-orange-accent/20"
+              >
+                {s}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
+                             text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
+            <Linkedin size={14} />
+          </button>
+          <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
+                             text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
+            <Mail size={14} />
+          </button>
+        </div>
+      </div>
     </motion.div>
   )
 }
