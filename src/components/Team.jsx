@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import Linkedin from 'lucide-react/dist/esm/icons/linkedin'
 import Mail from 'lucide-react/dist/esm/icons/mail'
 import Award from 'lucide-react/dist/esm/icons/award'
@@ -20,53 +20,47 @@ const cardVariants = {
 }
 
 // ── ExpandableBio ─────────────────────────────────────────────────────────────
-const BIO_PREVIEW_CHARS = 160
+// Uses a single always-rendered container clipped by max-height CSS transition.
+// No content swap = no fade-out/fade-in flicker.
+const COLLAPSED_HEIGHT = '4.5rem' // ~3 lines
+const EXPANDED_HEIGHT  = '32rem'  // generous ceiling for any bio length
 
 function ExpandableBio({ bio }) {
   const [expanded, setExpanded] = useState(false)
 
-  const isLong = bio.length > BIO_PREVIEW_CHARS
-  const preview = isLong ? bio.slice(0, BIO_PREVIEW_CHARS).trimEnd() + '…' : bio
+  const paragraphs = bio.split('\n').filter(Boolean)
+  // Only show the button when the bio is likely to overflow the collapsed height
+  const isLong = bio.length > 160
 
   return (
     <div>
-      <AnimatePresence initial={false} mode="wait">
-        {expanded ? (
-          <motion.div
-            key="full"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.38, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="overflow-hidden"
-          >
-            <div
-              className="overflow-y-auto max-h-64 pr-2 space-y-3"
-              style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(200,150,80,0.35) transparent' }}
-            >
-              {bio.split('\n').filter(Boolean).map((p, i) => (
-                <p key={i} className="font-inter text-sm text-champagne/70 leading-relaxed">{p}</p>
-              ))}
-            </div>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="preview"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-          >
-            <p className="font-inter text-sm text-champagne/70 leading-relaxed">{preview}</p>
-          </motion.div>
+      <div
+        className="relative overflow-hidden"
+        style={{
+          maxHeight: expanded ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT,
+          transition: 'max-height 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        }}
+      >
+        <div className="space-y-3">
+          {paragraphs.map((p, i) => (
+            <p key={i} className="font-inter text-sm text-champagne/70 leading-relaxed">{p}</p>
+          ))}
+        </div>
+
+        {/* Fade-out mask at the bottom when collapsed */}
+        {isLong && !expanded && (
+          <div
+            className="absolute bottom-0 inset-x-0 h-8 pointer-events-none"
+            style={{ background: 'linear-gradient(to bottom, transparent, #1A2238)' }}
+          />
         )}
-      </AnimatePresence>
+      </div>
 
       {isLong && (
         <button
           onClick={() => setExpanded((v) => !v)}
-          className="mt-3 flex items-center gap-1.5 font-inter text-xs font-semibold text-orange-accent/80
-                     hover:text-orange-accent transition-colors duration-200 group"
+          className="mt-2 flex items-center gap-1.5 font-inter text-xs font-semibold
+                     text-orange-accent/80 hover:text-orange-accent transition-colors duration-200"
         >
           <span>{expanded ? 'Lire moins' : 'Lire plus'}</span>
           <motion.span
