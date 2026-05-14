@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useServiceBackground from '../../hooks/useServiceBackground'
 import { motion } from 'framer-motion'
 import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right'
 import Star from 'lucide-react/dist/esm/icons/star'
@@ -39,9 +40,12 @@ const levels = [
   { label: 'Premium', desc: 'Attention absolue aux détails. Le grand luxe.', time: '3–5h' },
 ]
 
+const AIRBNB_FALLBACK = 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1600&fit=crop&q=60'
+
 export default function AirbnbCleaning() {
   const navigate = useNavigate()
   const { switchMode } = usePricing()
+  const heroBg = useServiceBackground('airbnb', AIRBNB_FALLBACK)
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -56,7 +60,7 @@ export default function AirbnbCleaning() {
       {/* ── Hero ── */}
       <section className="hero-dark relative min-h-[58vh] flex items-end overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1600&fit=crop&q=60"
+          src={heroBg}
           alt=""
           loading="eager"
           className="absolute inset-0 w-full h-full object-cover object-center"

@@ -45,8 +45,8 @@ export default function Hero() {
             aria-hidden="true"
           />
         </picture>
-        <div className="absolute inset-0 bg-white/55" />
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/40 to-transparent" />
+        <div className="absolute inset-0 bg-white/22" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/15 to-transparent" />
       </div>
 
       {/* Content */}

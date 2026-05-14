@@ -1,11 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
-import { motion } from 'framer-motion'
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Linkedin from 'lucide-react/dist/esm/icons/linkedin'
 import Mail from 'lucide-react/dist/esm/icons/mail'
 import Award from 'lucide-react/dist/esm/icons/award'
+import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down'
 
 const API = import.meta.env.VITE_API_URL || ''
-
+const CONTACT_EMAIL = 'contact@teraby.fr'
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop&crop=face'
 
 const containerVariants = {
@@ -14,93 +15,76 @@ const containerVariants = {
 }
 
 const cardVariants = {
-  hidden:   { opacity: 0, y: 50 },
-  visible:  { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] } },
+  hidden:  { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] } },
 }
 
-// ── Cinematic auto-scrolling bio card — mobile only ───────────────────────────
-function AutoScrollBio({ paragraphs }) {
-  const innerRef  = useRef(null)
-  const rafRef    = useRef(null)
-  const pausedRef = useRef(false)
-  const posRef    = useRef(0)
+// ── ExpandableBio ─────────────────────────────────────────────────────────────
+const BIO_PREVIEW_CHARS = 160
 
-  useEffect(() => {
-    const inner = innerRef.current
-    if (!inner || paragraphs.length === 0) return
+function ExpandableBio({ bio }) {
+  const [expanded, setExpanded] = useState(false)
 
-    const SPEED = 0.38 // px per frame — slow, cinematic
-
-    function tick() {
-      if (!pausedRef.current) {
-        posRef.current += SPEED
-        // seamless loop: the content is duplicated, so reset at the halfway mark
-        const half = inner.scrollHeight / 2
-        if (posRef.current >= half) posRef.current = 0
-        inner.style.transform = `translateY(-${posRef.current}px)`
-      }
-      rafRef.current = requestAnimationFrame(tick)
-    }
-
-    // Brief pause before scroll begins so reader sees the opening line
-    const delay = setTimeout(() => {
-      rafRef.current = requestAnimationFrame(tick)
-    }, 1800)
-
-    return () => {
-      clearTimeout(delay)
-      if (rafRef.current) cancelAnimationFrame(rafRef.current)
-    }
-  }, [paragraphs])
+  const isLong = bio.length > BIO_PREVIEW_CHARS
+  const preview = isLong ? bio.slice(0, BIO_PREVIEW_CHARS).trimEnd() + '…' : bio
 
   return (
-    <div
-      className="relative h-52 overflow-hidden rounded-sm"
-      style={{
-        background: 'linear-gradient(160deg, rgba(8,13,32,0.97) 0%, rgba(14,19,42,0.95) 100%)',
-        border: '1px solid rgba(200,150,80,0.22)',
-        boxShadow: 'inset 0 1px 0 rgba(200,150,80,0.1), 0 6px 28px rgba(0,0,0,0.45)',
-      }}
-      onMouseEnter={() => { pausedRef.current = true  }}
-      onMouseLeave={() => { pausedRef.current = false }}
-      onTouchStart={() => { pausedRef.current = true  }}
-      onTouchEnd={()   => { pausedRef.current = false }}
-    >
-      {/* Gold accent line at top */}
-      <div
-        className="absolute top-0 inset-x-0 h-px z-20 pointer-events-none"
-        style={{ background: 'linear-gradient(to right, transparent, rgba(200,150,80,0.55), transparent)' }}
-      />
-      {/* Top fade — masks entry */}
-      <div
-        className="absolute top-0 inset-x-0 h-10 z-10 pointer-events-none"
-        style={{ background: 'linear-gradient(to bottom, rgba(8,13,32,0.97), transparent)' }}
-      />
-      {/* Bottom fade — masks exit */}
-      <div
-        className="absolute bottom-0 inset-x-0 h-10 z-10 pointer-events-none"
-        style={{ background: 'linear-gradient(to top, rgba(8,13,32,0.97), transparent)' }}
-      />
-
-      {/* Scrolling content — duplicated for seamless loop */}
-      <div ref={innerRef} className="px-5 pt-5 will-change-transform">
-        {[...paragraphs, ...paragraphs].map((p, i) => (
-          <p
-            key={i}
-            className="font-inter text-[13px] leading-[1.8] mb-3 last:mb-0"
-            style={{ color: 'rgba(247,231,206,0.62)' }}
+    <div>
+      <AnimatePresence initial={false} mode="wait">
+        {expanded ? (
+          <motion.div
+            key="full"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.38, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className="overflow-hidden"
           >
-            {p}
-          </p>
-        ))}
-      </div>
+            <div
+              className="overflow-y-auto max-h-64 pr-2 space-y-3"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(200,150,80,0.35) transparent' }}
+            >
+              {bio.split('\n').filter(Boolean).map((p, i) => (
+                <p key={i} className="font-inter text-sm text-champagne/70 leading-relaxed">{p}</p>
+              ))}
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="preview"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+          >
+            <p className="font-inter text-sm text-champagne/70 leading-relaxed">{preview}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {isLong && (
+        <button
+          onClick={() => setExpanded((v) => !v)}
+          className="mt-3 flex items-center gap-1.5 font-inter text-xs font-semibold text-orange-accent/80
+                     hover:text-orange-accent transition-colors duration-200 group"
+        >
+          <span>{expanded ? 'Lire moins' : 'Lire plus'}</span>
+          <motion.span
+            animate={{ rotate: expanded ? 180 : 0 }}
+            transition={{ duration: 0.3 }}
+            className="inline-flex"
+          >
+            <ChevronDown size={13} />
+          </motion.span>
+        </button>
+      )}
     </div>
   )
 }
 
 // ── TeamCard ──────────────────────────────────────────────────────────────────
 function TeamCard({ member }) {
-  const paragraphs = member.bio ? member.bio.split('\n').filter(Boolean) : []
+  const hasBio = Boolean(member.bio?.trim())
 
   return (
     <motion.div
@@ -120,7 +104,6 @@ function TeamCard({ member }) {
           onError={(e) => { e.currentTarget.src = FALLBACK_IMG }}
         />
 
-        {/* Stronger gradient ensures name is readable on any image */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/25 to-transparent" />
         <div className="absolute inset-0 bg-orange-accent/8 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         <div className="absolute inset-0 rounded-sm border border-orange-accent/0 group-hover:border-orange-accent/25 transition-all duration-500 pointer-events-none" />
@@ -139,26 +122,7 @@ function TeamCard({ member }) {
       {/* ── Bio panel ────────────────────────────────────────────── */}
       <div className="flex flex-col gap-4 flex-1 min-w-0">
 
-        {/* DESKTOP — static scrollable bio */}
-        {paragraphs.length > 0 && (
-          <div
-            className="hidden sm:block overflow-y-auto max-h-80 pr-2 space-y-3"
-            style={{ scrollbarWidth: 'thin', scrollbarColor: 'rgba(200,150,80,0.35) transparent' }}
-          >
-            {paragraphs.map((p, i) => (
-              <p key={i} className="font-inter text-sm text-champagne/70 leading-relaxed">
-                {p}
-              </p>
-            ))}
-          </div>
-        )}
-
-        {/* MOBILE — cinematic auto-scrolling bio card */}
-        {paragraphs.length > 0 && (
-          <div className="sm:hidden">
-            <AutoScrollBio paragraphs={paragraphs} />
-          </div>
-        )}
+        {hasBio && <ExpandableBio bio={member.bio} />}
 
         {member.specialties?.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
@@ -173,15 +137,42 @@ function TeamCard({ member }) {
           </div>
         )}
 
+        {/* Social icons */}
         <div className="flex gap-2">
-          <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
-                             text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
-            <Linkedin size={14} />
-          </button>
-          <button className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
-                             text-champagne/50 hover:text-champagne hover:border-white/30 transition-all duration-200">
+          {member.linkedin ? (
+            <a
+              href={member.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`LinkedIn de ${member.name}`}
+              className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
+                         text-champagne/50 hover:text-[#0A66C2] hover:border-[#0A66C2]/40
+                         hover:bg-[#0A66C2]/10 hover:shadow-[0_0_12px_rgba(10,102,194,0.2)]
+                         transition-all duration-250"
+            >
+              <Linkedin size={14} />
+            </a>
+          ) : (
+            <button
+              disabled
+              className="w-8 h-8 rounded-sm border border-white/8 flex items-center justify-center
+                         text-champagne/20 cursor-default"
+              aria-hidden="true"
+            >
+              <Linkedin size={14} />
+            </button>
+          )}
+
+          <a
+            href={`mailto:${CONTACT_EMAIL}`}
+            aria-label="Contacter Teraby par email"
+            className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
+                       text-champagne/50 hover:text-orange-accent hover:border-orange-accent/40
+                       hover:bg-orange-accent/10 hover:shadow-[0_0_12px_rgba(204,85,0,0.2)]
+                       transition-all duration-250"
+          >
             <Mail size={14} />
-          </button>
+          </a>
         </div>
       </div>
     </motion.div>
@@ -212,6 +203,7 @@ export default function Team() {
               bio:         m.bio || '',
               image:       m.photo?.url || '',
               specialties: m.specialties || [],
+              linkedin:    m.linkedin || '',
             }))
           setMembers(normalised)
           setLoading(false)

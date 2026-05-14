@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useServiceBackground from '../../hooks/useServiceBackground'
 import { usePricing } from '../../context/PricingContext'
 import { motion, AnimatePresence } from 'framer-motion'
 import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right'
@@ -300,9 +301,12 @@ const features = [
   { icon: Users,       title: 'Équipe Dédiée',               desc: 'Une équipe fixe formée à vos locaux et à vos exigences spécifiques.' },
 ]
 
+const COMMERCIAL_FALLBACK = 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&fit=crop&q=60'
+
 export default function CommercialCleaning() {
   const navigate = useNavigate()
   const { switchMode } = usePricing()
+  const heroBg = useServiceBackground('commercial', COMMERCIAL_FALLBACK)
 
   useEffect(() => { window.scrollTo(0, 0) }, [])
 
@@ -322,7 +326,7 @@ export default function CommercialCleaning() {
       {/* ── Hero ── */}
       <section className="hero-dark relative min-h-[58vh] flex items-end overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&fit=crop&q=60"
+          src={heroBg}
           alt=""
           loading="eager"
           className="absolute inset-0 w-full h-full object-cover object-center"

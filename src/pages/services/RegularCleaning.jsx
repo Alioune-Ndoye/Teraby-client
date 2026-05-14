@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import useServiceBackground from '../../hooks/useServiceBackground'
 import { motion } from 'framer-motion'
 import { AnimatePresence } from 'framer-motion'
 import CheckCircle from 'lucide-react/dist/esm/icons/check-circle'
@@ -34,9 +35,12 @@ const included = [
   'Plinthes, interrupteurs & prises électriques',
 ]
 
+const REGULAR_FALLBACK = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&fit=crop&q=60'
+
 export default function RegularCleaning() {
   const navigate = useNavigate()
   const { switchMode, prem, setPrem } = usePricing()
+  const heroBg = useServiceBackground('regular', REGULAR_FALLBACK)
   const toggleExtra = (key) =>
     setPrem({ ...prem, extras: { ...prem.extras, [key]: !prem.extras[key] } })
 
@@ -53,7 +57,7 @@ export default function RegularCleaning() {
       {/* ── Hero ── */}
       <section className="hero-dark relative min-h-[58vh] flex items-end overflow-hidden">
         <img
-          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&fit=crop&q=60"
+          src={heroBg}
           alt=""
           loading="eager"
           className="absolute inset-0 w-full h-full object-cover object-center"
