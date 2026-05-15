@@ -24,14 +24,14 @@ const cardVariants = {
 }
 
 const COLLAPSED_HEIGHT = '4.5rem'
-const EXPANDED_HEIGHT  = '32rem'
+const EXPANDED_HEIGHT  = '999rem'
 
 // ── Bio paragraphs (shared markup) ────────────────────────────────────────────
 function BioParagraphs({ paragraphs }) {
   return (
     <div className="space-y-3">
       {paragraphs.map((p, i) => (
-        <p key={i} className="font-inter text-sm leading-relaxed text-navy/70">{p}</p>
+        <p key={i} className="font-inter text-sm leading-relaxed text-navy/70 break-words">{p.trim()}</p>
       ))}
     </div>
   )
@@ -42,7 +42,7 @@ function BioParagraphs({ paragraphs }) {
 // Mobile:  collapsed by default with +/− toggle.
 function ExpandableBio({ bio }) {
   const [expanded, setExpanded] = useState(false)
-  const paragraphs = bio.split('\n').filter(Boolean)
+  const paragraphs = bio.split(/\r?\n+/).filter((p) => p.trim())
   const isLong = bio.length > 160
 
   return (
@@ -163,7 +163,7 @@ function TeamCard({ member }) {
 
       {/* ── Bio panel ────────────────────────────────────────────── */}
       <div
-        className="flex flex-col gap-4 flex-1 min-w-0 rounded-sm border border-black/8 p-5 sm:p-6"
+        className="flex flex-col gap-4 flex-1 min-w-0 min-h-0 rounded-sm border border-black/8 p-5 sm:p-6 overflow-visible"
         style={{ backgroundColor: BIO_CARD_BG }}
       >
         {/* Name + role on mobile (already on photo on desktop) */}

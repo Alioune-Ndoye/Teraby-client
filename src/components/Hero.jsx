@@ -45,8 +45,9 @@ export default function Hero() {
             aria-hidden="true"
           />
         </picture>
-        <div className="absolute inset-0 bg-white/22" />
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/15 to-transparent" />
+        <div className="absolute inset-0 bg-white/38" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/55 via-white/20 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/20 to-transparent" />
       </div>
 
       {/* Content */}
@@ -77,6 +78,7 @@ export default function Hero() {
             animate="visible"
             custom={0.4}
             className="font-playfair text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.05] mb-6"
+            style={{ textShadow: '0 2px 24px rgba(255,255,255,0.6), 0 1px 4px rgba(0,0,0,0.08)' }}
           >
             <span className="text-gray-900">Nettoyage Premium,</span>
             <br />
@@ -89,7 +91,8 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.6}
-            className="font-playfair text-xl md:text-2xl text-gray-700 italic mb-3 leading-relaxed"
+            className="font-playfair text-xl md:text-2xl text-gray-800 italic mb-3 leading-relaxed"
+            style={{ textShadow: '0 1px 12px rgba(255,255,255,0.7)' }}
           >
             Là où la précision rencontre la perfection.
           </motion.p>
@@ -99,7 +102,8 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.7}
-            className="font-inter text-base md:text-lg text-gray-600 max-w-xl leading-relaxed mb-10"
+            className="font-inter text-base md:text-lg text-gray-700 max-w-xl leading-relaxed mb-10"
+            style={{ textShadow: '0 1px 8px rgba(255,255,255,0.5)' }}
           >
             Nous ne nettoyons pas seulement — nous restaurons, élevons et transformons.
             Chaque surface, chaque recoin, chaque détail traité avec le soin qu'il mérite.
