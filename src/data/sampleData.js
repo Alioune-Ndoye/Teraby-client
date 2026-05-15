@@ -296,7 +296,7 @@ export const serviceCards = [
     description: 'Conçu pour les hôtes et gestionnaires de biens. Intervention rapide entre deux séjours avec options linge, consommables et check-in tardif.',
     features: ['Rotation rapide', 'Linge & Consommables', 'Check-in tardif', 'Rapport photo inclus'],
     href: '/services/airbnb-cleaning',
-    image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=800&fit=crop&q=60',
+    image: '/airbnb-room.jpg',
     popular: true,
   },
   {

@@ -40,7 +40,7 @@ const levels = [
   { label: 'Premium', desc: 'Attention absolue aux détails. Le grand luxe.', time: '3–5h' },
 ]
 
-const AIRBNB_FALLBACK = 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=1600&fit=crop&q=60'
+const AIRBNB_FALLBACK = '/airbnb-room.jpg'
 
 export default function AirbnbCleaning() {
   const navigate = useNavigate()
