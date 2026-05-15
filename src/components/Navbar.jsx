@@ -3,10 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import Menu from 'lucide-react/dist/esm/icons/menu'
 import X from 'lucide-react/dist/esm/icons/x'
-import Moon from 'lucide-react/dist/esm/icons/moon'
-import Sun from 'lucide-react/dist/esm/icons/sun'
 import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down'
-import { useTheme } from '../context/ThemeContext'
 import { navLinks } from '../data/sampleData'
 
 export default function Navbar() {
@@ -14,7 +11,6 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
   const [dropdownOpen, setDropdownOpen] = useState(false)
-  const { isDark, toggleTheme } = useTheme()
   const location = useLocation()
   const navigate = useNavigate()
   const isHome = location.pathname === '/'
@@ -201,16 +197,6 @@ export default function Navbar() {
             {/* Right side */}
             <div className="hidden lg:flex items-center gap-3">
               <button
-                onClick={toggleTheme}
-                style={heroTextStyle}
-                className={`p-2 rounded-sm transition-all duration-300 ${
-                  !overHero ? 'text-navy/50 hover:text-navy hover:bg-black/5' : 'hover:bg-white/10'
-                }`}
-                aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
-              >
-                {isDark ? <Sun size={18} /> : <Moon size={18} />}
-              </button>
-              <button
                 onClick={() => handleNavClick('#booking')}
                 className="btn-primary text-sm py-2.5 px-6"
               >
@@ -220,14 +206,6 @@ export default function Navbar() {
 
             {/* Mobile menu toggle */}
             <div className="lg:hidden flex items-center gap-3">
-              <button
-                onClick={toggleTheme}
-                style={heroTextStyle}
-                className={`p-2 transition-colors duration-300 ${!overHero ? 'text-navy/60 hover:text-navy' : ''}`}
-                aria-label={isDark ? 'Passer en mode clair' : 'Passer en mode sombre'}
-              >
-                {isDark ? <Sun size={18} /> : <Moon size={18} />}
-              </button>
               <button
                 onClick={() => setMobileOpen((p) => !p)}
                 style={heroTextStyle}
