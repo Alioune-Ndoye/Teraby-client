@@ -41,13 +41,18 @@ export default function Hero() {
             loading="eager"
             fetchPriority="high"
             decoding="async"
-            className="absolute inset-0 w-full h-full object-cover object-center"
+            className="absolute inset-0 w-full h-full object-cover object-center hero-bg-img"
             aria-hidden="true"
           />
         </picture>
-        <div className="absolute inset-0 bg-white/38" />
-        <div className="absolute inset-0 bg-gradient-to-r from-white/55 via-white/20 to-transparent" />
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/20 to-transparent" />
+        {/* Base overlay — slightly stronger on mobile for readability */}
+        <div className="absolute inset-0 bg-white/52 md:bg-white/38" />
+        {/* Left-to-right gradient — pulls text side lighter on mobile */}
+        <div className="absolute inset-0 bg-gradient-to-r from-white/75 via-white/40 to-white/5 md:from-white/55 md:via-white/20 md:to-transparent" />
+        {/* Top fade */}
+        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-white/25 to-transparent" />
+        {/* Mobile-only bottom fade — keeps lower content clean */}
+        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white/30 to-transparent md:hidden" />
       </div>
 
       {/* Content */}
@@ -59,7 +64,7 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.2}
-            className="inline-flex items-center gap-2 bg-white/80 border border-black/10 px-4 py-2 rounded-full mb-8"
+            className="inline-flex items-center gap-2 bg-white/90 border border-black/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full mb-6 sm:mb-8"
           >
             <div className="flex gap-0.5">
               {[...Array(5)].map((_, i) => (
@@ -77,8 +82,8 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.4}
-            className="font-playfair text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.05] mb-6"
-            style={{ textShadow: '0 2px 24px rgba(255,255,255,0.6), 0 1px 4px rgba(0,0,0,0.08)' }}
+            className="font-playfair text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-bold leading-[1.08] sm:leading-[1.05] mb-5 sm:mb-6"
+            style={{ textShadow: '0 2px 20px rgba(255,255,255,0.85), 0 1px 6px rgba(0,0,0,0.12)' }}
           >
             <span className="text-gray-900">Nettoyage Premium,</span>
             <br />
@@ -91,8 +96,8 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.6}
-            className="font-playfair text-xl md:text-2xl text-gray-800 italic mb-3 leading-relaxed"
-            style={{ textShadow: '0 1px 12px rgba(255,255,255,0.7)' }}
+            className="font-playfair text-base sm:text-xl md:text-2xl text-gray-800 italic mb-3 leading-relaxed"
+            style={{ textShadow: '0 1px 14px rgba(255,255,255,0.9)' }}
           >
             Là où la précision rencontre la perfection.
           </motion.p>
@@ -102,8 +107,8 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.7}
-            className="font-inter text-base md:text-lg text-gray-700 max-w-xl leading-relaxed mb-10"
-            style={{ textShadow: '0 1px 8px rgba(255,255,255,0.5)' }}
+            className="font-inter text-sm sm:text-base md:text-lg text-gray-700 max-w-sm sm:max-w-xl leading-relaxed mb-8 sm:mb-10"
+            style={{ textShadow: '0 1px 10px rgba(255,255,255,0.85)' }}
           >
             Nous ne nettoyons pas seulement — nous restaurons, élevons et transformons.
             Chaque surface, chaque recoin, chaque détail traité avec le soin qu'il mérite.
@@ -115,13 +120,13 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={0.85}
-            className="flex flex-col sm:flex-row gap-4 mb-20"
+            className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-12 sm:mb-20"
           >
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => scrollToSection('#booking')}
-              className="btn-primary text-base px-10 py-4"
+              className="btn-primary text-sm sm:text-base px-8 sm:px-10 py-3.5 sm:py-4"
             >
               Réserver Maintenant
             </motion.button>
@@ -129,7 +134,7 @@ export default function Hero() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => scrollToSection('#services')}
-              className="font-inter font-semibold tracking-wide text-base px-10 py-4 rounded-sm transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2.5"
+              className="font-inter font-semibold tracking-wide text-sm sm:text-base px-8 sm:px-10 py-3.5 sm:py-4 rounded-sm transition-all duration-300 hover:-translate-y-0.5 flex items-center justify-center gap-2.5"
               style={{ backgroundColor: '#1A2238', color: '#ffffff' }}
               onMouseEnter={e => e.currentTarget.style.backgroundColor = '#243251'}
               onMouseLeave={e => e.currentTarget.style.backgroundColor = '#1A2238'}
@@ -145,7 +150,7 @@ export default function Hero() {
             initial="hidden"
             animate="visible"
             custom={1.0}
-            className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8"
+            className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8"
           >
             {stats.map((stat, i) => (
               <motion.div
@@ -155,7 +160,10 @@ export default function Hero() {
                 transition={{ delay: 1.1 + i * 0.1, duration: 0.6 }}
                 className="group"
               >
-                <div className="font-playfair text-3xl md:text-4xl font-bold text-gray-900 group-hover:text-orange-accent transition-colors duration-300">
+                <div
+                  className="font-playfair text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 group-hover:text-orange-accent transition-colors duration-300"
+                  style={{ textShadow: '0 1px 8px rgba(255,255,255,0.7)' }}
+                >
                   {stat.value}
                 </div>
                 <div className="font-inter text-xs text-gray-500 mt-1 tracking-wide uppercase">

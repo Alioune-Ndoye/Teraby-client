@@ -356,6 +356,9 @@ html:not(.dark) .text-champagne\/40 { color: rgba(26, 34, 56, 0.44) !important; 
 html:not(.dark) .text-champagne\/30 { color: rgba(26, 34, 56, 0.36) !important; }
 html:not(.dark) .text-champagne\/20 { color: rgba(26, 34, 56, 0.26) !important; }
 html:not(.dark) .text-champagne\/15 { color: rgba(26, 34, 56, 0.20) !important; }
+html:not(.dark) .text-champagne\/35 { color: rgba(26, 34, 56, 0.40) !important; }
+html:not(.dark) .text-champagne\/25 { color: rgba(26, 34, 56, 0.30) !important; }
+html:not(.dark) .text-champagne-light { color: rgba(26, 34, 56, 0.85) !important; }
 
 /* ── Borders — white opacity → navy opacity ── */
 html:not(.dark) .border-white\/3  { border-color: rgba(26, 34, 56, 0.06) !important; }
@@ -377,6 +380,8 @@ html:not(.dark) .luxury-input {
 }
 html:not(.dark) .luxury-input::placeholder { color: rgba(26, 34, 56, 0.36) !important; }
 html:not(.dark) .luxury-input option       { background: #f8f9fb; color: #1A2238; }
+html:not(.dark) .placeholder-champagne\/25::placeholder { color: rgba(26, 34, 56, 0.30) !important; }
+html:not(.dark) .placeholder-champagne\/30::placeholder { color: rgba(26, 34, 56, 0.36) !important; }
 
 /* ── Buttons (btn-primary/orange never touched) ── */
 html:not(.dark) .btn-secondary {
@@ -456,6 +461,27 @@ body.force-dark footer {
 ══════════════════════════════════════════════════════ */
 
 @media (max-width: 767px) {
+
+  /* ── Hero background: shift focal point right so text area stays clean ── */
+  .hero-bg-img {
+    object-position: 65% center !important;
+  }
+
+  /* ── Hero text shadows: stronger whites for readability over image ── */
+  #home h1 {
+    text-shadow: 0 2px 20px rgba(255,255,255,0.95), 0 1px 8px rgba(0,0,0,0.15) !important;
+  }
+  #home .font-playfair.italic {
+    text-shadow: 0 1px 14px rgba(255,255,255,0.95) !important;
+  }
+  #home .font-inter {
+    text-shadow: 0 1px 10px rgba(255,255,255,0.90) !important;
+  }
+
+  /* ── Hero stat values: readable over image ── */
+  #home .font-playfair.font-bold {
+    text-shadow: 0 1px 10px rgba(255,255,255,0.85) !important;
+  }
 
   /* ── Momentum / native scroll on iOS ── */
   html, body {
