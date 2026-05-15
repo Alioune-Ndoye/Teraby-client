@@ -187,23 +187,6 @@ export default function Testimonials() {
           </div>
         </div>
 
-        <div className="flex justify-center gap-4 mt-8 flex-wrap">
-          {testimonials.map((t, i) => (
-            <motion.button
-              key={t.id}
-              onClick={(e) => { e.stopPropagation(); setDirection(i > current ? 1 : -1); setCurrent(i); resetAuto() }}
-              whileHover={{ scale: 1.05 }}
-              className={`flex items-center gap-2.5 px-4 py-2 rounded-full border transition-all duration-300
-                ${i === current
-                  ? 'border-orange-accent/50 bg-orange-accent/10 text-champagne'
-                  : 'border-white/8 bg-white/2 text-champagne/40 hover:border-white/20 hover:text-champagne/70'
-                }`}
-            >
-              <img src={t.avatar} alt={t.name} width="24" height="24" loading="lazy" decoding="async" className="w-6 h-6 rounded-full object-cover" />
-              <span className="font-inter text-xs font-medium">{t.name.split(' ')[0]}</span>
-            </motion.button>
-          ))}
-        </div>
       </div>
     </section>
   )
