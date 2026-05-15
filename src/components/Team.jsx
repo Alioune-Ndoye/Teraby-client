@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import Linkedin from 'lucide-react/dist/esm/icons/linkedin'
 import Mail from 'lucide-react/dist/esm/icons/mail'
 import Award from 'lucide-react/dist/esm/icons/award'
-import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down'
+import Plus from 'lucide-react/dist/esm/icons/plus'
+import Minus from 'lucide-react/dist/esm/icons/minus'
 
 const API = import.meta.env.VITE_API_URL || ''
 const CONTACT_EMAIL = 'contact@teraby.fr'
@@ -29,7 +30,6 @@ function ExpandableBio({ bio }) {
   const [expanded, setExpanded] = useState(false)
 
   const paragraphs = bio.split('\n').filter(Boolean)
-  // Only show the button when the bio is likely to overflow the collapsed height
   const isLong = bio.length > 160
 
   return (
@@ -38,39 +38,73 @@ function ExpandableBio({ bio }) {
         className="relative overflow-hidden"
         style={{
           maxHeight: expanded ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT,
-          transition: 'max-height 0.42s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          transition: 'max-height 0.52s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
         }}
       >
-        <div className="space-y-3">
+        <div
+          className="space-y-3"
+          style={{
+            opacity: expanded ? 1 : 0.82,
+            transition: 'opacity 0.45s ease',
+          }}
+        >
           {paragraphs.map((p, i) => (
-            <p key={i} className="font-inter text-sm text-champagne/70 leading-relaxed">{p}</p>
+            <p key={i} className="font-inter text-sm text-champagne/75 leading-relaxed">{p}</p>
           ))}
         </div>
 
-        {/* Fade-out mask at the bottom when collapsed */}
-        {isLong && !expanded && (
-          <div
-            className="absolute bottom-0 inset-x-0 h-8 pointer-events-none"
-            style={{ background: 'linear-gradient(to bottom, transparent, #1A2238)' }}
-          />
-        )}
+        {/* Fade-out mask when collapsed */}
+        <AnimatePresence>
+          {isLong && !expanded && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
+              className="absolute bottom-0 inset-x-0 h-10 pointer-events-none"
+              style={{ background: 'linear-gradient(to bottom, transparent, #1A2238)' }}
+            />
+          )}
+        </AnimatePresence>
       </div>
 
       {isLong && (
-        <button
+        <motion.button
           onClick={() => setExpanded((v) => !v)}
-          className="mt-2 flex items-center gap-1.5 font-inter text-xs font-semibold
-                     text-orange-accent/80 hover:text-orange-accent transition-colors duration-200"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
+          transition={{ duration: 0.15 }}
+          className="mt-3 flex items-center gap-2 font-inter text-xs font-semibold
+                     px-3 py-1.5 rounded-sm
+                     border border-orange-accent/25 bg-orange-accent/6
+                     text-orange-accent/80 hover:text-orange-accent
+                     hover:border-orange-accent/50 hover:bg-orange-accent/12
+                     transition-colors duration-200"
         >
-          <span>{expanded ? 'Lire moins' : 'Lire plus'}</span>
-          <motion.span
-            animate={{ rotate: expanded ? 180 : 0 }}
-            transition={{ duration: 0.3 }}
-            className="inline-flex"
-          >
-            <ChevronDown size={13} />
-          </motion.span>
-        </button>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={expanded ? 'minus' : 'plus'}
+              initial={{ opacity: 0, rotate: -45, scale: 0.6 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              exit={{ opacity: 0, rotate: 45, scale: 0.6 }}
+              transition={{ duration: 0.18 }}
+              className="inline-flex"
+            >
+              {expanded ? <Minus size={11} /> : <Plus size={11} />}
+            </motion.span>
+          </AnimatePresence>
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.span
+              key={expanded ? 'reduire' : 'lireplus'}
+              initial={{ opacity: 0, x: -4 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 4 }}
+              transition={{ duration: 0.18 }}
+            >
+              {expanded ? 'Réduire' : 'Lire plus'}
+            </motion.span>
+          </AnimatePresence>
+        </motion.button>
       )}
     </div>
   )
@@ -103,10 +137,15 @@ function TeamCard({ member }) {
         <div className="absolute inset-0 rounded-sm border border-orange-accent/0 group-hover:border-orange-accent/25 transition-all duration-500 pointer-events-none" />
 
         <div className="absolute bottom-0 left-0 right-0 p-5">
-          <p className="section-label text-left mb-1">{member.role}</p>
+          <p
+            className="section-label text-left mb-1"
+            style={{ textShadow: '0 1px 6px rgba(0,0,0,0.9)' }}
+          >
+            {member.role}
+          </p>
           <h3
             className="font-playfair text-2xl font-bold text-white"
-            style={{ textShadow: '0 2px 14px rgba(0,0,0,0.95), 0 1px 4px rgba(0,0,0,0.85)' }}
+            style={{ textShadow: '0 2px 16px rgba(0,0,0,0.98), 0 1px 4px rgba(0,0,0,0.9)' }}
           >
             {member.name}
           </h3>
@@ -139,8 +178,8 @@ function TeamCard({ member }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`LinkedIn de ${member.name}`}
-              className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
-                         text-champagne/50 hover:text-[#0A66C2] hover:border-[#0A66C2]/40
+              className="w-8 h-8 rounded-sm border border-white/20 flex items-center justify-center
+                         text-champagne/65 hover:text-[#0A66C2] hover:border-[#0A66C2]/40
                          hover:bg-[#0A66C2]/10 hover:shadow-[0_0_12px_rgba(10,102,194,0.2)]
                          transition-all duration-250"
             >
@@ -149,8 +188,8 @@ function TeamCard({ member }) {
           ) : (
             <button
               disabled
-              className="w-8 h-8 rounded-sm border border-white/8 flex items-center justify-center
-                         text-champagne/20 cursor-default"
+              className="w-8 h-8 rounded-sm border border-white/10 flex items-center justify-center
+                         text-champagne/25 cursor-default"
               aria-hidden="true"
             >
               <Linkedin size={14} />
@@ -160,8 +199,8 @@ function TeamCard({ member }) {
           <a
             href={`mailto:${CONTACT_EMAIL}`}
             aria-label="Contacter Teraby par email"
-            className="w-8 h-8 rounded-sm border border-white/15 flex items-center justify-center
-                       text-champagne/50 hover:text-orange-accent hover:border-orange-accent/40
+            className="w-8 h-8 rounded-sm border border-white/20 flex items-center justify-center
+                       text-champagne/65 hover:text-orange-accent hover:border-orange-accent/40
                        hover:bg-orange-accent/10 hover:shadow-[0_0_12px_rgba(204,85,0,0.2)]
                        transition-all duration-250"
           >

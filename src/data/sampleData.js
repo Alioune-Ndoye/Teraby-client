@@ -285,7 +285,7 @@ export const serviceCards = [
     description: 'Un nettoyage soigné de fond en comble, adapté à votre domicile. Du studio à la grande maison, chaque espace est traité avec le soin qu\'il mérite.',
     features: ['Cuisine & Salles de bain', 'Chambres & Séjour', 'Sols & Fenêtres', 'Demandes personnalisées'],
     href: '/services/regular-cleaning',
-    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&fit=crop&q=60',
+    image: '/bathroom-regular.jpg',
     popular: false,
   },
   {

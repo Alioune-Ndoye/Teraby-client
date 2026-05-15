@@ -35,7 +35,7 @@ const included = [
   'Plinthes, interrupteurs & prises électriques',
 ]
 
-const REGULAR_FALLBACK = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&fit=crop&q=60'
+const REGULAR_FALLBACK = '/bathroom-regular.jpg'
 
 export default function RegularCleaning() {
   const navigate = useNavigate()
