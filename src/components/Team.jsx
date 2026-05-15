@@ -31,7 +31,7 @@ function BioParagraphs({ paragraphs }) {
   return (
     <div className="space-y-3">
       {paragraphs.map((p, i) => (
-        <p key={i} className="font-inter text-sm leading-relaxed text-champagne/90">{p}</p>
+        <p key={i} className="font-inter text-sm leading-relaxed text-navy/70">{p}</p>
       ))}
     </div>
   )
