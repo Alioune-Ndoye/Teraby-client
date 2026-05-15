@@ -307,7 +307,7 @@ export const serviceCards = [
     description: 'Bureaux, commerces, showrooms. Nous maintenons vos espaces professionnels au niveau d\'excellence qu\'ils méritent, avant, pendant ou après les heures d\'ouverture.',
     features: ['Bureaux & Coworking', 'Commerces & Showrooms', 'Hors des heures d\'ouverture', 'Contrats récurrents'],
     href: '/services/commercial-cleaning',
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&fit=crop&q=60',
+    image: '/commercial-office.jpg',
     popular: false,
   },
 ]

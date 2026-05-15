@@ -301,7 +301,7 @@ const features = [
   { icon: Users,       title: 'Équipe Dédiée',               desc: 'Une équipe fixe formée à vos locaux et à vos exigences spécifiques.' },
 ]
 
-const COMMERCIAL_FALLBACK = 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=1600&fit=crop&q=60'
+const COMMERCIAL_FALLBACK = '/commercial-office.jpg'
 
 export default function CommercialCleaning() {
   const navigate = useNavigate()
