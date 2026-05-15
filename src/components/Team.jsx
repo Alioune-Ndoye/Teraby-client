@@ -10,6 +10,9 @@ const API = import.meta.env.VITE_API_URL || ''
 const CONTACT_EMAIL = 'contact@teraby.fr'
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop&crop=face'
 
+// Card bg used for the bio panel — must match the fade gradient below
+const BIO_CARD_BG = '#111827'
+
 const containerVariants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.14 } },
@@ -20,93 +23,99 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: [0.25, 0.46, 0.45, 0.94] } },
 }
 
-// ── ExpandableBio ─────────────────────────────────────────────────────────────
-// Uses a single always-rendered container clipped by max-height CSS transition.
-// No content swap = no fade-out/fade-in flicker.
-const COLLAPSED_HEIGHT = '4.5rem' // ~3 lines
-const EXPANDED_HEIGHT  = '32rem'  // generous ceiling for any bio length
+const COLLAPSED_HEIGHT = '4.5rem'
+const EXPANDED_HEIGHT  = '32rem'
 
+// ── Bio paragraphs (shared markup) ────────────────────────────────────────────
+function BioParagraphs({ paragraphs }) {
+  return (
+    <div className="space-y-3">
+      {paragraphs.map((p, i) => (
+        <p key={i} className="font-inter text-sm leading-relaxed text-champagne/90">{p}</p>
+      ))}
+    </div>
+  )
+}
+
+// ── ExpandableBio ─────────────────────────────────────────────────────────────
+// Desktop: always shows full bio, no toggle.
+// Mobile:  collapsed by default with +/− toggle.
 function ExpandableBio({ bio }) {
   const [expanded, setExpanded] = useState(false)
-
   const paragraphs = bio.split('\n').filter(Boolean)
   const isLong = bio.length > 160
 
   return (
-    <div>
-      <div
-        className="relative overflow-hidden"
-        style={{
-          maxHeight: expanded ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT,
-          transition: 'max-height 0.52s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-        }}
-      >
-        <div
-          className="space-y-3"
-          style={{
-            opacity: expanded ? 1 : 0.82,
-            transition: 'opacity 0.45s ease',
-          }}
-        >
-          {paragraphs.map((p, i) => (
-            <p key={i} className="font-inter text-sm text-champagne/75 leading-relaxed">{p}</p>
-          ))}
-        </div>
-
-        {/* Fade-out mask when collapsed */}
-        <AnimatePresence>
-          {isLong && !expanded && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="absolute bottom-0 inset-x-0 h-10 pointer-events-none"
-              style={{ background: 'linear-gradient(to bottom, transparent, #1A2238)' }}
-            />
-          )}
-        </AnimatePresence>
+    <>
+      {/* ── Desktop: full bio, no toggle ──────────────── */}
+      <div className="hidden sm:block">
+        <BioParagraphs paragraphs={paragraphs} />
       </div>
 
-      {isLong && (
-        <motion.button
-          onClick={() => setExpanded((v) => !v)}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.97 }}
-          transition={{ duration: 0.15 }}
-          className="mt-3 flex items-center gap-2 font-inter text-xs font-semibold
-                     px-3 py-1.5 rounded-sm
-                     border border-orange-accent/25 bg-orange-accent/6
-                     text-orange-accent/80 hover:text-orange-accent
-                     hover:border-orange-accent/50 hover:bg-orange-accent/12
-                     transition-colors duration-200"
+      {/* ── Mobile: collapsible bio ───────────────────── */}
+      <div className="sm:hidden">
+        <div
+          className="relative overflow-hidden"
+          style={{
+            maxHeight: expanded ? EXPANDED_HEIGHT : COLLAPSED_HEIGHT,
+            transition: 'max-height 0.52s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          }}
         >
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={expanded ? 'minus' : 'plus'}
-              initial={{ opacity: 0, rotate: -45, scale: 0.6 }}
-              animate={{ opacity: 1, rotate: 0, scale: 1 }}
-              exit={{ opacity: 0, rotate: 45, scale: 0.6 }}
-              transition={{ duration: 0.18 }}
-              className="inline-flex"
-            >
-              {expanded ? <Minus size={11} /> : <Plus size={11} />}
-            </motion.span>
+          <BioParagraphs paragraphs={paragraphs} />
+
+          <AnimatePresence>
+            {isLong && !expanded && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+                className="absolute bottom-0 inset-x-0 h-10 pointer-events-none"
+                style={{ background: `linear-gradient(to bottom, transparent, ${BIO_CARD_BG})` }}
+              />
+            )}
           </AnimatePresence>
-          <AnimatePresence mode="wait" initial={false}>
-            <motion.span
-              key={expanded ? 'reduire' : 'lireplus'}
-              initial={{ opacity: 0, x: -4 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 4 }}
-              transition={{ duration: 0.18 }}
-            >
-              {expanded ? 'Réduire' : 'Lire plus'}
-            </motion.span>
-          </AnimatePresence>
-        </motion.button>
-      )}
-    </div>
+        </div>
+
+        {isLong && (
+          <motion.button
+            onClick={() => setExpanded((v) => !v)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.97 }}
+            transition={{ duration: 0.15 }}
+            className="mt-3 flex items-center gap-2 font-inter text-xs font-semibold
+                       px-3 py-1.5 rounded-sm
+                       border border-orange-accent/30 bg-orange-accent/8
+                       text-orange-accent hover:border-orange-accent/60
+                       hover:bg-orange-accent/15 transition-colors duration-200"
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={expanded ? 'minus' : 'plus'}
+                initial={{ opacity: 0, rotate: -45, scale: 0.6 }}
+                animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                exit={{ opacity: 0, rotate: 45, scale: 0.6 }}
+                transition={{ duration: 0.18 }}
+                className="inline-flex"
+              >
+                {expanded ? <Minus size={11} /> : <Plus size={11} />}
+              </motion.span>
+            </AnimatePresence>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={expanded ? 'reduire' : 'lireplus'}
+                initial={{ opacity: 0, x: -4 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 4 }}
+                transition={{ duration: 0.18 }}
+              >
+                {expanded ? 'Réduire' : 'Lire plus'}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
+        )}
+      </div>
+    </>
   )
 }
 
@@ -153,7 +162,15 @@ function TeamCard({ member }) {
       </div>
 
       {/* ── Bio panel ────────────────────────────────────────────── */}
-      <div className="flex flex-col gap-4 flex-1 min-w-0">
+      <div
+        className="flex flex-col gap-4 flex-1 min-w-0 rounded-sm border border-white/8 p-5 sm:p-6"
+        style={{ backgroundColor: BIO_CARD_BG }}
+      >
+        {/* Name + role on mobile (already on photo on desktop) */}
+        <div className="sm:hidden">
+          <p className="section-label text-left mb-0.5">{member.role}</p>
+          <h3 className="font-playfair text-xl font-bold text-white">{member.name}</h3>
+        </div>
 
         {hasBio && <ExpandableBio bio={member.bio} />}
 
@@ -162,7 +179,7 @@ function TeamCard({ member }) {
             {member.specialties.map((s) => (
               <span
                 key={s}
-                className="text-xs font-inter px-2.5 py-1 rounded-full bg-orange-accent/15 text-orange-accent border border-orange-accent/20"
+                className="text-xs font-inter px-2.5 py-1 rounded-full bg-orange-accent/15 text-orange-accent border border-orange-accent/25"
               >
                 {s}
               </span>
@@ -171,7 +188,7 @@ function TeamCard({ member }) {
         )}
 
         {/* Social icons */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-auto pt-2 border-t border-white/8">
           {member.linkedin ? (
             <a
               href={member.linkedin}
@@ -179,30 +196,29 @@ function TeamCard({ member }) {
               rel="noopener noreferrer"
               aria-label={`LinkedIn de ${member.name}`}
               className="w-8 h-8 rounded-sm border border-white/20 flex items-center justify-center
-                         text-champagne/65 hover:text-[#0A66C2] hover:border-[#0A66C2]/40
+                         text-champagne/70 hover:text-[#0A66C2] hover:border-[#0A66C2]/40
                          hover:bg-[#0A66C2]/10 hover:shadow-[0_0_12px_rgba(10,102,194,0.2)]
-                         transition-all duration-250"
+                         transition-all duration-200"
             >
               <Linkedin size={14} />
             </a>
           ) : (
-            <button
-              disabled
+            <div
               className="w-8 h-8 rounded-sm border border-white/10 flex items-center justify-center
-                         text-champagne/25 cursor-default"
+                         text-champagne/25"
               aria-hidden="true"
             >
               <Linkedin size={14} />
-            </button>
+            </div>
           )}
 
           <a
             href={`mailto:${CONTACT_EMAIL}`}
             aria-label="Contacter Teraby par email"
             className="w-8 h-8 rounded-sm border border-white/20 flex items-center justify-center
-                       text-champagne/65 hover:text-orange-accent hover:border-orange-accent/40
+                       text-champagne/70 hover:text-orange-accent hover:border-orange-accent/40
                        hover:bg-orange-accent/10 hover:shadow-[0_0_12px_rgba(204,85,0,0.2)]
-                       transition-all duration-250"
+                       transition-all duration-200"
           >
             <Mail size={14} />
           </a>
