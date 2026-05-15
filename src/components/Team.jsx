@@ -11,7 +11,7 @@ const CONTACT_EMAIL = 'contact@teraby.fr'
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=500&fit=crop&crop=face'
 
 // Card bg used for the bio panel — must match the fade gradient below
-const BIO_CARD_BG = '#111827'
+const BIO_CARD_BG = 'rgba(26, 34, 56, 0.05)'
 
 const containerVariants = {
   hidden: {},
@@ -161,15 +161,15 @@ function TeamCard({ member }) {
         </div>
       </div>
 
-      {/* ── Bio panel — hero-dark exempts it from light-mode colour overrides ── */}
+      {/* ── Bio panel ────────────────────────────────────────────── */}
       <div
-        className="hero-dark flex flex-col gap-4 flex-1 min-w-0 rounded-sm border border-white/8 p-5 sm:p-6"
+        className="flex flex-col gap-4 flex-1 min-w-0 rounded-sm border border-black/8 p-5 sm:p-6"
         style={{ backgroundColor: BIO_CARD_BG }}
       >
         {/* Name + role on mobile (already on photo on desktop) */}
         <div className="sm:hidden">
           <p className="section-label text-left mb-0.5">{member.role}</p>
-          <h3 className="font-playfair text-xl font-bold text-white">{member.name}</h3>
+          <h3 className="font-playfair text-xl font-bold text-navy">{member.name}</h3>
         </div>
 
         {hasBio && <ExpandableBio bio={member.bio} />}
@@ -188,15 +188,15 @@ function TeamCard({ member }) {
         )}
 
         {/* Social icons */}
-        <div className="flex gap-2 mt-auto pt-2 border-t border-white/8">
+        <div className="flex gap-2 mt-auto pt-2 border-t border-black/8">
           {member.linkedin ? (
             <a
               href={member.linkedin}
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`LinkedIn de ${member.name}`}
-              className="w-8 h-8 rounded-sm border border-white/30 flex items-center justify-center
-                         text-white hover:text-[#0A66C2] hover:border-[#0A66C2]/40
+              className="w-8 h-8 rounded-sm border border-navy/20 flex items-center justify-center
+                         text-navy/70 hover:text-[#0A66C2] hover:border-[#0A66C2]/40
                          hover:bg-[#0A66C2]/10 hover:shadow-[0_0_12px_rgba(10,102,194,0.2)]
                          transition-all duration-200"
             >
@@ -204,8 +204,8 @@ function TeamCard({ member }) {
             </a>
           ) : (
             <div
-              className="w-8 h-8 rounded-sm border border-white/10 flex items-center justify-center
-                         text-champagne/30"
+              className="w-8 h-8 rounded-sm border border-navy/10 flex items-center justify-center
+                         text-navy/25"
               aria-hidden="true"
             >
               <Linkedin size={14} />
@@ -215,8 +215,8 @@ function TeamCard({ member }) {
           <a
             href={`mailto:${CONTACT_EMAIL}`}
             aria-label="Contacter Teraby par email"
-            className="w-8 h-8 rounded-sm border border-white/30 flex items-center justify-center
-                       text-white hover:text-orange-accent hover:border-orange-accent/40
+            className="w-8 h-8 rounded-sm border border-navy/20 flex items-center justify-center
+                       text-navy/70 hover:text-orange-accent hover:border-orange-accent/40
                        hover:bg-orange-accent/10 hover:shadow-[0_0_12px_rgba(204,85,0,0.2)]
                        transition-all duration-200"
           >
