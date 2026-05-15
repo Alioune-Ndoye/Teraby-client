@@ -161,9 +161,9 @@ function TeamCard({ member }) {
         </div>
       </div>
 
-      {/* ── Bio panel ────────────────────────────────────────────── */}
+      {/* ── Bio panel — hero-dark exempts it from light-mode colour overrides ── */}
       <div
-        className="flex flex-col gap-4 flex-1 min-w-0 rounded-sm border border-white/8 p-5 sm:p-6"
+        className="hero-dark flex flex-col gap-4 flex-1 min-w-0 rounded-sm border border-white/8 p-5 sm:p-6"
         style={{ backgroundColor: BIO_CARD_BG }}
       >
         {/* Name + role on mobile (already on photo on desktop) */}
@@ -205,7 +205,7 @@ function TeamCard({ member }) {
           ) : (
             <div
               className="w-8 h-8 rounded-sm border border-white/10 flex items-center justify-center
-                         text-champagne/25"
+                         text-champagne/30"
               aria-hidden="true"
             >
               <Linkedin size={14} />
