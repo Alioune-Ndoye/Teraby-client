@@ -195,8 +195,8 @@ function TeamCard({ member }) {
               target="_blank"
               rel="noopener noreferrer"
               aria-label={`LinkedIn de ${member.name}`}
-              className="w-8 h-8 rounded-sm border border-white/20 flex items-center justify-center
-                         text-champagne/70 hover:text-[#0A66C2] hover:border-[#0A66C2]/40
+              className="w-8 h-8 rounded-sm border border-white/30 flex items-center justify-center
+                         text-white hover:text-[#0A66C2] hover:border-[#0A66C2]/40
                          hover:bg-[#0A66C2]/10 hover:shadow-[0_0_12px_rgba(10,102,194,0.2)]
                          transition-all duration-200"
             >
@@ -215,8 +215,8 @@ function TeamCard({ member }) {
           <a
             href={`mailto:${CONTACT_EMAIL}`}
             aria-label="Contacter Teraby par email"
-            className="w-8 h-8 rounded-sm border border-white/20 flex items-center justify-center
-                       text-champagne/70 hover:text-orange-accent hover:border-orange-accent/40
+            className="w-8 h-8 rounded-sm border border-white/30 flex items-center justify-center
+                       text-white hover:text-orange-accent hover:border-orange-accent/40
                        hover:bg-orange-accent/10 hover:shadow-[0_0_12px_rgba(204,85,0,0.2)]
                        transition-all duration-200"
           >
@@ -243,6 +243,10 @@ export default function Team() {
       })
       .then((json) => {
         if (!cancelled) {
+          const LINKEDIN_OVERRIDES = {
+            'Babacar Siby': 'https://www.linkedin.com/in/babacar-siby/',
+          }
+
           const normalised = (json.data || [])
             .filter((m) => m.active !== false)
             .map((m) => ({
@@ -252,7 +256,7 @@ export default function Team() {
               bio:         m.bio || '',
               image:       m.photo?.url || '',
               specialties: m.specialties || [],
-              linkedin:    m.linkedin || '',
+              linkedin:    m.linkedin || LINKEDIN_OVERRIDES[m.name] || '',
             }))
           setMembers(normalised)
           setLoading(false)
