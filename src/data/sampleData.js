@@ -326,6 +326,6 @@ export const navLinks = [
   { label: 'Réservation', href: '#booking' },
   { label: 'Galerie', href: '/gallery' },
   { label: 'Équipe', href: '#team' },
-  { label: 'Avis', href: '#testimonials' },
+  { label: 'Témoignages', href: '#testimonials' },
   { label: 'Contact', href: '#contact' },
 ]
