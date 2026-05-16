@@ -109,7 +109,7 @@ export default function RegularCleaning() {
               <p className="font-inter text-champagne/60 text-lg leading-relaxed mb-5">
                 Nous ne nous contentons pas de nettoyer la surface. Chaque intervention est une remise à niveau méticuleuse de votre espace de vie — des angles les plus visibles aux recoins les plus discrets.
               </p>
-              <p className="font-inter text-champagne/45 leading-relaxed">
+              <p className="font-inter text-navy leading-relaxed">
                 Nos spécialistes sont formés aux surfaces premium et utilisent exclusivement des produits certifiés écologiques. Résultat : un intérieur qui respire la fraîcheur et le soin.
               </p>
             </motion.div>
