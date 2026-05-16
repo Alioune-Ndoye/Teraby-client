@@ -318,9 +318,10 @@ export default function GalleryPage() {
       {/* ── Hero ── */}
       <section className="relative py-20 bg-navy-deeper overflow-hidden">
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-8"
-          style={{ backgroundImage: `url(${FALLBACK})` }}
+          className="absolute inset-0 bg-cover bg-center opacity-30"
+          style={{ backgroundImage: `url(/gallery-hero.jpg)` }}
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-navy-deeper/60 via-transparent to-navy-deeper/80" />
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
             initial={{ opacity: 0, y: 40 }}
