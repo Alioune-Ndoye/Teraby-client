@@ -44,7 +44,7 @@ export default function Arcade() {
     <section className="min-h-screen bg-navy-deeper flex flex-col items-center justify-center px-6 py-24">
       {/* Glow bg */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-orange-accent/10 blur-[120px] rounded-full" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[280px] bg-orange-accent/10 blur-[60px] rounded-full" />
       </div>
 
       <div className="relative z-10 max-w-2xl w-full text-center space-y-8">

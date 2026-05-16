@@ -83,13 +83,13 @@ export default function RegularCleaning() {
             Votre intérieur, toujours impeccable.
           </motion.p>
           <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.5} className="flex gap-4 flex-wrap">
-            <motion.button
+            <motion.a
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-              onClick={goToBooking}
+              href="tel:+33685958798"
               className="btn-primary text-base px-10 py-4 inline-flex items-center gap-2"
             >
-              Réserver Maintenant <ArrowRight size={16} />
-            </motion.button>
+              Demander un Devis <ArrowRight size={16} />
+            </motion.a>
           </motion.div>
         </div>
       </section>
@@ -233,15 +233,15 @@ export default function RegularCleaning() {
               Prêt à retrouver un intérieur impeccable ?
             </h2>
             <p className="font-inter text-champagne/50 mb-8">
-              Réservez en ligne en quelques secondes. Confirmation sous 30 minutes.
+              Contactez-nous directement. Réponse rapide garantie.
             </p>
-            <motion.button
+            <motion.a
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-              onClick={goToBooking}
+              href="tel:+33685958798"
               className="btn-primary text-base px-10 py-4 inline-flex items-center gap-2"
             >
-              Réserver Maintenant <ArrowRight size={16} />
-            </motion.button>
+              Demander un Devis <ArrowRight size={16} />
+            </motion.a>
           </motion.div>
         </div>
       </section>

@@ -377,7 +377,7 @@ export default function CommercialCleaning() {
               <p className="font-inter text-champagne/60 text-lg leading-relaxed mb-5">
                 Les environnements professionnels exigent des standards professionnels. Nos équipes s'adaptent à vos contraintes horaires, vos surfaces spécifiques et vos exigences contractuelles.
               </p>
-              <p className="font-inter text-champagne/45 leading-relaxed">
+              <p className="font-inter text-navy leading-relaxed">
                 Que vous gériez un plateau de bureaux, un cabinet médical ou un commerce, Teraby garantit une présence irréprochable à chaque visite.
               </p>
             </motion.div>

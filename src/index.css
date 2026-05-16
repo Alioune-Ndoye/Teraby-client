@@ -171,9 +171,7 @@ body .btn-secondary {
 }
 
 /* ── GPU promotion & paint isolation ── */
-section {
-  contain: layout paint;
-}
+/* contain:strict removed — causes scroll jank when combined with whileInView animations */
 
 /* Promote glass cards to their own compositor layer — avoids full-page repaint on scroll */
 .glass-card,
@@ -181,10 +179,12 @@ section {
   transform: translateZ(0);
 }
 
-/* Skip rendering off-screen sections — major win on long pages */
-section:not(#home) {
-  content-visibility: auto;
-  contain-intrinsic-size: 0 600px;
+/* content-visibility causes layout recalcs that fight Framer Motion on desktop — mobile only */
+@media (max-width: 767px) {
+  section:not(#home) {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 600px;
+  }
 }
 
 /* ── Scrollbar ── */

@@ -86,13 +86,13 @@ export default function AirbnbCleaning() {
             5 étoiles à chaque check-out.
           </motion.p>
           <motion.div variants={fadeUp} initial="hidden" animate="visible" custom={0.5} className="flex gap-4 flex-wrap">
-            <motion.button
+            <motion.a
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-              onClick={goToBooking}
+              href="tel:+33685958798"
               className="btn-primary text-base px-10 py-4 inline-flex items-center gap-2"
             >
-              Réserver Maintenant <ArrowRight size={16} />
-            </motion.button>
+              Demander un Devis <ArrowRight size={16} />
+            </motion.a>
           </motion.div>
         </div>
       </section>
@@ -210,15 +210,15 @@ export default function AirbnbCleaning() {
               Prêt à décrocher plus de 5 étoiles ?
             </h2>
             <p className="font-inter text-champagne/50 mb-8">
-              Rejoignez les hôtes Teraby. Réservation en ligne, confirmation en 30 minutes.
+              Contactez-nous directement. Réponse rapide garantie.
             </p>
-            <motion.button
+            <motion.a
               whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-              onClick={goToBooking}
+              href="tel:+33685958798"
               className="btn-primary text-base px-10 py-4 inline-flex items-center gap-2"
             >
-              Réserver Maintenant <ArrowRight size={16} />
-            </motion.button>
+              Demander un Devis <ArrowRight size={16} />
+            </motion.a>
           </motion.div>
         </div>
       </section>
