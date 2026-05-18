@@ -99,20 +99,18 @@ export default function Navbar() {
               className="flex items-center group"
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             >
-              <div className={`transition-all duration-300 rounded-md px-2 py-1 ${!scrolled && isHome ? 'bg-white shadow-sm' : ''}`}>
-                <img
-                  src="/logo.webp"
-                  alt="Teraby"
-                  width="190"
-                  height="80"
-                  loading="eager"
-                  className="h-8 w-auto transition-all duration-300 group-hover:opacity-90"
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none'
-                    e.currentTarget.nextSibling.style.display = 'flex'
-                  }}
-                />
-              </div>
+              <img
+                src="/logo_transparent.png"
+                alt="Teraby"
+                width="190"
+                height="80"
+                loading="eager"
+                className="h-8 w-auto transition-all duration-300 group-hover:opacity-90"
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none'
+                  e.currentTarget.nextSibling.style.display = 'flex'
+                }}
+              />
               <span
                 className="font-playfair text-xl font-bold tracking-tight hidden items-center gap-2"
                 style={{ display: 'none' }}
