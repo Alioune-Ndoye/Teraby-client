@@ -129,7 +129,7 @@ function TeamCard({ member }) {
       className="group flex flex-col sm:flex-row gap-6"
     >
       {/* ── Photo ───────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-sm flex-shrink-0 w-full sm:w-64 aspect-[4/5]">
+      <div className="relative overflow-hidden rounded-sm flex-shrink-0 w-full sm:w-80 aspect-[4/5]">
         <img
           src={member.image || FALLBACK_IMG}
           alt={member.name}
