@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 const PDF_URL =
   'https://filesunipros.blob.core.windows.net/public/Unipros_Depliant_avance_immediate_HD.pdf'
 
+const VIEWER_URL = `https://docs.google.com/viewer?url=${encodeURIComponent(PDF_URL)}&embedded=true`
+
 export default function PromoPopup() {
   const [visible, setVisible] = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)
@@ -10,13 +12,7 @@ export default function PromoPopup() {
   const firstFocusRef = useRef(null)
 
   useEffect(() => {
-    if (localStorage.getItem('promoSeen')) return
-
-    const timer = setTimeout(() => {
-      setVisible(true)
-      localStorage.setItem('promoSeen', 'true')
-    }, 6000)
-
+    const timer = setTimeout(() => setVisible(true), 6000)
     return () => clearTimeout(timer)
   }, [])
 
@@ -246,11 +242,11 @@ export default function PromoPopup() {
               </div>
             )}
             <iframe
-              src={PDF_URL}
+              src={VIEWER_URL}
               title="Offre Exclusive à Durée Limitée — PDF"
               width="100%"
               style={{
-                height: 'clamp(250px, 45vw, 400px)',
+                height: 'clamp(260px, 55vw, 400px)',
                 border: 'none',
                 display: 'block',
               }}
