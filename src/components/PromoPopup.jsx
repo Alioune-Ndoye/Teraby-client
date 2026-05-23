@@ -7,6 +7,7 @@ const VIEWER_URL = `https://docs.google.com/viewer?url=${encodeURIComponent(PDF_
 
 export default function PromoPopup() {
   const [visible, setVisible] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)
   const overlayRef = useRef(null)
   const firstFocusRef = useRef(null)
@@ -33,6 +34,7 @@ export default function PromoPopup() {
 
   function close() {
     setVisible(false)
+    setDismissed(true)
   }
 
   function handleOverlayClick(e) {
@@ -44,15 +46,16 @@ export default function PromoPopup() {
     close()
   }
 
-  if (!visible) return null
+  // Removed from DOM only after user dismisses — keeps iframe preloading during 6s countdown
+  if (dismissed) return null
 
   return (
     <div
       ref={overlayRef}
-      onClick={handleOverlayClick}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="promo-title"
+      onClick={visible ? handleOverlayClick : undefined}
+      role={visible ? 'dialog' : undefined}
+      aria-modal={visible ? 'true' : undefined}
+      aria-labelledby={visible ? 'promo-title' : undefined}
       style={{
         position: 'fixed',
         inset: 0,
@@ -62,7 +65,10 @@ export default function PromoPopup() {
         justifyContent: 'center',
         zIndex: 9999,
         padding: '16px',
-        animation: 'promo-fadein 0.4s ease both',
+        // opacity+pointer-events hides overlay while keeping iframe loading in background
+        opacity: visible ? 1 : 0,
+        pointerEvents: visible ? 'auto' : 'none',
+        animation: visible ? 'promo-fadein 0.4s ease both' : 'none',
       }}
     >
       {/* Document card */}
