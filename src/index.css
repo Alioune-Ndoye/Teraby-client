@@ -11,11 +11,13 @@
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior: none;
   }
 
   body {
     @apply bg-navy text-champagne font-inter;
     overflow-x: hidden;
+    overscroll-behavior: none;
   }
 
   ::-webkit-scrollbar {
@@ -42,16 +44,16 @@
   /* Glass card */
   .glass-card {
     background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border: 1px solid rgba(255, 255, 255, 0.08);
     @apply shadow-glass;
   }
 
   .glass-card-light {
     background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     border: 1px solid rgba(255, 255, 255, 0.10);
   }
 
@@ -157,21 +159,34 @@
 ═══════════════════════════════════════════════════════════════════════════ */
 
 /* ── Smooth transitions on theme-sensitive surfaces (not sections — too broad) ── */
+/* color + box-shadow removed from body: interpolating inherited color on every DOM node
+   triggers a full-tree style recalc on each scroll tick past the hero — kills perf */
 body,
 body footer,
-body .glass-card,
-body .glass-card-light,
 body .luxury-input,
 body .btn-secondary {
   transition:
     background-color 0.35s ease,
+    border-color     0.35s ease;
+}
+
+/* Glass cards keep box-shadow — it visually changes between dark and light mode */
+body .glass-card,
+body .glass-card-light {
+  transition:
+    background-color 0.35s ease,
     border-color     0.35s ease,
-    color            0.25s ease,
     box-shadow       0.35s ease;
 }
 
 /* ── GPU promotion & paint isolation ── */
 /* contain:strict removed — causes scroll jank when combined with whileInView animations */
+
+/* Fixed navbar on its own compositor layer — prevents repaint when body reflows on scroll */
+header {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+}
 
 /* Promote glass cards to their own compositor layer — avoids full-page repaint on scroll */
 .glass-card,
@@ -184,6 +199,14 @@ body .btn-secondary {
   section:not(#home) {
     content-visibility: auto;
     contain-intrinsic-size: 0 600px;
+  }
+}
+
+/* ── Navbar backdrop: cap blur at 6px on desktop — 12px (backdrop-blur-md) is heavy ── */
+@media (min-width: 768px) {
+  header[class*="backdrop"] {
+    backdrop-filter: blur(6px) !important;
+    -webkit-backdrop-filter: blur(6px) !important;
   }
 }
 
@@ -515,6 +538,7 @@ body.force-dark footer {
   header[class*="backdrop"] {
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+    background-color: rgba(255, 255, 255, 0.97) !important;
   }
 
   /* ── Disable section paint containment on mobile — hurts composite layers ── */
