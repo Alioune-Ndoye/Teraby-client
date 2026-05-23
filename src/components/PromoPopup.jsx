@@ -16,7 +16,7 @@ export default function PromoPopup() {
     return () => clearTimeout(timer)
   }, [])
 
-  // ESC key closes popup
+  // Touche Échap ferme la popup
   useEffect(() => {
     if (!visible) return
     const handleKey = (e) => {
@@ -26,7 +26,7 @@ export default function PromoPopup() {
     return () => window.removeEventListener('keydown', handleKey)
   }, [visible])
 
-  // Trap focus inside modal
+  // Piège le focus dans la modale
   useEffect(() => {
     if (visible) firstFocusRef.current?.focus()
   }, [visible])
