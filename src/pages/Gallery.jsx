@@ -105,12 +105,12 @@ function PremiumCard({ item, onClick, variant = 'results' }) {
 }
 
 // ─── Gallery Carousel ─────────────────────────────────────────────────────────
-const EASE = [0.32, 0.72, 0, 1]
+const EASE = [0.25, 0.46, 0.45, 0.94]
 
 const featuredVariants = {
-  enter: (d) => ({ x: d * 48, opacity: 0 }),
-  center:      { x: 0,       opacity: 1 },
-  exit:  (d) => ({ x: d * -48, opacity: 0 }),
+  enter: (d) => ({ x: d * 22, opacity: 0, zIndex: 1 }),
+  center:      { x: 0,        opacity: 1, zIndex: 1 },
+  exit:  (d) => ({ x: d * -22, opacity: 0, zIndex: 0 }),
 }
 
 function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
@@ -193,7 +193,7 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
           className={`w-[56%] ${featured.type === 'video' ? 'aspect-video' : 'aspect-[4/3]'} relative rounded-sm overflow-hidden group cursor-pointer`}
           onClick={() => featured.type === 'item' && onItemClick(featured.item)}
         >
-          <AnimatePresence mode="wait" custom={dir}>
+          <AnimatePresence mode="sync" custom={dir}>
             <motion.div
               key={idx}
               custom={dir}
@@ -201,7 +201,7 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.52, ease: EASE }}
+              transition={{ duration: 0.6, ease: EASE }}
               className="absolute inset-0"
             >
               {renderContent(featured, true)}
