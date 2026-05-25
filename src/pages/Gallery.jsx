@@ -68,7 +68,7 @@ function PremiumCard({ item, onClick, variant = 'results' }) {
           src={src}
           alt={item.title}
           loading="lazy"
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ${variant === 'team' ? 'object-top' : 'object-center'}`}
           onError={(e) => { e.currentTarget.src = FALLBACK }}
         />
 
@@ -99,6 +99,32 @@ function PremiumCard({ item, onClick, variant = 'results' }) {
             <p className="font-inter text-xs text-white/60 mt-1 line-clamp-1">{item.description}</p>
           )}
         </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// ─── Video card (team section) ───────────────────────────────────────────────
+function VideoCard() {
+  return (
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 10 }}
+      transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
+      className="group relative rounded-sm overflow-hidden col-span-1 sm:col-span-2"
+    >
+      <div className="relative aspect-video overflow-hidden">
+        <video
+          className="w-full h-full object-cover"
+          src="/team-video.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/60 via-transparent to-transparent" />
       </div>
     </motion.div>
   )
@@ -426,6 +452,7 @@ export default function GalleryPage() {
                     }`}
                   >
                     <AnimatePresence mode="popLayout">
+                      {activeTab === 'equipes-action' && <VideoCard key="team-video" />}
                       {tabItems.map((item) =>
                         item.category === 'avant-apres' ? (
                           <BeforeAfterCard key={item.id} item={item} onClick={openLightbox} />
