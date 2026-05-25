@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import X from 'lucide-react/dist/esm/icons/x'
 import ZoomIn from 'lucide-react/dist/esm/icons/zoom-in'
@@ -104,29 +104,133 @@ function PremiumCard({ item, onClick, variant = 'results' }) {
   )
 }
 
-// ─── Video card (team section) ───────────────────────────────────────────────
-function VideoCard() {
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.45, ease: [0.25, 0.46, 0.45, 0.94] }}
-      className="group relative rounded-sm overflow-hidden col-span-1 sm:col-span-2"
-    >
-      <div className="relative aspect-video overflow-hidden">
-        <video
-          className="w-full h-full object-cover"
-          src="/team-video.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
+// ─── Gallery Carousel ─────────────────────────────────────────────────────────
+function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
+  const [idx, setIdx] = useState(0)
+
+  const slots = useMemo(() => {
+    const video = showVideo ? [{ type: 'video' }] : []
+    return [...video, ...items.map(item => ({ type: 'item', item }))]
+  }, [items, showVideo])
+
+  const total = slots.length
+  const prev = useCallback(() => setIdx(i => Math.max(0, i - 1)), [])
+  const next = useCallback(() => setIdx(i => Math.min(total - 1, i + 1)), [total])
+
+  useEffect(() => { setIdx(0) }, [items])
+
+  if (total === 0) return null
+
+  const getThumb = (slot) => {
+    if (!slot || slot.type === 'video') return null
+    const { item } = slot
+    if (item.category === 'avant-apres') return item.after || item.before || FALLBACK
+    return item.image || FALLBACK
+  }
+
+  const featured = slots[idx]
+  const t1 = idx + 1 < total ? slots[idx + 1] : null
+  const t2 = idx + 2 < total ? slots[idx + 2] : null
+
+  const renderSlot = (slot, isFeatured = false) => {
+    if (!slot) return null
+    if (slot.type === 'video') {
+      return (
+        <>
+          <video className="w-full h-full object-cover" src="/team-video.mp4" autoPlay loop muted playsInline />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/60 via-transparent to-transparent pointer-events-none" />
+        </>
+      )
+    }
+    const src = getThumb(slot)
+    return (
+      <>
+        <img
+          src={src}
+          alt={slot.item.title}
+          className={`w-full h-full object-cover transition-transform duration-700 ${isFeatured ? 'group-hover:scale-105' : ''} ${variant === 'team' ? 'object-top' : 'object-center'}`}
+          onError={(e) => { e.currentTarget.src = FALLBACK }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/60 via-transparent to-transparent" />
+        {isFeatured && slot.item.featured && (
+          <div className="absolute top-3 left-3 px-2.5 py-1 bg-orange-accent text-white text-[10px] font-inter font-bold uppercase tracking-wider rounded-sm">
+            Sélection
+          </div>
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/75 via-transparent to-transparent pointer-events-none" />
+        {isFeatured && (
+          <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-none">
+            <p className="font-playfair text-base font-bold text-white leading-snug">{slot.item.title}</p>
+            {slot.item.description && (
+              <p className="font-inter text-xs text-white/60 mt-1 line-clamp-1">{slot.item.description}</p>
+            )}
+          </div>
+        )}
+      </>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-3 items-stretch">
+        {/* Featured */}
+        <motion.div
+          key={idx}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.35 }}
+          className="w-[56%] aspect-[4/3] relative rounded-sm overflow-hidden group cursor-pointer"
+          onClick={() => featured.type === 'item' && onItemClick(featured.item)}
+        >
+          {renderSlot(featured, true)}
+        </motion.div>
+
+        {/* Thumbnails */}
+        <div className="flex-1 flex gap-3">
+          {[t1, t2].map((slot, i) => (
+            <div
+              key={i}
+              className={`flex-1 aspect-[4/3] relative rounded-sm overflow-hidden transition-opacity duration-200 ${
+                slot ? 'cursor-pointer opacity-70 hover:opacity-100' : 'opacity-0 pointer-events-none'
+              }`}
+              onClick={() => slot && setIdx(idx + 1 + i)}
+            >
+              {renderSlot(slot, false)}
+            </div>
+          ))}
+        </div>
       </div>
-    </motion.div>
+
+      {/* Navigation */}
+      <div className="flex items-center justify-end gap-4">
+        <div className="flex items-center gap-1.5">
+          {slots.map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setIdx(i)}
+              className={`block h-px rounded-full transition-all duration-300 ${
+                i === idx ? 'w-8 bg-orange-accent' : 'w-4 bg-white/20 hover:bg-white/40'
+              }`}
+            />
+          ))}
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={prev}
+            disabled={idx === 0}
+            className="w-9 h-9 rounded-sm border border-white/10 flex items-center justify-center text-champagne/50 hover:text-champagne hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <button
+            onClick={next}
+            disabled={idx === total - 1}
+            className="w-9 h-9 rounded-sm border border-white/10 flex items-center justify-center text-champagne/50 hover:text-champagne hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -438,35 +542,17 @@ export default function GalleryPage() {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
               >
-                {tabItems.length === 0 ? (
+                {tabItems.length === 0 && activeTab !== 'equipes-action' ? (
                   <div className="text-center py-20 text-champagne/30 font-inter">
                     Aucun contenu dans cette section pour le moment.
                   </div>
                 ) : (
-                  <motion.div
-                    layout
-                    className={`grid gap-6 ${
-                      activeTab === 'equipes-action'
-                        ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3'
-                        : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'
-                    }`}
-                  >
-                    <AnimatePresence mode="popLayout">
-                      {activeTab === 'equipes-action' && <VideoCard key="team-video" />}
-                      {tabItems.map((item) =>
-                        item.category === 'avant-apres' ? (
-                          <BeforeAfterCard key={item.id} item={item} onClick={openLightbox} />
-                        ) : (
-                          <PremiumCard
-                            key={item.id}
-                            item={item}
-                            onClick={openLightbox}
-                            variant={item.category === 'equipes-action' ? 'team' : 'results'}
-                          />
-                        )
-                      )}
-                    </AnimatePresence>
-                  </motion.div>
+                  <GalleryCarousel
+                    items={tabItems}
+                    onItemClick={openLightbox}
+                    variant={activeTab === 'equipes-action' ? 'team' : 'results'}
+                    showVideo={activeTab === 'equipes-action'}
+                  />
                 )}
               </motion.div>
             </AnimatePresence>
