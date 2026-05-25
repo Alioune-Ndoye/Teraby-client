@@ -151,10 +151,10 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
     if (!slot) return null
     if (slot.type === 'video') {
       return (
-        <div className="absolute inset-0 bg-navy-deeper flex items-center justify-center">
-          <video className="w-full h-full object-contain" src="/team-video.mp4" autoPlay loop muted playsInline />
+        <>
+          <video className="w-full h-full object-cover" src="/team-video.mp4" autoPlay loop muted playsInline />
           <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/60 via-transparent to-transparent pointer-events-none" />
-        </div>
+        </>
       )
     }
     const src = getThumb(slot)
@@ -190,7 +190,7 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
 
         {/* ── Featured ── */}
         <div
-          className="w-[56%] aspect-[4/3] relative rounded-sm overflow-hidden group cursor-pointer"
+          className={`w-[56%] ${featured.type === 'video' ? 'aspect-video' : 'aspect-[4/3]'} relative rounded-sm overflow-hidden group cursor-pointer`}
           onClick={() => featured.type === 'item' && onItemClick(featured.item)}
         >
           <AnimatePresence mode="wait" custom={dir}>
@@ -218,7 +218,7 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
               animate={{ opacity: slot ? 0.7 : 0, x: 0 }}
               whileHover={{ opacity: 1 }}
               transition={{ duration: 0.45, ease: EASE, delay: i * 0.07 }}
-              className={`flex-1 aspect-[4/3] relative rounded-sm overflow-hidden ${slot ? 'cursor-pointer' : 'pointer-events-none'}`}
+              className={`flex-1 ${slot?.type === 'video' ? 'aspect-video' : 'aspect-[4/3]'} relative rounded-sm overflow-hidden ${slot ? 'cursor-pointer' : 'pointer-events-none'}`}
               onClick={() => slot && goTo(idx + 1 + i)}
             >
               {renderContent(slot, false)}
