@@ -151,10 +151,10 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
     if (!slot) return null
     if (slot.type === 'video') {
       return (
-        <>
-          <video className="w-full h-full object-cover" src="/team-video.mp4" autoPlay loop muted playsInline />
+        <div className="absolute inset-0 bg-navy-deeper flex items-center justify-center">
+          <video className="w-full h-full object-contain" src="/team-video.mp4" autoPlay loop muted playsInline />
           <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/60 via-transparent to-transparent pointer-events-none" />
-        </>
+        </div>
       )
     }
     const src = getThumb(slot)
