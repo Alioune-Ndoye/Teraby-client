@@ -105,8 +105,17 @@ function PremiumCard({ item, onClick, variant = 'results' }) {
 }
 
 // ─── Gallery Carousel ─────────────────────────────────────────────────────────
+const EASE = [0.32, 0.72, 0, 1]
+
+const featuredVariants = {
+  enter: (d) => ({ x: d * 48, opacity: 0 }),
+  center:      { x: 0,       opacity: 1 },
+  exit:  (d) => ({ x: d * -48, opacity: 0 }),
+}
+
 function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
   const [idx, setIdx] = useState(0)
+  const [dir, setDir] = useState(1)
 
   const slots = useMemo(() => {
     const video = showVideo ? [{ type: 'video' }] : []
@@ -114,8 +123,14 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
   }, [items, showVideo])
 
   const total = slots.length
-  const prev = useCallback(() => setIdx(i => Math.max(0, i - 1)), [])
-  const next = useCallback(() => setIdx(i => Math.min(total - 1, i + 1)), [total])
+
+  const goTo = useCallback((newIdx) => {
+    setDir(newIdx >= idx ? 1 : -1)
+    setIdx(newIdx)
+  }, [idx])
+
+  const prev = useCallback(() => { if (idx > 0)          goTo(idx - 1) }, [idx, goTo])
+  const next = useCallback(() => { if (idx < total - 1)  goTo(idx + 1) }, [idx, total, goTo])
 
   useEffect(() => { setIdx(0) }, [items])
 
@@ -132,7 +147,7 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
   const t1 = idx + 1 < total ? slots[idx + 1] : null
   const t2 = idx + 2 < total ? slots[idx + 2] : null
 
-  const renderSlot = (slot, isFeatured = false) => {
+  const renderContent = (slot, isFeatured = false) => {
     if (!slot) return null
     if (slot.type === 'video') {
       return (
@@ -148,17 +163,17 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
         <img
           src={src}
           alt={slot.item.title}
-          className={`w-full h-full object-cover transition-transform duration-700 ${isFeatured ? 'group-hover:scale-105' : ''} ${variant === 'team' ? 'object-top' : 'object-center'}`}
+          className={`w-full h-full object-cover ${variant === 'team' ? 'object-top' : 'object-center'}`}
           onError={(e) => { e.currentTarget.src = FALLBACK }}
         />
         {isFeatured && slot.item.featured && (
-          <div className="absolute top-3 left-3 px-2.5 py-1 bg-orange-accent text-white text-[10px] font-inter font-bold uppercase tracking-wider rounded-sm">
+          <div className="absolute top-3 left-3 px-2.5 py-1 bg-orange-accent text-white text-[10px] font-inter font-bold uppercase tracking-wider rounded-sm z-10">
             Sélection
           </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-navy-deeper/75 via-transparent to-transparent pointer-events-none" />
         {isFeatured && (
-          <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-none">
+          <div className="absolute bottom-0 left-0 right-0 p-4 pointer-events-none z-10">
             <p className="font-playfair text-base font-bold text-white leading-snug">{slot.item.title}</p>
             {slot.item.description && (
               <p className="font-inter text-xs text-white/60 mt-1 line-clamp-1">{slot.item.description}</p>
@@ -172,62 +187,84 @@ function GalleryCarousel({ items, onItemClick, variant, showVideo }) {
   return (
     <div className="space-y-4">
       <div className="flex gap-3 items-stretch">
-        {/* Featured */}
-        <motion.div
-          key={idx}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.35 }}
+
+        {/* ── Featured ── */}
+        <div
           className="w-[56%] aspect-[4/3] relative rounded-sm overflow-hidden group cursor-pointer"
           onClick={() => featured.type === 'item' && onItemClick(featured.item)}
         >
-          {renderSlot(featured, true)}
-        </motion.div>
+          <AnimatePresence mode="wait" custom={dir}>
+            <motion.div
+              key={idx}
+              custom={dir}
+              variants={featuredVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.52, ease: EASE }}
+              className="absolute inset-0"
+            >
+              {renderContent(featured, true)}
+            </motion.div>
+          </AnimatePresence>
+        </div>
 
-        {/* Thumbnails */}
+        {/* ── Thumbnails ── */}
         <div className="flex-1 flex gap-3">
           {[t1, t2].map((slot, i) => (
-            <div
-              key={i}
-              className={`flex-1 aspect-[4/3] relative rounded-sm overflow-hidden transition-opacity duration-200 ${
-                slot ? 'cursor-pointer opacity-70 hover:opacity-100' : 'opacity-0 pointer-events-none'
-              }`}
-              onClick={() => slot && setIdx(idx + 1 + i)}
+            <motion.div
+              key={`${idx}-${i}`}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: slot ? 0.7 : 0, x: 0 }}
+              whileHover={{ opacity: 1 }}
+              transition={{ duration: 0.45, ease: EASE, delay: i * 0.07 }}
+              className={`flex-1 aspect-[4/3] relative rounded-sm overflow-hidden ${slot ? 'cursor-pointer' : 'pointer-events-none'}`}
+              onClick={() => slot && goTo(idx + 1 + i)}
             >
-              {renderSlot(slot, false)}
-            </div>
+              {renderContent(slot, false)}
+            </motion.div>
           ))}
         </div>
+
       </div>
 
-      {/* Navigation */}
+      {/* ── Navigation ── */}
       <div className="flex items-center justify-end gap-4">
         <div className="flex items-center gap-1.5">
           {slots.map((_, i) => (
-            <button
+            <motion.button
               key={i}
-              onClick={() => setIdx(i)}
-              className={`block h-px rounded-full transition-all duration-300 ${
-                i === idx ? 'w-8 bg-orange-accent' : 'w-4 bg-white/20 hover:bg-white/40'
-              }`}
+              onClick={() => goTo(i)}
+              animate={{
+                width: i === idx ? 32 : 16,
+                backgroundColor: i === idx ? '#c8793a' : 'rgba(255,255,255,0.2)',
+              }}
+              transition={{ duration: 0.35, ease: EASE }}
+              className="block h-px rounded-full"
             />
           ))}
         </div>
         <div className="flex gap-2">
-          <button
+          <motion.button
             onClick={prev}
             disabled={idx === 0}
-            className="w-9 h-9 rounded-sm border border-white/10 flex items-center justify-center text-champagne/50 hover:text-champagne hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ duration: 0.18 }}
+            className="w-9 h-9 rounded-sm border border-white/10 flex items-center justify-center text-champagne/50 hover:text-champagne hover:border-white/30 transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
           >
             <ChevronLeft size={16} />
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             onClick={next}
             disabled={idx === total - 1}
-            className="w-9 h-9 rounded-sm border border-white/10 flex items-center justify-center text-champagne/50 hover:text-champagne hover:border-white/30 transition-all disabled:opacity-25 disabled:cursor-not-allowed"
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.94 }}
+            transition={{ duration: 0.18 }}
+            className="w-9 h-9 rounded-sm border border-white/10 flex items-center justify-center text-champagne/50 hover:text-champagne hover:border-white/30 transition-colors disabled:opacity-25 disabled:cursor-not-allowed"
           >
             <ChevronRight size={16} />
-          </button>
+          </motion.button>
         </div>
       </div>
     </div>
