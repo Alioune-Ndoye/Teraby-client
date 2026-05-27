@@ -469,6 +469,58 @@ html:not(.dark) #chatbot-panel input {
 html:not(.dark) #chatbot-panel input::placeholder { color: rgba(247, 231, 206, 0.35) !important; }
 
 /* ══════════════════════════════════════════════════════
+   COOKIE BANNER + PREFERENCES MODAL — always dark
+   Both float above page content on a dark navy background;
+   light-mode overrides must not touch their text colors.
+══════════════════════════════════════════════════════ */
+html:not(.dark) #cookie-banner {
+  color: #F7E7CE !important;
+}
+html:not(.dark) #cookie-banner .text-white,
+html:not(.dark) #cookie-banner .text-champagne,
+html:not(.dark) #cookie-banner .text-champagne\/80,
+html:not(.dark) #cookie-banner .text-champagne\/70,
+html:not(.dark) #cookie-banner .text-champagne\/60,
+html:not(.dark) #cookie-banner .text-champagne\/55,
+html:not(.dark) #cookie-banner .text-champagne\/50,
+html:not(.dark) #cookie-banner .text-champagne\/45,
+html:not(.dark) #cookie-banner .text-champagne\/40,
+html:not(.dark) #cookie-banner .text-champagne\/30,
+html:not(.dark) #cookie-banner p,
+html:not(.dark) #cookie-banner span,
+html:not(.dark) #cookie-banner button:not(.btn-primary) { color: inherit !important; }
+html:not(.dark) #cookie-banner .border-white\/10 { border-color: rgba(255,255,255,0.10) !important; }
+html:not(.dark) #cookie-banner .border-white\/15 { border-color: rgba(255,255,255,0.15) !important; }
+html:not(.dark) #cookie-banner .border-white\/8  { border-color: rgba(255,255,255,0.08) !important; }
+
+/* Preferences modal — targets the dialog card directly */
+html:not(.dark) [aria-labelledby="cookie-modal-title"] {
+  color: #F7E7CE !important;
+}
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-white,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne\/80,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne\/60,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne\/55,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne\/50,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne\/45,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne\/40,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne\/30,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .text-champagne\/25,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] p,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] span,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] h2,
+html:not(.dark) [aria-labelledby="cookie-modal-title"] button:not(.btn-primary) { color: inherit !important; }
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .border-white\/6  { border-color: rgba(255,255,255,0.06) !important; }
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .border-white\/8  { border-color: rgba(255,255,255,0.08) !important; }
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .border-white\/10 { border-color: rgba(255,255,255,0.10) !important; }
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .border-white\/12 { border-color: rgba(255,255,255,0.12) !important; }
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .border-white\/20 { border-color: rgba(255,255,255,0.20) !important; }
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .border-white\/25 { border-color: rgba(255,255,255,0.25) !important; }
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .bg-white\/2  { background-color: rgba(255,255,255,0.02) !important; }
+html:not(.dark) [aria-labelledby="cookie-modal-title"] .bg-white\/3  { background-color: rgba(255,255,255,0.03) !important; }
+
+/* ══════════════════════════════════════════════════════
    ARCADE / FORCE-DARK pages
    body.force-dark always renders dark regardless of html class
 ══════════════════════════════════════════════════════ */
