@@ -3,18 +3,26 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-route
 import { AnimatePresence, motion, MotionConfig } from 'framer-motion'
 import { ThemeProvider } from './context/ThemeContext'
 import { PricingProvider } from './context/PricingContext'
+import { CookieConsentProvider } from './context/CookieConsentContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import CookieBanner from './components/CookieBanner'
+import CookiePreferencesModal from './components/CookiePreferencesModal'
 import Home from './pages/Home'
 import useIntroAudio from './hooks/useIntroAudio'
+import useConditionalScripts from './hooks/useConditionalScripts'
 
 // ── Lazy-loaded page chunks ───────────────────────────────────────────────────
-const GalleryPage          = lazy(() => import('./pages/Gallery'))
-const ArcadePage           = lazy(() => import('./pages/Arcade'))
-const RegularCleaning      = lazy(() => import('./pages/services/RegularCleaning'))
-const AirbnbCleaning       = lazy(() => import('./pages/services/AirbnbCleaning'))
-const CommercialCleaning   = lazy(() => import('./pages/services/CommercialCleaning'))
-const ChatBot              = lazy(() => import('./components/ChatBot'))
+const GalleryPage                = lazy(() => import('./pages/Gallery'))
+const ArcadePage                 = lazy(() => import('./pages/Arcade'))
+const RegularCleaning            = lazy(() => import('./pages/services/RegularCleaning'))
+const AirbnbCleaning             = lazy(() => import('./pages/services/AirbnbCleaning'))
+const CommercialCleaning         = lazy(() => import('./pages/services/CommercialCleaning'))
+const ChatBot                    = lazy(() => import('./components/ChatBot'))
+const PolitiqueConfidentialite   = lazy(() => import('./pages/legal/PolitiqueConfidentialite'))
+const PolitiqueCookies           = lazy(() => import('./pages/legal/PolitiqueCookies'))
+const ConditionsGenerales        = lazy(() => import('./pages/legal/ConditionsGenerales'))
+const MentionsLegales            = lazy(() => import('./pages/legal/MentionsLegales'))
 
 const pageVariants = {
   initial: { opacity: 0 },
@@ -42,13 +50,17 @@ function AnimatedRoutes() {
       >
         <Suspense fallback={null}>
           <Routes location={location}>
-            <Route path="/"                            element={<Home />} />
-            <Route path="/gallery"                     element={<GalleryPage />} />
-            <Route path="/arcade"                      element={<ArcadePage />} />
-            <Route path="/services/regular-cleaning"   element={<RegularCleaning />} />
-            <Route path="/services/airbnb-cleaning"    element={<AirbnbCleaning />} />
+            <Route path="/"                             element={<Home />} />
+            <Route path="/gallery"                      element={<GalleryPage />} />
+            <Route path="/arcade"                       element={<ArcadePage />} />
+            <Route path="/services/regular-cleaning"    element={<RegularCleaning />} />
+            <Route path="/services/airbnb-cleaning"     element={<AirbnbCleaning />} />
             <Route path="/services/commercial-cleaning" element={<CommercialCleaning />} />
-            <Route path="/admin"                       element={<Navigate to="/dashboard" replace />} />
+            <Route path="/confidentialite"              element={<PolitiqueConfidentialite />} />
+            <Route path="/cookies"                      element={<PolitiqueCookies />} />
+            <Route path="/cgv"                          element={<ConditionsGenerales />} />
+            <Route path="/mentions-legales"             element={<MentionsLegales />} />
+            <Route path="/admin"                        element={<Navigate to="/dashboard" replace />} />
           </Routes>
         </Suspense>
       </motion.div>
@@ -58,6 +70,7 @@ function AnimatedRoutes() {
 
 function Layout() {
   useIntroAudio()
+  useConditionalScripts()
 
   return (
     <div className="min-h-screen bg-navy text-champagne">
@@ -68,6 +81,8 @@ function Layout() {
       <Suspense fallback={null}>
         <ChatBot />
       </Suspense>
+      <CookieBanner />
+      <CookiePreferencesModal />
     </div>
   )
 }
@@ -85,9 +100,11 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <ThemeProvider>
         <PricingProvider>
-          <BrowserRouter>
-            <Layout />
-          </BrowserRouter>
+          <CookieConsentProvider>
+            <BrowserRouter>
+              <Layout />
+            </BrowserRouter>
+          </CookieConsentProvider>
         </PricingProvider>
       </ThemeProvider>
     </MotionConfig>

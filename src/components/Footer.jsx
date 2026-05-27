@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useCookieConsent } from '../context/CookieConsentContext'
 import Camera from 'lucide-react/dist/esm/icons/camera'
 import Share2 from 'lucide-react/dist/esm/icons/share-2'
 import AtSign from 'lucide-react/dist/esm/icons/at-sign'
@@ -36,7 +37,15 @@ const socials = [
   { icon: Linkedin, href: 'https://www.linkedin.com/in/babacar-siby/', label: 'LinkedIn' },
 ]
 
+const legalLinks = [
+  { label: 'Politique de confidentialité', href: '/confidentialite' },
+  { label: 'Politique des cookies', href: '/cookies' },
+  { label: 'Conditions générales', href: '/cgv' },
+  { label: 'Mentions légales', href: '/mentions-legales' },
+]
+
 export default function Footer() {
+  const { reopenSettings } = useCookieConsent()
   const scrollTo = (href) => {
     if (href.startsWith('#')) {
       document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
@@ -166,15 +175,22 @@ export default function Footer() {
           <p className="font-inter text-xs text-champagne/30">
             © 2025 Teraby SAS. Tous droits réservés. Paris, France.
           </p>
-          <div className="flex items-center gap-6">
-            {['Politique de Confidentialité', 'Conditions Générales', 'Mentions Légales'].map((item) => (
-              <button
-                key={item}
+          <div className="flex items-center flex-wrap justify-center gap-x-5 gap-y-2">
+            {legalLinks.map(({ label, href }) => (
+              <Link
+                key={href}
+                to={href}
                 className="font-inter text-xs text-champagne/30 hover:text-champagne/60 transition-colors"
               >
-                {item}
-              </button>
+                {label}
+              </Link>
             ))}
+            <button
+              onClick={reopenSettings}
+              className="font-inter text-xs text-champagne/30 hover:text-orange-accent/70 transition-colors"
+            >
+              Cookies
+            </button>
           </div>
         </div>
       </div>
