@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /dashboard/
 Disallow: /admin/
+
+Sitemap: https://teraby.fr/sitemap.xml
