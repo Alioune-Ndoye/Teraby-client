@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useCookieConsent } from '../context/CookieConsentContext'
+import { cities } from '../data/citiesData'
 import Camera from 'lucide-react/dist/esm/icons/camera'
 import Share2 from 'lucide-react/dist/esm/icons/share-2'
 import AtSign from 'lucide-react/dist/esm/icons/at-sign'
@@ -146,6 +147,24 @@ export default function Footer() {
               </ul>
             </div>
           ))}
+        </div>
+
+        {/* Zones d'intervention SEO */}
+        <div className="border-t border-white/5 pt-10 pb-10">
+          <h4 className="font-inter text-xs font-semibold text-champagne/35 tracking-[0.2em] uppercase mb-5">
+            Zones d'intervention — Nettoyage Paris &amp; Île-de-France
+          </h4>
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            {cities.map(c => (
+              <Link
+                key={c.slug}
+                to={`/nettoyage/${c.slug}`}
+                className="font-inter text-xs text-champagne/40 hover:text-orange-accent transition-colors"
+              >
+                {c.name}
+              </Link>
+            ))}
+          </div>
         </div>
 
         {/* Newsletter */}
