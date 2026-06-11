@@ -83,31 +83,94 @@ export default function CityPage() {
     window.scrollTo(0, 0)
   }, [citySlug])
 
-  const schema = city ? {
-    '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
-    name: 'Teraby',
-    description: city.seoDescription,
-    telephone: '+33685958798',
-    url: `https://teraby.fr/nettoyage/${city.slug}`,
-    areaServed: {
-      '@type': 'City',
-      name: city.displayName,
-      postalCode: city.zipCode,
+  // Derive ISO 3166-2 region code from zip for geo meta tags
+  const geoRegion = city
+    ? city.zipCode.startsWith('75') ? 'FR-75'
+    : city.zipCode.startsWith('92') ? 'FR-92'
+    : 'FR-93'
+    : undefined
+
+  const schema = city ? [
+    // ── LocalBusiness with AggregateRating (star ratings in Google results) ──
+    {
+      '@context': 'https://schema.org',
+      '@type': 'LocalBusiness',
+      name: 'Teraby',
+      description: city.seoDescription,
+      telephone: '+33685958798',
+      email: 'contact@teraby.fr',
+      url: `https://teraby.fr/nettoyage/${city.slug}`,
+      priceRange: '€€',
+      image: 'https://teraby.fr/logo_transparent.png',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: city.displayName,
+        postalCode: city.zipCode,
+        addressCountry: 'FR',
+      },
+      areaServed: {
+        '@type': 'City',
+        name: city.displayName,
+        postalCode: city.zipCode,
+      },
+      aggregateRating: {
+        '@type': 'AggregateRating',
+        ratingValue: '5',
+        reviewCount: '8',
+        bestRating: '5',
+        worstRating: '1',
+      },
+      review: [
+        {
+          '@type': 'Review',
+          author: { '@type': 'Person', name: 'Mathieu D' },
+          reviewRating: { '@type': 'Rating', ratingValue: '5' },
+          reviewBody: 'Teraby gère mon Airbnb et je suis extrêmement satisfait. Leur travail est impeccable : toujours irréprochable, très réactifs et d\'un professionnalisme constant.',
+          datePublished: '2026-04-01',
+        },
+        {
+          '@type': 'Review',
+          author: { '@type': 'Person', name: 'Oumayma B' },
+          reviewRating: { '@type': 'Rating', ratingValue: '5' },
+          reviewBody: 'Un travail sérieux et efficace. Babacar a été minutieux et très méticuleux. Je recommande vivement.',
+          datePublished: '2025-08-01',
+        },
+        {
+          '@type': 'Review',
+          author: { '@type': 'Person', name: 'M C' },
+          reviewRating: { '@type': 'Rating', ratingValue: '5' },
+          reviewBody: 'Entreprise de nettoyage très efficace. Babacar et son équipe étaient ponctuels et très professionnels. On leur a confié deux appartements, tout était impeccable.',
+          datePublished: '2025-03-01',
+        },
+      ],
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: `Services de nettoyage à ${city.name}`,
+        itemListElement: [
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Nettoyage Résidentiel', url: 'https://teraby.fr/services/regular-cleaning' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Nettoyage Airbnb', url: 'https://teraby.fr/services/airbnb-cleaning' } },
+          { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'Nettoyage Commercial', url: 'https://teraby.fr/services/commercial-cleaning' } },
+        ],
+      },
     },
-    serviceType: ['Nettoyage résidentiel', 'Nettoyage commercial', 'Nettoyage Airbnb'],
-    priceRange: '€€',
-    address: {
-      '@type': 'PostalAddress',
-      addressLocality: city.displayName,
-      postalCode: city.zipCode,
-      addressCountry: 'FR',
+    // ── BreadcrumbList (shows "Teraby › Nettoyage › Paris 1er" under result) ──
+    {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Accueil', item: 'https://teraby.fr/' },
+        { '@type': 'ListItem', position: 2, name: 'Nos zones d\'intervention', item: 'https://teraby.fr/' },
+        { '@type': 'ListItem', position: 3, name: city.name, item: `https://teraby.fr/nettoyage/${city.slug}` },
+      ],
     },
-  } : undefined
+  ] : undefined
 
   useSEO(city ? {
     title: city.seoTitle,
     description: city.seoDescription,
+    canonical: `/nettoyage/${city.slug}`,
+    geoRegion,
+    geoPlacename: city.displayName,
     schema,
   } : {})
 
