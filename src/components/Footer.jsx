@@ -25,8 +25,8 @@ const footerLinks = {
   ],
   Assistance: [
     { label: 'Réserver un Service', href: '#booking' },
+    { label: 'Zones d\'intervention', href: '/nettoyage' },
     { label: 'Avis Clients', href: '#testimonials' },
-    { label: 'FAQ', href: '#' },
     { label: 'Contact', href: '#contact' },
   ],
 }

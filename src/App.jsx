@@ -24,6 +24,7 @@ const PolitiqueCookies           = lazy(() => import('./pages/legal/PolitiqueCoo
 const ConditionsGenerales        = lazy(() => import('./pages/legal/ConditionsGenerales'))
 const MentionsLegales            = lazy(() => import('./pages/legal/MentionsLegales'))
 const CityPage                   = lazy(() => import('./pages/cities/CityPage'))
+const NettoyageHub               = lazy(() => import('./pages/NettoyageHub'))
 
 const pageVariants = {
   initial: { opacity: 0 },
@@ -57,6 +58,7 @@ function AnimatedRoutes() {
             <Route path="/services/regular-cleaning"    element={<RegularCleaning />} />
             <Route path="/services/airbnb-cleaning"     element={<AirbnbCleaning />} />
             <Route path="/services/commercial-cleaning" element={<CommercialCleaning />} />
+            <Route path="/nettoyage"                    element={<NettoyageHub />} />
             <Route path="/nettoyage/:citySlug"          element={<CityPage />} />
             <Route path="/confidentialite"              element={<PolitiqueConfidentialite />} />
             <Route path="/cookies"                      element={<PolitiqueCookies />} />

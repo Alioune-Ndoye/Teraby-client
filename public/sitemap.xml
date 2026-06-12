@@ -61,6 +61,14 @@
     <priority>0.3</priority>
   </url>
 
+  <!-- ── Hub page ── -->
+  <url>
+    <loc>https://teraby.fr/nettoyage</loc>
+    <lastmod>2026-06-12</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.95</priority>
+  </url>
+
   <!-- ── Paris — 20 arrondissements ── -->
   <url>
     <loc>https://teraby.fr/nettoyage/paris-1er</loc>
