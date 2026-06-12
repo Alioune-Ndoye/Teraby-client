@@ -3,8 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 const PDF_URL =
   'https://filesunipros.blob.core.windows.net/public/Unipros_Depliant_avance_immediate_HD.pdf'
 
-const VIEWER_URL = `https://docs.google.com/viewer?url=${encodeURIComponent(PDF_URL)}&embedded=true`
-
 export default function PromoPopup() {
   const [visible, setVisible] = useState(false)
   const [dismissed, setDismissed] = useState(false)
@@ -248,7 +246,7 @@ export default function PromoPopup() {
               </div>
             )}
             <iframe
-              src={VIEWER_URL}
+              src={PDF_URL}
               title="Offre Exclusive à Durée Limitée — PDF"
               width="100%"
               style={{
