@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useCookieConsent } from '../context/CookieConsentContext'
 import { cities } from '../data/citiesData'
 import Camera from 'lucide-react/dist/esm/icons/camera'
@@ -13,22 +13,22 @@ import ArrowUpRight from 'lucide-react/dist/esm/icons/arrow-up-right'
 
 const footerLinks = {
   Services: [
-    { label: 'Nettoyage Résidentiel', href: '#services' },
-    { label: 'Nettoyage en Profondeur', href: '#services' },
-    { label: 'Emménagement / Déménagement', href: '#services' },
-    { label: 'Nettoyage Commercial', href: '#services' },
+    { label: 'Nettoyage Résidentiel',         href: '/services/regular-cleaning' },
+    { label: 'Nettoyage en Profondeur',        href: '/services/regular-cleaning' },
+    { label: 'Emménagement / Déménagement',    href: '/services/regular-cleaning' },
+    { label: 'Nettoyage Commercial',           href: '/services/commercial-cleaning' },
   ],
   Entreprise: [
-    { label: 'À Propos', href: '#' },
-    { label: 'Notre Équipe', href: '#team' },
-    { label: 'Galerie', href: '/gallery' },
-    { label: 'Recrutement', href: '#' },
+    { label: 'À Propos',      href: '#team' },
+    { label: 'Notre Équipe',  href: '#team' },
+    { label: 'Galerie',       href: '/gallery' },
+    { label: 'Recrutement',   href: 'mailto:contact@teraby.fr' },
   ],
   Assistance: [
-    { label: 'Réserver un Service', href: '#booking' },
-    { label: 'Zones d\'intervention', href: '/nettoyage' },
-    { label: 'Avis Clients', href: '#testimonials' },
-    { label: 'Contact', href: '#contact' },
+    { label: 'Réserver un Service',   href: '#booking' },
+    { label: "Zones d'intervention",  href: '/nettoyage' },
+    { label: 'Avis Clients',          href: '#testimonials' },
+    { label: 'Contact',               href: '#contact' },
   ],
 }
 
@@ -50,13 +50,20 @@ const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
 
 export default function Footer() {
   const { reopenSettings } = useCookieConsent()
+  const navigate = useNavigate()
+  const { pathname } = useLocation()
   const [email, setEmail] = useState('')
   const [newsletterStatus, setNewsletterStatus] = useState(null) // null | 'loading' | 'success' | 'error' | 'duplicate'
   const [newsletterMsg, setNewsletterMsg] = useState('')
 
   const scrollTo = (href) => {
+    if (!href || href === '#') return
     if (href.startsWith('#')) {
-      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+      if (pathname === '/') {
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+      } else {
+        navigate('/', { state: { scrollTo: href } })
+      }
     }
   }
 
@@ -160,7 +167,15 @@ export default function Footer() {
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
-                    {link.href.startsWith('/') ? (
+                    {link.href.startsWith('mailto:') ? (
+                      <a
+                        href={link.href}
+                        className="font-inter text-sm text-champagne/55 hover:text-champagne transition-colors duration-200 group flex items-center gap-1.5"
+                      >
+                        {link.label}
+                        <ArrowUpRight size={11} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </a>
+                    ) : link.href.startsWith('/') ? (
                       <Link
                         to={link.href}
                         className="font-inter text-sm text-champagne/55 hover:text-champagne transition-colors duration-200 group flex items-center gap-1.5"
