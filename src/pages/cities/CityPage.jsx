@@ -246,7 +246,7 @@ export default function CityPage() {
               <p className="section-label mb-3">Nous intervenons à {city.name}</p>
               <h2 className="section-title text-white mb-5">
                 Nettoyage professionnel à{' '}
-                <span className="text-gradient">{city.name}</span>
+                <span className="text-white">{city.name}</span>
               </h2>
               <p className="font-inter text-champagne/60 text-base leading-relaxed mb-4">
                 {city.intro}
