@@ -39,7 +39,7 @@ export default function Hero() {
             width="1536"
             height="1024"
             loading="eager"
-            fetchPriority="high"
+            fetchpriority="high"
             decoding="async"
             className="absolute inset-0 w-full h-full object-cover object-center hero-bg-img"
             aria-hidden="true"
