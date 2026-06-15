@@ -99,7 +99,7 @@ export default function PromoPopup() {
             {/* Approval badge */}
             <span
               style={{
-                background: '#d4af37',
+                background: '#CC5500',
                 color: '#1a1a2e',
                 fontSize: '10px',
                 fontWeight: 700,
@@ -144,7 +144,7 @@ export default function PromoPopup() {
               right: '28px',
               width: '90px',
               height: '90px',
-              border: '4px solid rgba(212,175,55,0.25)',
+              border: '4px solid rgba(204,85,0,0.25)',
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -156,7 +156,7 @@ export default function PromoPopup() {
           >
             <span
               style={{
-                color: 'rgba(212,175,55,0.25)',
+                color: 'rgba(204,85,0,0.25)',
                 fontSize: '11px',
                 fontWeight: 700,
                 letterSpacing: '0.1em',
@@ -212,7 +212,7 @@ export default function PromoPopup() {
               style={{
                 width: '60px',
                 height: '2px',
-                background: 'linear-gradient(90deg, #1e2d4e, #d4af37)',
+                background: 'linear-gradient(90deg, #1e2d4e, #CC5500)',
                 margin: '14px auto 0',
                 borderRadius: '2px',
               }}
@@ -275,7 +275,7 @@ export default function PromoPopup() {
                 maxWidth: '320px',
                 padding: '13px 20px',
                 background: 'linear-gradient(90deg, #1e2d4e 0%, #2c4270 100%)',
-                color: '#d4af37',
+                color: '#ffffff',
                 border: 'none',
                 borderRadius: '4px',
                 fontSize: '15px',
