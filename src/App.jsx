@@ -33,8 +33,19 @@ const pageVariants = {
 }
 
 function ScrollToTop() {
-  const { pathname } = useLocation()
-  useEffect(() => { window.scrollTo(0, 0) }, [pathname])
+  const { pathname, state } = useLocation()
+  useEffect(() => {
+    const target = state?.scrollTo
+    if (target) {
+      const timer = setTimeout(() => {
+        const el = document.querySelector(target)
+        if (el) el.scrollIntoView({ behavior: 'smooth' })
+        else window.scrollTo(0, 0)
+      }, 350)
+      return () => clearTimeout(timer)
+    }
+    window.scrollTo(0, 0)
+  }, [pathname, state])
   return null
 }
 

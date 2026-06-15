@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCookieConsent } from '../context/CookieConsentContext'
 import { cities } from '../data/citiesData'
@@ -45,11 +46,45 @@ const legalLinks = [
   { label: 'Mentions légales', href: '/mentions-legales' },
 ]
 
+const API = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+
 export default function Footer() {
   const { reopenSettings } = useCookieConsent()
+  const [email, setEmail] = useState('')
+  const [newsletterStatus, setNewsletterStatus] = useState(null) // null | 'loading' | 'success' | 'error' | 'duplicate'
+  const [newsletterMsg, setNewsletterMsg] = useState('')
+
   const scrollTo = (href) => {
     if (href.startsWith('#')) {
       document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const handleNewsletter = async (e) => {
+    e.preventDefault()
+    if (!email.trim()) return
+    setNewsletterStatus('loading')
+    try {
+      const res = await fetch(`${API}/api/newsletter`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), source: 'footer' }),
+      })
+      const data = await res.json()
+      if (res.status === 201) {
+        setNewsletterStatus('success')
+        setNewsletterMsg(data.message)
+        setEmail('')
+      } else if (res.status === 409) {
+        setNewsletterStatus('duplicate')
+        setNewsletterMsg(data.message)
+      } else {
+        setNewsletterStatus('error')
+        setNewsletterMsg(data.message || 'Une erreur est survenue.')
+      }
+    } catch {
+      setNewsletterStatus('error')
+      setNewsletterMsg('Impossible de se connecter au serveur.')
     }
   }
 
@@ -175,17 +210,38 @@ export default function Footer() {
               <p className="font-inter text-sm text-champagne/50">
                 Offres exclusives, conseils entretien et promotions saisonnières pour notre communauté.
               </p>
+              {newsletterStatus && (
+                <p className={`font-inter text-xs mt-2 ${
+                  newsletterStatus === 'success' ? 'text-green-400' :
+                  newsletterStatus === 'duplicate' ? 'text-orange-accent' :
+                  'text-red-400'
+                }`}>
+                  {newsletterMsg}
+                </p>
+              )}
             </div>
-            <div className="flex gap-3 w-full md:w-auto">
-              <input
-                type="email"
-                placeholder="votre@email.fr"
-                className="luxury-input flex-1 md:w-64 text-sm py-3"
-              />
-              <button className="btn-primary py-3 px-6 text-sm whitespace-nowrap">
-                S'inscrire
-              </button>
-            </div>
+            {newsletterStatus !== 'success' ? (
+              <form onSubmit={handleNewsletter} className="flex gap-3 w-full md:w-auto">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="votre@email.fr"
+                  required
+                  className="luxury-input flex-1 md:w-64 text-sm py-3"
+                  disabled={newsletterStatus === 'loading'}
+                />
+                <button
+                  type="submit"
+                  disabled={newsletterStatus === 'loading'}
+                  className="btn-primary py-3 px-6 text-sm whitespace-nowrap disabled:opacity-60"
+                >
+                  {newsletterStatus === 'loading' ? '…' : "S'inscrire"}
+                </button>
+              </form>
+            ) : (
+              <p className="font-inter text-sm text-green-400 font-semibold">✓ Merci pour votre inscription !</p>
+            )}
           </div>
         </div>
 
