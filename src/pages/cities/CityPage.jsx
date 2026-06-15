@@ -190,7 +190,7 @@ export default function CityPage() {
     <div className="min-h-screen">
 
       {/* ── Hero ── */}
-      <section className="relative min-h-[52vh] flex items-end overflow-hidden bg-navy-deeper">
+      <section className="hero-dark relative min-h-[52vh] flex items-end overflow-hidden bg-navy-deeper">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{

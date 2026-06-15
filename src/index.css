@@ -79,7 +79,7 @@
 
   /* Section headings */
   .section-label {
-    @apply text-orange-accent font-inter text-xs font-semibold tracking-[0.25em] uppercase mb-3;
+    @apply text-white font-inter text-xs font-semibold tracking-[0.25em] uppercase mb-3;
   }
 
   .section-title {
@@ -393,6 +393,7 @@ html:not(.dark) .border-white\/15 { border-color: rgba(26, 34, 56, 0.15) !import
 html:not(.dark) .border-white\/30 { border-color: rgba(26, 34, 56, 0.22) !important; }
 
 /* ── Utility classes ── */
+html:not(.dark) .section-label    { color: rgba(26, 34, 56, 0.55) !important; }
 html:not(.dark) .section-subtitle { color: rgba(26, 34, 56, 0.62) !important; }
 
 /* ── Form inputs ── */
