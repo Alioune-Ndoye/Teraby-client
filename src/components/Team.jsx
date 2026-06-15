@@ -286,7 +286,7 @@ export default function Team() {
         >
           <p className="section-label">Les Artisans du Propre</p>
           <h2 className="section-title text-white mb-6">
-            Notre <span className="text-gradient">Équipe d'Élite</span>
+            Notre <span className="text-white">Équipe d'Élite</span>
           </h2>
           <div className="luxury-divider" />
           <p className="section-subtitle mx-auto text-champagne/55">

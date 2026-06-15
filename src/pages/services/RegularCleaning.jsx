@@ -104,7 +104,7 @@ export default function RegularCleaning() {
               <p className="section-label">Notre Approche</p>
               <h2 className="section-title text-white mb-6">
                 Plus qu'un nettoyage.{' '}
-                <span className="text-gradient">Une restauration.</span>
+                <span className="text-white">Une restauration.</span>
               </h2>
               <p className="font-inter text-champagne/60 text-lg leading-relaxed mb-5">
                 Nous ne nous contentons pas de nettoyer la surface. Chaque intervention est une remise à niveau méticuleuse de votre espace de vie — des angles les plus visibles aux recoins les plus discrets.

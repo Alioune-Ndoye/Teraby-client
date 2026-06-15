@@ -372,7 +372,7 @@ export default function CommercialCleaning() {
               <p className="section-label">Notre Approche</p>
               <h2 className="section-title text-white mb-6">
                 L'excellence professionnelle,{' '}
-                <span className="text-gradient">sans compromis.</span>
+                <span className="text-white">sans compromis.</span>
               </h2>
               <p className="font-inter text-champagne/60 text-lg leading-relaxed mb-5">
                 Les environnements professionnels exigent des standards professionnels. Nos équipes s'adaptent à vos contraintes horaires, vos surfaces spécifiques et vos exigences contractuelles.

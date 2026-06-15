@@ -31,7 +31,7 @@ export default function Services() {
           <p className="section-label">Ce Que Nous Proposons</p>
           <h2 className="section-title text-white mb-6">
             Services Conçus pour les{' '}
-            <span className="text-gradient">Clients Exigeants</span>
+            <span className="text-white">Clients Exigeants</span>
           </h2>
           <div className="luxury-divider" />
           <p className="section-subtitle mx-auto text-champagne/55">

@@ -107,7 +107,7 @@ export default function AirbnbCleaning() {
             <p className="section-label">Nos Formules</p>
             <h2 className="section-title text-white mb-4">
               Conçu pour les hôtes{' '}
-              <span className="text-gradient">qui ne font pas de compromis.</span>
+              <span className="text-white">qui ne font pas de compromis.</span>
             </h2>
             <p className="font-inter text-champagne/50 max-w-xl mx-auto">
               Chaque formule garantit un bien prêt à accueillir vos voyageurs dans les meilleures conditions.

@@ -243,7 +243,7 @@ export default function NettoyageHub() {
             <p className="section-label mb-3">Notre engagement</p>
             <h2 className="font-playfair text-3xl md:text-4xl font-bold text-white mb-5">
               Le même niveau d'exigence<br />
-              <span className="text-gradient">dans chaque ville</span>
+              <span className="text-white">dans chaque ville</span>
             </h2>
             <p className="font-inter text-champagne/50 text-base leading-relaxed mb-10 max-w-2xl mx-auto">
               Que vous soyez à Neuilly-sur-Seine, dans le 7ème arrondissement ou à Montreuil,

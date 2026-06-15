@@ -497,7 +497,7 @@ export default function GalleryPage() {
           >
             <p className="section-label">Notre Travail Parle</p>
             <h1 className="section-title text-white mb-6">
-              Galerie <span className="text-gradient">Premium</span>
+              Galerie <span className="text-white">Premium</span>
             </h1>
             <div className="luxury-divider" />
             <p className="section-subtitle mx-auto text-champagne/55">

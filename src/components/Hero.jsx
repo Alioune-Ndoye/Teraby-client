@@ -87,7 +87,7 @@ export default function Hero() {
           >
             <span className="text-gray-900">Nettoyage Premium,</span>
             <br />
-            <span className="text-gradient">Réinventé.</span>
+            <span className="text-white">Réinventé.</span>
           </motion.h1>
 
           {/* Subheadline */}

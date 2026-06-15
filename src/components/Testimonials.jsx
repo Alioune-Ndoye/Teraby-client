@@ -85,7 +85,7 @@ export default function Testimonials() {
           <p className="section-label">Témoignages Clients</p>
           <h2 className="section-title text-white mb-6">
             La Confiance de nos{' '}
-            <span className="text-gradient">Clients Exigeants</span>
+            <span className="text-white">Clients Exigeants</span>
           </h2>
           <div className="luxury-divider" />
         </motion.div>

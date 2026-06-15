@@ -45,7 +45,7 @@ export default function Process() {
           <p className="section-label">Notre Méthode</p>
           <h2 className="section-title text-white mb-6">
             Une Expérience{' '}
-            <span className="text-gradient">Sans Effort</span>
+            <span className="text-white">Sans Effort</span>
           </h2>
           <div className="luxury-divider" />
           <p className="section-subtitle mx-auto text-champagne/55">
@@ -105,7 +105,7 @@ export default function Process() {
             <p className="section-label justify-center flex">Notre Promesse</p>
             <h3 className="font-playfair text-3xl md:text-4xl font-bold text-white mb-4">
               "Si ce n'est pas parfait,{' '}
-              <span className="text-gradient">nous revenons gratuitement."</span>
+              <span className="text-white">nous revenons gratuitement."</span>
             </h3>
             <p className="font-inter text-champagne/50 text-sm leading-relaxed mb-8">
               Nous sommes si confiants dans la qualité de notre travail que nous garantissons

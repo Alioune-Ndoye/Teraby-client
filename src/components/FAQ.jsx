@@ -66,7 +66,7 @@ export default function FAQ() {
           <p className="section-label">Questions Fréquentes</p>
           <h2 className="section-title text-white mb-6">
             Tout Ce Que Vous{' '}
-            <span className="text-gradient">Devez Savoir</span>
+            <span className="text-white">Devez Savoir</span>
           </h2>
           <div className="luxury-divider" />
         </motion.div>
